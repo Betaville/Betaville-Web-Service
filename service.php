@@ -44,7 +44,11 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			echo json_encode(array('designs'=>$designs));
 		}
 		else if($request=='findbydate'){}
-		else if($request=='findbycity'){}
+		else if($request=='findbycity'){
+			$designs = $designActions->findDesignByCity($_GET['city']);
+			header('Content-type: application/json');
+			echo json_encode(array('designs'=>$designs));
+		}
 		else if($request=='findmodeledbycity'){}
 		else if($request=='findaudiobycity'){}
 		else if($request=='findimagebycity'){}

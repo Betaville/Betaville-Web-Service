@@ -80,6 +80,27 @@ class DesignActions{
 		return null;
 	}
 	
+	public function findDesignByCity($city){
+		$sql = 'SELECT * FROM '.DESIGN_TABLE.' WHERE '.DESIGN_CITY.'=:city';
+		try{
+			$stmt = $this->_db->prepare($sql);
+			$stmt->bindParam(":city", $city, PDO::PARAM_INT);
+			$stmt->execute();
+			$designs = array();
+			while($row=$stmt->fetch()){
+				// only include this result if it hasn't been deleted
+				if($row[DESIGN_IS_ALIVE]==1){
+					$designs[] = $this->designFromRow($row);
+				}
+			}
+			return $designs;
+		}catch(PDOException $e){
+			echo'exception';
+			return false;
+		}
+		return null;
+	}
+	
 	private function designFromRow($row){
 		$design = array();
 		
