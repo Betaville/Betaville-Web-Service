@@ -1,11 +1,18 @@
 <?php
+
+/**
+ * Actions for retrieving design information from the database
+ * @author Skye Book
+ */
 class DesignActions{
-	include_once "class_names.php";
-	include_once "db_constants.php";
 	
 	private $_db;
 
-	public function __construct($db==null){
+	public function __construct($db=null){
+		include_once "db_config.php";
+		include_once "class_names.php";
+		include_once "db_constants.php";
+		
 		if(is_object($db)){
 			$this->_db=$db;
 		}
@@ -16,30 +23,35 @@ class DesignActions{
 	}
 
 	public function findDesignByID($id){
-		$sql = 'SELECT * FROM design WHERE designID=:designID';
+		$sql = 'SELECT * FROM '.DESIGN_TABLE.' WHERE '.DESIGN_ID.'=:designID';
 		try{
 			$stmt = $this->_db->prepare($sql);
 			$stmt->bindParam(":designID", $id, PDO::PARAM_INT);
 			$stmt->execute();
+			return $this->designFromRow($stmt->fetch());
 		}catch(PDOException $e){
 			echo'exception';
 			return false;
 		}
-		
-		$designs = array();
-		
-		// put in a new entry
-		$designs [] = array(
-			'title' => 'PHP Hacks',
-			'author' => 'Jack Herrington',
-			'publisher' => "O'Reilly"
-			);
-
-
-		return $designs;
+		return null;
 	}
-
-	function createDesignXML($designs){
+	
+	private function designFromRow($row){
+		$design = array();
+		$design[] = array(DESIGN_ID=>$row[DESIGN_ID]);
+		$design[] = array(DESIGN_NAME=>$row[DESIGN_NAME]);
+		$design[] = array(DESIGN_FILE=>$row[DESIGN_FILE]);
+		$design[] = array(DESIGN_CITY=>$row[DESIGN_CITY]);
+		$design[] = array(DESIGN_ADDRESS=>$row[DESIGN_ADDRESS]);
+		
+		return $design;
+	}
+	
+	/**
+	 * Not used at the moment
+	 *
+	 */
+	private function createDesignXML($designs){
 		$doc = new DOMDocument();
 		$doc->formatOutput = true;
 

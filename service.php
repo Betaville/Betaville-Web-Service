@@ -17,7 +17,13 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		else if($request=='getlevel'){}
 	}
 	else if($section=='design'){
-		if($request=='findbyid'){}
+		include_once "inc/class.design.inc.php";
+		$designActions = new DesignActions($db);
+		if($request=='findbyid'){
+			$design = $designActions->findDesignByID($_GET['id']);
+			header('Content-type: application/json');
+			echo json_encode(array('design'=>$design));
+		}
 		else if($request=='synchronizedata'){}
 		else if($request=='addempty'){}
 		else if($request=='addproposal'){}
@@ -87,58 +93,5 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		// eh, I don't think we really need this for the web service
 		if($request=='getdesign'){}
 	}
-}
-
-
-
-if(isset($_GET['user']) &amp;&amp; intval($_GET['user'])) {
-
-	/* soak in the passed variable or set our own */
-	$number_of_posts = isset($_GET['num']) ? intval($_GET['num']) : 10; //10 is the default
-	$format = strtolower($_GET['format']) == 'json' ? 'json' : 'xml'; //xml is the default
-	$user_id = intval($_GET['user']); //no default
-
-	/* connect to the db */
-	$link = mysql_connect('localhost','username','password') or die('Cannot connect to the DB');
-	mysql_select_db('db_name',$link) or die('Cannot select the DB');
-
-	/* grab the posts from the db */
-	$query = "SELECT post_title, guid FROM wp_posts WHERE post_author = $user_id AND post_status = 'publish' ORDER BY ID DESC LIMIT $number_of_posts";
-	$result = mysql_query($query,$link) or die('Errant query:  '.$query);
-
-	/* create one master array of the records */
-	$posts = array();
-	if(mysql_num_rows($result)) {
-		while($post = mysql_fetch_assoc($result)) {
-			$posts[] = array('post'=&gt;$post);
-		}
-	}
-
-	/* output in necessary format */
-	if($format == 'json') {
-		header('Content-type: application/json');
-		echo json_encode(array('posts'=&gt;$posts));
-	}
-	else {
-		header('Content-type: text/xml');
-		echo '&lt;posts&gt;';
-		foreach($posts as $index =&gt; $post) {
-			if(is_array($post)) {
-				foreach($post as $key =&gt; $value) {
-					echo '&lt;',$key,'&gt;';
-					if(is_array($value)) {
-						foreach($value as $tag =&gt; $val) {
-							echo '&lt;',$tag,'&gt;',htmlentities($val),'&lt;/',$tag,'&gt;';
-						}
-					}
-					echo '&lt;/',$key,'&gt;';
-				}
-			}
-		}
-		echo '&lt;/posts&gt;';
-	}
-
-	/* disconnect from the db */
-	@mysql_close($link);
 }
 ?>
