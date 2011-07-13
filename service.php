@@ -19,12 +19,7 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 	else if($section=='design'){
 		include_once "inc/class.design.inc.php";
 		$designActions = new DesignActions($db);
-		if($request=='findbyid'){
-			$design = $designActions->findDesignByID($_GET['id']);
-			header('Content-type: application/json');
-			echo json_encode(array('design'=>$design));
-		}
-		else if($request=='synchronizedata'){}
+		if($request=='synchronizedata'){}
 		else if($request=='addempty'){}
 		else if($request=='addproposal'){}
 		else if($request=='addbase'){}
@@ -33,9 +28,21 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		else if($request=='changeaddress'){}
 		else if($request=='changeurl'){}
 		else if($request=='changemodellocation'){}
-		else if($request=='findbyid'){}
-		else if($request=='findbyname'){}
-		else if($request=='findbyuser'){}
+		else if($request=='findbyid'){
+			$design = $designActions->findDesignByID($_GET['id']);
+			header('Content-type: application/json');
+			echo json_encode(array('design'=>$design));
+		}
+		else if($request=='findbyname'){
+			$designs = $designActions->findDesignByName($_GET['name']);
+			header('Content-type: application/json');
+			echo json_encode(array('designs'=>$designs));
+		}
+		else if($request=='findbyuser'){
+			$designs = $designActions->findDesignByUser($_GET['user']);
+			header('Content-type: application/json');
+			echo json_encode(array('designs'=>$designs));
+		}
 		else if($request=='findbydate'){}
 		else if($request=='findbycity'){}
 		else if($request=='findmodeledbycity'){}
