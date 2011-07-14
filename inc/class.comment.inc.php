@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Actions for retrieving design information from the database
+ * Actions for interacting with comments
  * @author Skye Book
  */
 class CommentActions{
