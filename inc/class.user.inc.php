@@ -45,7 +45,7 @@ class UserActions{
 	}
 	
 	public function isUsernameAvailable($username){
-		$userSQL = "SELECT ".username." FROM user where username=:user  LIMIT 1";
+		$userSQL = "SELECT username FROM user where username=:user  LIMIT 1";
 		try{
 			$stmt = $this->_db->prepare($userSQL);
 			$stmt->bindParam(":user", $username, PDO::PARAM_STR);

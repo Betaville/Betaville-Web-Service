@@ -10,7 +10,7 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		if($request=='auth'){
 			$response = $userActions->login($_GET['username'], $_GET['password']);
 			header('Content-type: application/json');
-			echo json_encode(array('success'=>$response));
+			echo json_encode(array('authenticationSuccess'=>$response));
 		}
 		else if($request=='startsession'){}
 		else if($request=='endsession'){}
@@ -18,7 +18,7 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		else if($request=='available'){
 			$response = $userActions->isUsernameAvailable($_GET['username']);
 			header('Content-type: application/json');
-			echo json_encode(array('success'=>$response));
+			echo json_encode(array('usernameAvailable'=>$response));
 		}
 		else if($request=='changepass'){}
 		else if($request=='changebio'){}
@@ -87,10 +87,16 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		// share does not currently use the request parameter
 	}
 	else if($section=='comment'){
+		include_once "inc/class.comment.inc.php";
+		$commentActions = new CommentActions($db);
 		if($request=='add'){}
 		else if($request=='delete'){}
 		else if($request=='reportspam'){}
-		else if($request=='getforid'){}
+		else if($request=='getforid'){
+			$comments = $commentActions->getCommentsForDesign($_GET['id']);
+			header('Content-type: application/json');
+			echo json_encode(array('comments'=>$comments));
+		}
 	}
 	else if($section=='city'){
 		if($request=='add'){}

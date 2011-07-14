@@ -104,8 +104,8 @@
 	define('COORD_ALTITUDE', 'altitude');
 	
 	define('COMMENT_TABLE', 'comment');
-	define('COMMENT_ID', 'commentID');
-	define('COMMENT_DESIGN', 'designID');
+	define('COMMENT_ID', 'commentid');
+	define('COMMENT_DESIGN', 'designid');
 	define('COMMENT_USER', 'user');
 	define('COMMENT_TEXT', 'comment');
 	define('COMMENT_DATE', 'date');
