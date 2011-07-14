@@ -72,15 +72,14 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			
 			// we may or may not need this at some point
 			if(get_magic_quotes_gpc()){	
-				echo "damn";
 			}
 			else{
-				//echo json_encode(array('fileLink'=>BETAVILLE_FILE_STORE.'designmedia/'.$fileName));
 			}
 		}
 		else if($request=='requestthumb'){
 			// returns an http link to a thumbnail
-			
+			header('Content-type: application/json');
+			echo json_encode(array('fileLink'=>str_replace("\\", "", BETAVILLE_FILE_STORE_URL.'/designthumbs/'.$_GET['id'].'png')));
 		}
 		else if($request=='changefile'){}
 		else if($request=='reserve'){}
