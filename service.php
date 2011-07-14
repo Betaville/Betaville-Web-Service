@@ -68,7 +68,7 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			// returns an http link to a file
 			$fileName = $designActions->getFilenameForDesignMedia($_GET['id']);
 			header('Content-type: application/json');
-			echo json_encode(array('fileLink'=>str_replace("\\", "", BETAVILLE_FILE_STORE.'/designmedia/'.$fileName)));
+			echo json_encode(array('fileLink'=>str_replace("\\", "", BETAVILLE_FILE_STORE_URL.'/designmedia/'.$fileName)));
 			
 			// we may or may not need this at some point
 			if(get_magic_quotes_gpc()){	
