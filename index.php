@@ -15,4 +15,11 @@
 			<li>Examining the <a href="http://betaville.googlecode.com/">Source Code</a>
 		</ul>
 	</div>
+	<div>
+		<?php
+		if(get_magic_quotes_gpc()){
+			echo "<h2>You should turn off magic quotes<h2>";
+		}
+		?>
+	</div>
 </html>

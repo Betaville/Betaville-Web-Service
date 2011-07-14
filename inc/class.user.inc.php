@@ -3,7 +3,7 @@ class UserActions{
 	private $_db;
 	
 	public function __construct($db=null){
-		include_once "db_config.php";
+		include_once "config.php";
 		include_once "class_names.php";
 		include_once "db_constants.php";
 		

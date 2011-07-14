@@ -9,7 +9,7 @@ class DesignActions{
 	private $_db;
 
 	public function __construct($db=null){
-		include_once "db_config.php";
+		include_once "config.php";
 		include_once "class_names.php";
 		include_once "db_constants.php";
 		
@@ -97,6 +97,22 @@ class DesignActions{
 		}catch(PDOException $e){
 			echo'exception';
 			return false;
+		}
+		return null;
+	}
+	
+	public function getFilenameForDesignMedia($designID){
+		$sql = 'SELECT '.DESIGN_FILE.' FROM '.DESIGN_TABLE.' WHERE '.DESIGN_ID.'=:designID';
+		try{
+			$stmt = $this->_db->prepare($sql);
+			$stmt->bindParam(":designID", $designID, PDO::PARAM_INT);
+			$stmt->execute();
+			$row=$stmt->fetch();
+			$designs = array();
+			return $row[DESIGN_FILE];
+		}catch(PDOException $e){
+			echo'exception';
+			return null;
 		}
 		return null;
 	}

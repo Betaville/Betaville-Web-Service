@@ -64,8 +64,24 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		else if($request=='findimagebycity'){}
 		else if($request=='findvideobycity'){}
 		else if($request=='allproposals'){}
-		else if($request=='requestfile'){}
-		else if($request=='requestthumb'){}
+		else if($request=='requestfile'){
+			// returns an http link to a file
+			$fileName = $designActions->getFilenameForDesignMedia($_GET['id']);
+			header('Content-type: application/json');
+			echo json_encode(array('fileLink'=>str_replace("\\", "", BETAVILLE_FILE_STORE.'/designmedia/'.$fileName)));
+			
+			// we may or may not need this at some point
+			if(get_magic_quotes_gpc()){	
+				echo "damn";
+			}
+			else{
+				//echo json_encode(array('fileLink'=>BETAVILLE_FILE_STORE.'designmedia/'.$fileName));
+			}
+		}
+		else if($request=='requestthumb'){
+			// returns an http link to a thumbnail
+			
+		}
 		else if($request=='changefile'){}
 		else if($request=='reserve'){}
 		else if($request=='remove'){}
