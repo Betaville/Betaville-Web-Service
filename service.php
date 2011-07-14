@@ -5,11 +5,21 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 	$section = $_GET['section'];
 	$request = $_GET['request'];
 	if($section=='user'){
-		if($request=='auth'){}
+		include_once "inc/class.user.inc.php";
+		$userActions = new UserActions($db);
+		if($request=='auth'){
+			$response = $userActions->login($_GET['username'], $_GET['password']);
+			header('Content-type: application/json');
+			echo json_encode(array('success'=>$response));
+		}
 		else if($request=='startsession'){}
 		else if($request=='endsession'){}
 		else if($request=='add'){}
-		else if($request=='available'){}
+		else if($request=='available'){
+			$response = $userActions->isUsernameAvailable($_GET['username']);
+			header('Content-type: application/json');
+			echo json_encode(array('success'=>$response));
+		}
 		else if($request=='changepass'){}
 		else if($request=='changebio'){}
 		else if($request=='getmail'){}
