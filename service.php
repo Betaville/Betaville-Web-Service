@@ -98,6 +98,11 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		if($request=='add'){}
 		else if($request=='remove'){}
 	}
+	else if($section=='activity'){
+		if($request=='comments'){}
+		else if($request=='designs'){}
+		else if($request=='myactivity'){}
+	}
 	else if($section=='share'){
 		// share does not currently use the request parameter
 	}
