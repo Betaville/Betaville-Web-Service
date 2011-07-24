@@ -23,10 +23,32 @@ class CommentActions{
 	}
 
 	public function getCommentsForDesign($id){
-		$sql = 'SELECT * FROM '.COMMENT_TABLE.' WHERE '.COMMENT_DESIGN.'=:designID';
+		$sql = 'SELECT * FROM '.COMMENT_TABLE.' WHERE '.COMMENT_SPAMVERIFIED.' = 0 AND '.COMMENT_DESIGN.'=:designID';
 		try{
 			$stmt = $this->_db->prepare($sql);
 			$stmt->bindParam(":designID", $id, PDO::PARAM_INT);
+			$stmt->execute();
+			$comments = array();
+			while($row=$stmt->fetch()){
+				// only include this result if it hasn't been verified as spam
+				if($row[COMMENT_SPAMVERIFIED]==0){
+					$comments[] = $this->commentFromRow($row);
+				}
+			}
+			return $comments;
+		}catch(PDOException $e){
+			echo'exception';
+			return false;
+		}
+		return null;
+	}
+	
+	public function getRecentComments($numberOfComments){
+		// "SELECT * FROM " + DBConst.COMMENT_TABLE + " WHERE "+DBConst.COMMENT_SPAMVERIFIED+" = 0 ORDER BY "+DBConst.COMMENT_ID +" DESC LIMIT ?"
+		$sql = 'SELECT * FROM '.COMMENT_TABLE.' WHERE '.COMMENT_SPAMVERIFIED.' = 0 ORDER BY '.COMMENT_ID.' DESC LIMIT :numberOfComments';
+		try{
+			$stmt = $this->_db->prepare($sql);
+			$stmt->bindParam(":numberOfComments", $numberOfComments, PDO::PARAM_INT);
 			$stmt->execute();
 			$comments = array();
 			while($row=$stmt->fetch()){

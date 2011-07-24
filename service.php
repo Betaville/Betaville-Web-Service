@@ -102,11 +102,17 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		else if($request=='remove'){}
 	}
 	else if($section=='activity'){
-		if($request=='comments'){}
-		else if($request=='designs'){
+		if($request=='comments'){
+			include_once "inc/class.comment.inc.php";
+			$commentActions = new CommentActions($db);
+			$comments = $commentActions->getRecentComments(50);
 			header('Content-type: application/json');
+			echo json_encode(array('comments'=>$comments));
+		}
+		else if($request=='designs'){
 			include_once "inc/class.design.inc.php";
 			$designActions = new DesignActions($db);
+			header('Content-type: application/json');
 			echo json_encode(array('designIDS'=>($designActions->getRecentDesigns(50))));
 		}
 		else if($request=='myactivity'){
