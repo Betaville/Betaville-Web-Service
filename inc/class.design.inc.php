@@ -108,8 +108,25 @@ class DesignActions{
 			$stmt->bindParam(":designID", $designID, PDO::PARAM_INT);
 			$stmt->execute();
 			$row=$stmt->fetch();
-			$designs = array();
 			return $row[DESIGN_FILE];
+		}catch(PDOException $e){
+			echo'exception';
+			return null;
+		}
+		return null;
+	}
+	
+	public function getRecentDesigns($numberToReturn){
+		$sql = 'SELECT '.DESIGN_ID.' FROM ' . DESIGN_TABLE . ' WHERE '.DESIGN_IS_ALIVE.' = 1 ORDER BY '.DESIGN_ID .' DESC LIMIT :numberToReturn';
+		try{
+			$stmt = $this->_db->prepare($sql);
+			$stmt->bindParam(":numberToReturn", $numberToReturn, PDO::PARAM_INT);
+			$stmt->execute();
+			$designIDS = array();
+			while($row=$stmt->fetch()){
+				$designIDS[]=$row[DESIGN_ID];
+			}
+			return $designIDS;
 		}catch(PDOException $e){
 			echo'exception';
 			return null;

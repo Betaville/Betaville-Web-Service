@@ -1,6 +1,9 @@
 <?php
 /* require the user as the parameter */
 
+// Should we be doing session start here?  How will it work?!
+//session_start();
+
 if(isset($_GET['section']) && isset($_GET['request'])){
 	$section = $_GET['section'];
 	$request = $_GET['request'];
@@ -100,8 +103,16 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 	}
 	else if($section=='activity'){
 		if($request=='comments'){}
-		else if($request=='designs'){}
-		else if($request=='myactivity'){}
+		else if($request=='designs'){
+			header('Content-type: application/json');
+			include_once "inc/class.design.inc.php";
+			$designActions = new DesignActions($db);
+			echo json_encode(array('designIDS'=>($designActions->getRecentDesigns(50))));
+		}
+		else if($request=='myactivity'){
+			// The SQL for this looks like this:
+			// select * from comment join design on comment.designid = design.designid where design.isalive=1 AND (design.favelist like '%sbook%' OR design.user like 'sbook' OR comment.user like 'sbook');
+		}
 	}
 	else if($section=='share'){
 		// share does not currently use the request parameter
