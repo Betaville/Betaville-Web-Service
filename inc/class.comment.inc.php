@@ -65,6 +65,30 @@ class CommentActions{
 		return null;
 	}
 	
+	public function getNotificationsForUser($username){
+		// select * from comment join design on comment.designid = design.designid where design.isalive=1 AND (design.favelist like '%sbook%' OR design.user like 'sbook' OR comment.user like 'sbook');
+		$sql = 'SELECT * FROM '.COMMENT_TABLE.' JOIN '.DESIGN_TABLE.' ON '.COMMENT_TABLE.'.'.COMMENT_DESIGN.' = '.DESIGN_TABLE.'.'.DESIGN_ID.' WHERE '.DESIGN_TABLE.'.'.DESIGN_IS_ALIVE.'=1 AND ('.DESIGN_TABLE.'.'.DESIGN_FAVE_LIST.' LIKE :wildcardname OR '.DESIGN_TABLE.'.'.DESIGN_USER.' LIKE :username OR '.COMMENT_TABLE.'.'.COMMENT_USER.' LIKE :username)';
+		$wildcardName = '%'.$username.'%';
+		try{
+			$stmt = $this->_db->prepare($sql);
+			$stmt->bindParam(":wildcardname", $wildcardName, PDO::PARAM_STR);
+			$stmt->bindParam(":username", $username, PDO::PARAM_STR);
+			$stmt->execute();
+			$comments = array();
+			while($row=$stmt->fetch()){
+				// only include this result if it hasn't been verified as spam
+				if($row[COMMENT_SPAMVERIFIED]==0){
+					$comments[] = $this->commentFromRow($row);
+				}
+			}
+			return $comments;
+		}catch(PDOException $e){
+			echo'exception';
+			return false;
+		}
+		return null;
+	}
+	
 	private function commentFromRow($row){
 		$comment = array();
 		$comment[] = array(COMMENT_ID=>$row[COMMENT_ID]);

@@ -116,8 +116,13 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			echo json_encode(array('designIDS'=>($designActions->getRecentDesigns(50))));
 		}
 		else if($request=='myactivity'){
+			// getNotificationsForUser
 			// The SQL for this looks like this:
-			// select * from comment join design on comment.designid = design.designid where design.isalive=1 AND (design.favelist like '%sbook%' OR design.user like 'sbook' OR comment.user like 'sbook');
+			include_once "inc/class.comment.inc.php";
+			$commentActions = new CommentActions($db);
+			$comments = $commentActions->getNotificationsForUser($_GET['user']);
+			header('Content-type: application/json');
+			echo json_encode(array('comments'=>$comments));
 		}
 	}
 	else if($section=='share'){
