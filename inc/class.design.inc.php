@@ -135,6 +135,7 @@ class DesignActions{
 	}
 	
 	private function designFromRow($row){
+	/*
 		$design = array();
 		
 		$design[] = array(DESIGN_ID=>$row[DESIGN_ID]);
@@ -149,6 +150,11 @@ class DesignActions{
 		$design[] = array(DESIGN_URL=>$row[DESIGN_URL]);
 		
 		return $design;
+		*/
+		return array(DESIGN_ID=>$row[DESIGN_ID],DESIGN_NAME=>$row[DESIGN_NAME],DESIGN_FILE=>$row[DESIGN_FILE],
+			DESIGN_CITY=>$row[DESIGN_CITY],DESIGN_ADDRESS=>$row[DESIGN_ADDRESS],DESIGN_USER=>$row[DESIGN_USER],
+			DESIGN_COORDINATE=>$row[DESIGN_COORDINATE],DESIGN_DATE=>$row[DESIGN_DATE],DESIGN_DESCRIPTION=>$row[DESIGN_DESCRIPTION],
+			DESIGN_URL=>$row[DESIGN_URL]);
 	}
 	
 	/**
