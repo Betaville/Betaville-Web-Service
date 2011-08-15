@@ -29,6 +29,20 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		else if($request=='checklevel'){}
 		else if($request=='getlevel'){}
 	}
+	else if($section=='coordinate'){
+		include_once "inc/class.coordinate.inc.php";
+		$coordinateActions = new CoordinateActions($db);
+		if($request=='getutm'){
+			$utm = $coordinateActions->getUTMCoordinate($_GET['id']);
+			header('Content-type: application/json');
+			echo json_encode($utm);
+		}
+		else if($request=='getlatlon'){
+			$latLon = $coordinateActions->getLatLonCoordinate($_GET['id']);
+			header('Content-type: application/json');
+			echo json_encode($latLon);
+		}
+	}
 	else if($section=='design'){
 		include_once "inc/class.design.inc.php";
 		$designActions = new DesignActions($db);
