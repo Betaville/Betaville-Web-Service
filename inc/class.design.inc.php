@@ -7,11 +7,13 @@
 class DesignActions{
 	
 	private $_db;
+	private $_coordinateActions;
 
 	public function __construct($db=null){
 		include_once "config.php";
 		include_once "class_names.php";
 		include_once "db_constants.php";
+		include_once "inc/class.coordinate.inc.php";
 		
 		if(is_object($db)){
 			$this->_db=$db;
@@ -20,6 +22,8 @@ class DesignActions{
 			$dsn = "mysql:host=".DB_HOST.";dbname=".DB_NAME;
 			$this->_db = new PDO($dsn, DB_USER, DB_PASS);
 		}
+		
+		$this->_coordinateActions = new CoordinateActions($db);
 	}
 
 	public function findDesignByID($id){
@@ -28,7 +32,7 @@ class DesignActions{
 			$stmt = $this->_db->prepare($sql);
 			$stmt->bindParam(":designID", $id, PDO::PARAM_INT);
 			$stmt->execute();
-			return $this->designFromRow($stmt->fetch());
+			return $this->designFromRow($stmt->fetch(), $false);
 		}catch(PDOException $e){
 			echo'exception';
 			return false;
@@ -47,7 +51,7 @@ class DesignActions{
 			while($row=$stmt->fetch()){
 				// only include this result if it hasn't been deleted
 				if($row[DESIGN_IS_ALIVE]==1){
-					$designs[] = $this->designFromRow($row);
+					$designs[] = $this->designFromRow($row, $false);
 				}
 			}
 			return $designs;
@@ -69,7 +73,7 @@ class DesignActions{
 			while($row=$stmt->fetch()){
 				// only include this result if it hasn't been deleted
 				if($row[DESIGN_IS_ALIVE]==1){
-					$designs[] = $this->designFromRow($row);
+					$designs[] = $this->designFromRow($row, false);
 				}
 			}
 			return $designs;
@@ -90,7 +94,7 @@ class DesignActions{
 			while($row=$stmt->fetch()){
 				// only include this result if it hasn't been deleted
 				if($row[DESIGN_IS_ALIVE]==1){
-					$designs[] = $this->designFromRow($row);
+					$designs[] = $this->designFromRow($row, false);
 				}
 			}
 			return $designs;
@@ -134,26 +138,21 @@ class DesignActions{
 		return null;
 	}
 	
-	private function designFromRow($row){
-	/*
-		$design = array();
+	private function designFromRow($row, $utmRequested){
 		
-		$design[] = array(DESIGN_ID=>$row[DESIGN_ID]);
-		$design[] = array(DESIGN_NAME=>$row[DESIGN_NAME]);
-		$design[] = array(DESIGN_FILE=>$row[DESIGN_FILE]);
-		$design[] = array(DESIGN_CITY=>$row[DESIGN_CITY]);
-		$design[] = array(DESIGN_ADDRESS=>$row[DESIGN_ADDRESS]);
-		$design[] = array(DESIGN_USER=>$row[DESIGN_USER]);
-		$design[] = array(DESIGN_COORDINATE=>$row[DESIGN_COORDINATE]);
-		$design[] = array(DESIGN_DATE=>$row[DESIGN_DATE]);
-		$design[] = array(DESIGN_DESCRIPTION=>$row[DESIGN_DESCRIPTION]);
-		$design[] = array(DESIGN_URL=>$row[DESIGN_URL]);
+		// pre-pack coordinate array
+		$coordinateArray;
+		if($utmRequested){
+			$coordinateArray = $this->_coordinateActions->getUTMCoordinate($row[DESIGN_COORDINATE]);
+		}
+		else{
+			$coordinateArray = $this->_coordinateActions->getLatLonCoordinate($row[DESIGN_COORDINATE]);
+		}
 		
-		return $design;
-		*/
+		
 		return array(DESIGN_ID=>$row[DESIGN_ID],DESIGN_NAME=>$row[DESIGN_NAME],DESIGN_FILE=>$row[DESIGN_FILE],
 			DESIGN_CITY=>$row[DESIGN_CITY],DESIGN_ADDRESS=>$row[DESIGN_ADDRESS],DESIGN_USER=>$row[DESIGN_USER],
-			DESIGN_COORDINATE=>$row[DESIGN_COORDINATE],DESIGN_DATE=>$row[DESIGN_DATE],DESIGN_DESCRIPTION=>$row[DESIGN_DESCRIPTION],
+			"coordinate"=>$coordinateArray,DESIGN_DATE=>$row[DESIGN_DATE],DESIGN_DESCRIPTION=>$row[DESIGN_DESCRIPTION],
 			DESIGN_URL=>$row[DESIGN_URL]);
 	}
 	
