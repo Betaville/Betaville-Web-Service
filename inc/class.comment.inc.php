@@ -107,14 +107,8 @@ class CommentActions{
 	}
 	
 	private function commentFromRow($row){
-		$comment = array();
-		$comment[] = array(COMMENT_ID=>$row[COMMENT_ID]);
-		$comment[] = array(COMMENT_DESIGN=>$row[COMMENT_DESIGN]);
-		$comment[] = array(COMMENT_USER=>$row[COMMENT_USER]);
-		$comment[] = array(COMMENT_TEXT=>$row[COMMENT_TEXT]);
-		$comment[] = array(COMMENT_DATE=>$row[COMMENT_DATE]);
-		$comment[] = array(COMMENT_REPLIESTO=>$row[COMMENT_REPLIESTO]);
-		return $comment;
+		return array(COMMENT_ID=>$row[COMMENT_ID], COMMENT_USER=>$row[COMMENT_USER],COMMENT_TEXT=>$row[COMMENT_TEXT],
+		COMMENT_DATE=>$row[COMMENT_DATE],COMMENT_REPLIESTO=>$row[COMMENT_REPLIESTO]);
 	}
 }
 ?>
