@@ -137,7 +137,10 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		if($request=='comments'){
 			include_once "inc/class.comment.inc.php";
 			$commentActions = new CommentActions($db);
-			$comments = $commentActions->getRecentComments(50);
+			$quantity = 50;
+			if(empty($_GET['quantity'])) $quantity = 50;
+			else $quantity = (int)$_GET['quantity'];
+			$comments = $commentActions->getRecentComments($quantity);
 			header('Content-type: application/json');
 			echo json_encode(array('comments'=>$comments));
 		}
@@ -145,7 +148,10 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			include_once "inc/class.design.inc.php";
 			$designActions = new DesignActions($db);
 			header('Content-type: application/json');
-			echo json_encode(array('designIDS'=>($designActions->getRecentDesigns(50))));
+			$quantity = 50;
+			if(empty($_GET['quantity'])) $quantity = 50;
+			else $quantity = (int)$_GET['quantity'];
+			echo json_encode(array('designIDS'=>($designActions->getRecentDesignIDs($quantity))));
 		}
 		else if($request=='myactivity'){
 			// getNotificationsForUser

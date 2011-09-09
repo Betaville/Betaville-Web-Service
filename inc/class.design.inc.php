@@ -137,7 +137,7 @@ class DesignActions{
 		return null;
 	}
 	
-	public function getRecentDesigns($numberToReturn){
+	public function getRecentDesignIDs($numberToReturn){
 		$sql = 'SELECT '.DESIGN_ID.' FROM ' . DESIGN_TABLE . ' WHERE '.DESIGN_IS_ALIVE.' = 1 ORDER BY '.DESIGN_ID .' DESC LIMIT :numberToReturn';
 		try{
 			$stmt = $this->_db->prepare($sql);
@@ -148,6 +148,27 @@ class DesignActions{
 				$designIDS[]=$row[DESIGN_ID];
 			}
 			return $designIDS;
+		}catch(PDOException $e){
+			echo'exception';
+			return null;
+		}
+		return null;
+	}
+	
+	public function getRecentDesigns($numberToReturn){
+		$sql = 'SELECT * FROM ' . DESIGN_TABLE . ' WHERE '.DESIGN_IS_ALIVE.' = 1 ORDER BY '.DESIGN_ID .' DESC LIMIT :numberToReturn';
+		try{
+			$stmt = $this->_db->prepare($sql);
+			$stmt->bindParam(":numberToReturn", $numberToReturn, PDO::PARAM_INT);
+			$stmt->execute();
+			$designs = array();
+			while($row=$stmt->fetch()){
+				// only include this result if it hasn't been deleted
+				if($row[DESIGN_IS_ALIVE]==1){
+					$designs[] = $this->designFromRow($row, false);
+				}
+			}
+			return $designs;
 		}catch(PDOException $e){
 			echo'exception';
 			return null;
