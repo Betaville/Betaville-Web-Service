@@ -176,6 +176,42 @@ class DesignActions{
 		return null;
 	}
 	
+	public function getRecentProposals($numberToReturn){
+		$sql = "select * from design join proposal on designid=destinationid where type='proposal' and isAlive=1 ORDER BY designid DESC;";
+		try{
+			$stmt = $this->_db->prepare($sql);
+			$stmt->bindParam(":numberToReturn", $numberToReturn, PDO::PARAM_INT);
+			$stmt->execute();
+			$designs = array();
+			while($row=$stmt->fetch()){
+				$designs[] = $this->designFromRow($row, false);
+			}
+			return $designs;
+		}catch(PDOException $e){
+			echo'exception';
+			return null;
+		}
+		return null;
+	}
+	
+	public function getRecentVersions($numberToReturn){
+		$sql = "select * from design join proposal on designid=destinationid where type='version' and isAlive=1 ORDER BY designid DESC;";
+		try{
+			$stmt = $this->_db->prepare($sql);
+			$stmt->bindParam(":numberToReturn", $numberToReturn, PDO::PARAM_INT);
+			$stmt->execute();
+			$designs = array();
+			while($row=$stmt->fetch()){
+				$designs[] = $this->designFromRow($row, false);
+			}
+			return $designs;
+		}catch(PDOException $e){
+			echo'exception';
+			return null;
+		}
+		return null;
+	}
+	
 	private function designFromRow($row, $utmRequested){
 		
 		// pre-pack coordinate array

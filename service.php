@@ -153,6 +153,24 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			else $quantity = (int)$_GET['quantity'];
 			echo json_encode(array('designs'=>($designActions->getRecentDesigns($quantity))));
 		}
+		else if($request=='proposals'){
+			include_once "inc/class.design.inc.php";
+			$designActions = new DesignActions($db);
+			header('Content-type: application/json');
+			$quantity = 50;
+			if(empty($_GET['quantity'])) $quantity = 50;
+			else $quantity = (int)$_GET['quantity'];
+			echo json_encode(array('designs'=>($designActions->getRecentProposals($quantity))));
+		}
+		else if($request=='versions'){
+			include_once "inc/class.design.inc.php";
+			$designActions = new DesignActions($db);
+			header('Content-type: application/json');
+			$quantity = 50;
+			if(empty($_GET['quantity'])) $quantity = 50;
+			else $quantity = (int)$_GET['quantity'];
+			echo json_encode(array('designs'=>($designActions->getRecentVersions($quantity))));
+		}
 		else if($request=='myactivity'){
 			// getNotificationsForUser
 			// The SQL for this looks like this:
