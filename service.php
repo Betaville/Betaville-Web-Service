@@ -151,7 +151,7 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			$quantity = 50;
 			if(empty($_GET['quantity'])) $quantity = 50;
 			else $quantity = (int)$_GET['quantity'];
-			echo json_encode(array('designIDS'=>($designActions->getRecentDesignIDs($quantity))));
+			echo json_encode(array('designIDS'=>($designActions->getRecentDesigns($quantity))));
 		}
 		else if($request=='myactivity'){
 			// getNotificationsForUser
