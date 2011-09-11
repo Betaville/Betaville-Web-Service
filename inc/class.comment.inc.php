@@ -107,7 +107,7 @@ class CommentActions{
 	}
 	
 	private function commentFromRow($row){
-		return array(COMMENT_ID=>$row[COMMENT_ID], COMMENT_USER=>$row[COMMENT_USER],COMMENT_TEXT=>$row[COMMENT_TEXT],
+		return array(COMMENT_ID=>$row[COMMENT_ID], COMMENT_DESIGN=>$row[COMMENT_DESIGN], COMMENT_USER=>$row[COMMENT_USER],COMMENT_TEXT=>$row[COMMENT_TEXT],
 		COMMENT_DATE=>$row[COMMENT_DATE],COMMENT_REPLIESTO=>$row[COMMENT_REPLIESTO]);
 	}
 }
