@@ -177,7 +177,7 @@ class DesignActions{
 	}
 	
 	public function getRecentProposals($numberToReturn){
-		$sql = "select * from design join proposal on designid=destinationid where type='proposal' and isAlive=1 ORDER BY designid DESC;";
+		$sql = "select * from design join proposal on designid=destinationid where type='proposal' and isAlive=1 ORDER BY designid DESC LIMIT :numberToReturn;";
 		try{
 			$stmt = $this->_db->prepare($sql);
 			$stmt->bindParam(":numberToReturn", $numberToReturn, PDO::PARAM_INT);
@@ -195,7 +195,7 @@ class DesignActions{
 	}
 	
 	public function getRecentVersions($numberToReturn){
-		$sql = "select * from design join proposal on designid=destinationid where type='version' and isAlive=1 ORDER BY designid DESC;";
+		$sql = "select * from design join proposal on designid=destinationid where type='version' and isAlive=1 ORDER BY designid DESC LIMIT :numberToReturn;";
 		try{
 			$stmt = $this->_db->prepare($sql);
 			$stmt->bindParam(":numberToReturn", $numberToReturn, PDO::PARAM_INT);
