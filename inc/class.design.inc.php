@@ -176,6 +176,24 @@ class DesignActions{
 		return null;
 	}
 	
+	public function getFeaturedProposals($numberToReturn){
+		$sql = "SELECT * FROM design JOIN proposal ON designid=destinationid WHERE type='proposal' AND isAlive=1 AND featured IS NOT NULL ORDER BY featured DESC, designid DESC LIMIT :numberToReturn;";
+		try{
+			$stmt = $this->_db->prepare($sql);
+			$stmt->bindParam(":numberToReturn", $numberToReturn, PDO::PARAM_INT);
+			$stmt->execute();
+			$designs = array();
+			while($row=$stmt->fetch()){
+				$designs[] = $this->designFromRow($row, false);
+			}
+			return $designs;
+		}catch(PDOException $e){
+			echo'exception';
+			return null;
+		}
+		return null;
+	}
+	
 	public function getRecentProposals($numberToReturn){
 		$sql = "SELECT * FROM design JOIN proposal ON designid=destinationid WHERE type='proposal' AND isAlive=1 ORDER BY designid DESC LIMIT :numberToReturn;";
 		try{
