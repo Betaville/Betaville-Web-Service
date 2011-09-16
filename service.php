@@ -125,6 +125,7 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		if($request=='findinradius'){}
 		else if($request=='getpermissions'){}
 		else if($request=='addversion'){}
+		else if($request=='getfeatured'){}
 	}
 	else if($section=='version'){
 		if($request=='versionsofproposal'){}
