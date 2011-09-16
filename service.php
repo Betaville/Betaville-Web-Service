@@ -125,7 +125,15 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		if($request=='findinradius'){}
 		else if($request=='getpermissions'){}
 		else if($request=='addversion'){}
-		else if($request=='getfeatured'){}
+		else if($request=='getfeatured'){
+			include_once "inc/class.design.inc.php";
+			$designActions = new DesignActions($db);
+			header('Content-type: application/json');
+			$quantity = 50;
+			if(empty($_GET['quantity'])) $quantity = 50;
+			else $quantity = (int)$_GET['quantity'];
+			echo json_encode(array('designs'=>($designActions->getFeaturedProposals($quantity))));
+		}
 	}
 	else if($section=='version'){
 		if($request=='versionsofproposal'){}
