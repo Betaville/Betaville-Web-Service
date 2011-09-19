@@ -55,8 +55,6 @@ class UserActions{
 				$stmt->bindParam(":strongsalt", $salt, PDO::PARAM_STR);
 				$stmt->bindParam(":email", $emailAddress, PDO::PARAM_STR);
 				
-				
-				
 				$stmt->execute();
 				
 				return true;
