@@ -34,6 +34,40 @@ class UserActions{
 		}
 	}
 	
+	public function addUser($username, $password, $emailAddress){
+		if($this->isEmailAddressInUse($emailAddress)) return -3;
+		else if(!($this->isValidUsername($username))) return -4;
+		else{
+			$sql = "INSERT INTO user (username, strongpass, strongsalt, email) VALUES (:username, :strongpass, :strongsalt, :email)");
+			
+			try{
+				$stmt = $this->_db->prepare($hashSQL);
+				
+				
+				$salt = $this->createSalt();
+				$generatedHash=$salt.$password;
+				for($i=0; $i<1000; $i++){
+					$generatedHash = SHA1($generatedHash);
+				}
+				
+				$stmt->bindParam(":username", $username, PDO::PARAM_STR);
+				$stmt->bindParam(":strongpass", $generatedHash, PDO::PARAM_STR);
+				$stmt->bindParam(":strongsalt", $salt, PDO::PARAM_STR);
+				$stmt->bindParam(":email", $emailAddress, PDO::PARAM_STR);
+				
+				
+				
+				$stmt->execute();
+				
+				return true;
+				
+				
+			}catch(PDOException $e){
+				return false;
+			}
+		}
+	}
+	
 	public function login($username, $password){
 		$hashSQL = "SELECT username, strongpass, strongsalt from user where username=:user LIMIT 1";
 		try{
@@ -51,6 +85,41 @@ class UserActions{
 				$stmt->closeCursor();
 				$_SESSION['username'] = $row['username'];
 				$_SESSION['LoggedIn']=1;
+				return true;
+			}
+			else{
+				$stmt->closeCursor();
+				return false;
+			}
+		}catch(PDOException $e){
+			return false;
+		}
+	}
+	
+	private function createSalt(){
+		$salt = "";
+		
+		for($i=0; $i<10; $i++){
+			$random = rand(0, 9);
+			$salt = $salt.$random;
+		}
+		
+		return $salt;
+	}
+	
+	public function isValidUsername(){
+		return true;
+	}
+	
+	public function isEmailAddressInUse($emailAddress){
+		$userSQL = "SELECT email FROM user where email=:emailAddress  LIMIT 1";
+		try{
+			$stmt = $this->_db->prepare($userSQL);
+			$stmt->bindParam(":emailAddress", $emailAddress, PDO::PARAM_STR);
+			$stmt->execute();
+			$row=$stmt->fetch();
+			if($row['email']==$emailAddress){
+				$stmt->closeCursor();
 				return true;
 			}
 			else{
