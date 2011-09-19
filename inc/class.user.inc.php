@@ -38,7 +38,7 @@ class UserActions{
 		if($this->isEmailAddressInUse($emailAddress)) return -3;
 		else if(!($this->isValidUsername($username))) return -4;
 		else{
-			$sql = "INSERT INTO user (username, strongpass, strongsalt, email) VALUES (:username, :strongpass, :strongsalt, :email)");
+			$sql = "INSERT INTO user (username, strongpass, strongsalt, email) VALUES (:username, :strongpass, :strongsalt, :email)";
 			
 			try{
 				$stmt = $this->_db->prepare($hashSQL);
