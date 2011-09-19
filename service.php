@@ -33,9 +33,17 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			header('Content-type: application/json');
 			echo json_encode(array('authenticationSuccess'=>$response));
 		}
-		else if($request=='startsession'){}
-		else if($request=='endsession'){}
-		else if($request=='add'){}
+		else if($request=='startsession'){
+			
+		}
+		else if($request=='endsession'){
+			
+		}
+		else if($request=='add'){
+			$response = $userActions->addUser($_GET['username'], $_GET['password'], $_GET['email']);
+			header('Content-type: application/json');
+			echo json_encode(array('userAdded'=>$response));
+		}
 		else if($request=='available'){
 			$response = $userActions->isUsernameAvailable($_GET['username']);
 			header('Content-type: application/json');
