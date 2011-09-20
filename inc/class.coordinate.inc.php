@@ -67,12 +67,12 @@ class CoordinateActions{
         //echo $latLon->lat;
         //echo "</br>";
         //echo $latLon->lng;
-        return array("lat"=>$latLon->lat, "lon"=>$latLon->lng);
+        return array("lat"=>$latLon->lat, "lon"=>$latLon->lng, "alt"=>$utmCoordinate[COORD_ALTITUDE]);
 	}
 	
 	private function utmFromRow($row){
 		return array(COORD_NORTHING=>$row[COORD_NORTHING],COORD_EASTING=>$row[COORD_EASTING],
-			COORD_LATZONE=>$row[COORD_LATZONE],COORD_LONZONE=>$row[COORD_LONZONE]);
+			COORD_LATZONE=>$row[COORD_LATZONE],COORD_LONZONE=>$row[COORD_LONZONE], COORD_ALTITUDE=>$row[COORD_ALTITUDE]);
 	}
 }
 ?>
