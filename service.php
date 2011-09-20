@@ -30,7 +30,7 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		$userActions = new UserActions($db);
 		if($request=='auth'){
 			$response = $userActions->login($_GET['username'], $_GET['password']);
-			header('Content-type: application/json');
+			header('Content-Type: application/json');
 			echo json_encode(array('authenticationSuccess'=>$response));
 		}
 		else if($request=='startsession'){
@@ -41,12 +41,12 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		}
 		else if($request=='add'){
 			$response = $userActions->addUser($_GET['username'], $_GET['password'], $_GET['email']);
-			header('Content-type: application/json');
+			header('Content-Type: application/json');
 			echo json_encode(array('userAdded'=>$response));
 		}
 		else if($request=='available'){
 			$response = $userActions->isUsernameAvailable($_GET['username']);
-			header('Content-type: application/json');
+			header('Content-Type: application/json');
 			echo json_encode(array('usernameAvailable'=>$response));
 		}
 		else if($request=='changepass'){}
@@ -60,12 +60,12 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		$coordinateActions = new CoordinateActions($db);
 		if($request=='getutm'){
 			$utm = $coordinateActions->getUTMCoordinate($_GET['id']);
-			header('Content-type: application/json');
+			header('Content-Type: application/json');
 			echo json_encode($utm);
 		}
 		else if($request=='getlatlon'){
 			$latLon = $coordinateActions->getLatLonCoordinate($_GET['id']);
-			header('Content-type: application/json');
+			header('Content-Type: application/json');
 			echo json_encode($latLon);
 		}
 	}
@@ -83,23 +83,23 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		else if($request=='changemodellocation'){}
 		else if($request=='findbyid'){
 			$design = $designActions->findDesignByID($_GET['id']);
-			header('Content-type: application/json');
+			header('Content-Type: application/json');
 			echo json_encode(array('design'=>$design));
 		}
 		else if($request=='findbyname'){
 			$designs = $designActions->findDesignByName($_GET['name']);
-			header('Content-type: application/json');
+			header('Content-Type: application/json');
 			echo json_encode(array('designs'=>$designs));
 		}
 		else if($request=='findbyuser'){
 			$designs = $designActions->findDesignByUser($_GET['user']);
-			header('Content-type: application/json');
+			header('Content-Type: application/json');
 			echo json_encode(array('designs'=>$designs));
 		}
 		else if($request=='findbydate'){}
 		else if($request=='findbycity'){
 			$designs = $designActions->findDesignByCity($_GET['city']);
-			header('Content-type: application/json');
+			header('Content-Type: application/json');
 			echo json_encode(array('designs'=>$designs));
 		}
 		else if($request=='findmodeledbycity'){}
@@ -110,7 +110,7 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		else if($request=='requestfile'){
 			// returns an http link to a file
 			$fileName = $designActions->getFilenameForDesignMedia($_GET['id']);
-			header('Content-type: application/json');
+			header('Content-Type: application/json');
 			echo json_encode(array('fileLink'=>str_replace("\\", "", BETAVILLE_FILE_STORE_URL.'/designmedia/'.$fileName)));
 			
 			// we may or may not need this at some point
@@ -121,7 +121,7 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		}
 		else if($request=='requestthumb'){
 			// returns an http link to a thumbnail
-			header('Content-type: application/json');
+			header('Content-Type: application/json');
 			echo json_encode(array('fileLink'=>str_replace("\\", "", BETAVILLE_FILE_STORE_URL.'/designthumbs/'.$_GET['id'].'png')));
 		}
 		else if($request=='changefile'){}
@@ -136,7 +136,7 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		else if($request=='getfeatured'){
 			include_once "inc/class.design.inc.php";
 			$designActions = new DesignActions($db);
-			header('Content-type: application/json');
+			header('Content-Type: application/json');
 			$quantity = 50;
 			if(empty($_GET['quantity'])) $quantity = 50;
 			else $quantity = (int)$_GET['quantity'];
@@ -158,13 +158,13 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			if(empty($_GET['quantity'])) $quantity = 50;
 			else $quantity = (int)$_GET['quantity'];
 			$comments = $commentActions->getRecentComments($quantity);
-			header('Content-type: application/json');
+			header('Content-Type: application/json');
 			echo json_encode(array('comments'=>$comments));
 		}
 		else if($request=='designs'){
 			include_once "inc/class.design.inc.php";
 			$designActions = new DesignActions($db);
-			header('Content-type: application/json');
+			header('Content-Type: application/json');
 			$quantity = 50;
 			if(empty($_GET['quantity'])) $quantity = 50;
 			else $quantity = (int)$_GET['quantity'];
@@ -173,7 +173,7 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		else if($request=='proposals'){
 			include_once "inc/class.design.inc.php";
 			$designActions = new DesignActions($db);
-			header('Content-type: application/json');
+			header('Content-Type: application/json');
 			$quantity = 50;
 			if(empty($_GET['quantity'])) $quantity = 50;
 			else $quantity = (int)$_GET['quantity'];
@@ -182,7 +182,7 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		else if($request=='versions'){
 			include_once "inc/class.design.inc.php";
 			$designActions = new DesignActions($db);
-			header('Content-type: application/json');
+			header('Content-Type: application/json');
 			$quantity = 50;
 			if(empty($_GET['quantity'])) $quantity = 50;
 			else $quantity = (int)$_GET['quantity'];
@@ -194,7 +194,7 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			include_once "inc/class.comment.inc.php";
 			$commentActions = new CommentActions($db);
 			$comments = $commentActions->getNotificationsForUser($_GET['user']);
-			header('Content-type: application/json');
+			header('Content-Type: application/json');
 			echo json_encode(array('comments'=>$comments));
 		}
 	}
@@ -209,7 +209,7 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		else if($request=='reportspam'){}
 		else if($request=='getforid'){
 			$comments = $commentActions->getCommentsForDesign($_GET['id']);
-			header('Content-type: application/json');
+			header('Content-Type: application/json');
 			echo json_encode(array('comments'=>$comments));
 		}
 	}
