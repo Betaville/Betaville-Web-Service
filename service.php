@@ -22,6 +22,12 @@
 // Should we be doing session start here?  How will it work?!
 //session_start();
 
+if($_GET['gz']==1){
+	// check if a zipped response is requested
+	header('Content-Encoding: gzip');
+	ob_start("ob_gzhandler");
+}
+
 if(isset($_GET['section']) && isset($_GET['request'])){
 	$section = $_GET['section'];
 	$request = $_GET['request'];
