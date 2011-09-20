@@ -195,8 +195,6 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			echo json_encode(array('designs'=>($designActions->getRecentVersions($quantity))));
 		}
 		else if($request=='myactivity'){
-			// getNotificationsForUser
-			// The SQL for this looks like this:
 			include_once "inc/class.comment.inc.php";
 			$commentActions = new CommentActions($db);
 			$comments = $commentActions->getNotificationsForUser($_GET['user']);
