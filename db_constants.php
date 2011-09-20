@@ -34,7 +34,7 @@
 	define('DESIGN_PRIVACY', 'publicViewing');
 	define('DESIGN_DESCRIPTION', 'description');
 	define('DESIGN_URL', 'designURL');
-	define('DESIGN_TYPE', 'designType');
+	define('DESIGN_TYPE', 'designtype');
 	define('DESIGN_TYPE_AUDIO', 'audio');
 	define('DESIGN_TYPE_VIDEO', 'video');
 	define('DESIGN_TYPE_MODEL', 'model');
