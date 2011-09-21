@@ -44,7 +44,7 @@ class DesignActions{
 	}
 
 	public function findDesignByID($id){
-		$sql = 'SELECT * FROM '.DESIGN_TABLE.' WHERE '.DESIGN_ID.'=:designID';
+		$sql = 'SELECT * FROM '.DESIGN_TABLE.' WHERE '.DESIGN_ID.'=:designID AND '.DESIGN_IS_ALIVE.'=1';
 		try{
 			$stmt = $this->_db->prepare($sql);
 			$stmt->bindParam(":designID", $id, PDO::PARAM_INT);
@@ -59,17 +59,14 @@ class DesignActions{
 	
 	public function findDesignByName($name){
 		$name = '%'.$name.'%';
-		$sql = 'SELECT * FROM '.DESIGN_TABLE.' WHERE '.DESIGN_NAME.' LIKE :designName';
+		$sql = 'SELECT * FROM '.DESIGN_TABLE.' WHERE '.DESIGN_NAME.' LIKE :designName AND '.DESIGN_IS_ALIVE.'=1';
 		try{
 			$stmt = $this->_db->prepare($sql);
 			$stmt->bindParam(":designName", $name, PDO::PARAM_STR);
 			$stmt->execute();
 			$designs = array();
 			while($row=$stmt->fetch()){
-				// only include this result if it hasn't been deleted
-				if($row[DESIGN_IS_ALIVE]==1){
-					$designs[] = $this->designFromRow($row, $false);
-				}
+				$designs[] = $this->designFromRow($row, $false);
 			}
 			return $designs;
 		}catch(PDOException $e){
@@ -81,17 +78,14 @@ class DesignActions{
 	
 	public function findDesignByUser($user){
 		$user = '%'.$user.'%';
-		$sql = 'SELECT * FROM '.DESIGN_TABLE.' WHERE '.DESIGN_USER.' LIKE :user';
+		$sql = 'SELECT * FROM '.DESIGN_TABLE.' WHERE '.DESIGN_USER.' LIKE :user AND '.DESIGN_IS_ALIVE.'=1';
 		try{
 			$stmt = $this->_db->prepare($sql);
 			$stmt->bindParam(":user", $user, PDO::PARAM_STR);
 			$stmt->execute();
 			$designs = array();
 			while($row=$stmt->fetch()){
-				// only include this result if it hasn't been deleted
-				if($row[DESIGN_IS_ALIVE]==1){
-					$designs[] = $this->designFromRow($row, false);
-				}
+				$designs[] = $this->designFromRow($row, false);
 			}
 			return $designs;
 		}catch(PDOException $e){
@@ -102,17 +96,14 @@ class DesignActions{
 	}
 	
 	public function findDesignByCity($city){
-		$sql = 'SELECT * FROM '.DESIGN_TABLE.' WHERE '.DESIGN_CITY.'=:city';
+		$sql = 'SELECT * FROM '.DESIGN_TABLE.' WHERE '.DESIGN_CITY.'=:city AND '.DESIGN_IS_ALIVE.'=1';
 		try{
 			$stmt = $this->_db->prepare($sql);
 			$stmt->bindParam(":city", $city, PDO::PARAM_INT);
 			$stmt->execute();
 			$designs = array();
 			while($row=$stmt->fetch()){
-				// only include this result if it hasn't been deleted
-				if($row[DESIGN_IS_ALIVE]==1){
-					$designs[] = $this->designFromRow($row, false);
-				}
+				$designs[] = $this->designFromRow($row, false);
 			}
 			return $designs;
 		}catch(PDOException $e){
@@ -156,17 +147,14 @@ class DesignActions{
 	}
 	
 	public function getRecentDesigns($numberToReturn){
-		$sql = 'SELECT * FROM ' . DESIGN_TABLE . ' WHERE '.DESIGN_IS_ALIVE.' = 1 ORDER BY '.DESIGN_ID .' DESC LIMIT :numberToReturn';
+		$sql = 'SELECT * FROM ' . DESIGN_TABLE . ' WHERE '.DESIGN_IS_ALIVE.' = 1  AND '.DESIGN_IS_ALIVE.'=1 ORDER BY '.DESIGN_ID .' DESC LIMIT :numberToReturn';
 		try{
 			$stmt = $this->_db->prepare($sql);
 			$stmt->bindParam(":numberToReturn", $numberToReturn, PDO::PARAM_INT);
 			$stmt->execute();
 			$designs = array();
 			while($row=$stmt->fetch()){
-				// only include this result if it hasn't been deleted
-				if($row[DESIGN_IS_ALIVE]==1){
-					$designs[] = $this->designFromRow($row, false);
-				}
+				$designs[] = $this->designFromRow($row, false);
 			}
 			return $designs;
 		}catch(PDOException $e){
