@@ -41,7 +41,7 @@ class UserActions{
 			$sql = "INSERT INTO user (username, strongpass, strongsalt, email) VALUES (:username, :strongpass, :strongsalt, :email)";
 			
 			try{
-				$stmt = $this->_db->prepare($hashSQL);
+				$stmt = $this->_db->prepare($sql);
 				
 				
 				$salt = $this->createSalt();
