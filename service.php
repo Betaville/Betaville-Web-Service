@@ -60,6 +60,11 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		else if($request=='getmail'){}
 		else if($request=='checklevel'){}
 		else if($request=='getlevel'){}
+		else if($request=='getpublicinfo'){
+			$response = $userActions->getPublicInfo($_GET['username']);
+			header('Content-Type: application/json');
+			echo json_encode(array('userInfo'=>$response));
+		}
 	}
 	else if($section=='coordinate'){
 		include_once "inc/class.coordinate.inc.php";

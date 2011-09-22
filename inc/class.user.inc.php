@@ -66,6 +66,25 @@ class UserActions{
 		}
 	}
 	
+	public function getPublicInfo($user){
+		$sql = "SELECT * FROM user WHERE username LIKE :user";
+			
+			try{
+				$stmt = $this->_db->prepare($sql);
+				$stmt->bindParam(":user", $user, PDO::PARAM_STR);
+				$stmt->execute();
+				
+				if($row=$stmt->fetch()){
+					return array(USER_NAME=>$row[USER_NAME],USER_DISPLAY_NAME=>$row[USER_DISPLAY_NAME],USER_BIO=>$row[USER_BIO],
+					USER_WEBSITE=>$row[USER_WEBSITE],USER_TYPE=>$row[USER_TYPE]);
+				}
+				
+				
+			}catch(PDOException $e){
+				return false;
+			}
+	}
+	
 	public function login($username, $password){
 		$hashSQL = "SELECT username, strongpass, strongsalt from user where username=:user LIMIT 1";
 		try{
