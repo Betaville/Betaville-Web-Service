@@ -2,7 +2,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<!-- TemplateBeginEditable name="doctitle" -->
 <title>Betaville Web Service</title>
 </head>
 
@@ -15,11 +14,15 @@
 			<li>Examining the <a href="http://betaville.googlecode.com/">Source Code</a>
 		</ul>
 	</div>
-	<div>
+	
 		<?php
 		if(get_magic_quotes_gpc()){
-			echo "<h2>You should turn off magic quotes<h2>";
+		?>
+			<div>
+				<h2>You should turn off magic quotes<h2>
+			<div>
+		<?php
 		}
 		?>
-	</div>
+</body>
 </html>
