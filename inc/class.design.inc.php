@@ -77,7 +77,6 @@ class DesignActions{
 	}
 	
 	public function findDesignByUser($user){
-		$user = '%'.$user.'%';
 		$sql = 'SELECT * FROM '.DESIGN_TABLE.' WHERE '.DESIGN_USER.' LIKE :user AND '.DESIGN_IS_ALIVE.'=1';
 		try{
 			$stmt = $this->_db->prepare($sql);
