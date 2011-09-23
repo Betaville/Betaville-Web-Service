@@ -249,6 +249,12 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			header('Content-Type: application/json');
 			echo json_encode(array('serverTime'=>date("Y-m-d H:m:s")));
 		}
+			else if($request=='getdb'){
+			include_once "inc/class.util.inc.php";
+			$utilActions = new UtilActions($db);
+			header('Content-Type: application/json');
+			echo json_encode(array('serverTime'=>$utilActions->getDateTime()));
+		}
 	}
 }
 ?>
