@@ -235,6 +235,45 @@ class DesignActions{
 			DESIGN_URL=>$row[DESIGN_URL], DESIGN_TYPE=>$row[DESIGN_TYPE]);
 	}
 	
+	private function modeledDesignFromRow($row, $utmRequested){
+		$designArray = $this->designFromRow($row, $utmRequested);
+		
+		$auxArray = array(MODEL_ROTATION_X=>$row[MODEL_ROTATION_X], MODEL_ROTATION_Y=>$row[MODEL_ROTATION_Y], MODEL_ROTATION_Z=>$row[MODEL_ROTATION_Z],
+		MODEL_LENGTH=>$row[MODEL_LENGTH], MODEL_WIDTH=>$row[MODEL_WIDTH], MODEL_HEIGHT=>$row[MODEL_HEIGHT], MODEL_TEX=>$row[MODEL_TEX]);
+		
+		return array_merge((array)$designArray, (array)$auxArray);
+	}
+	
+	
+	private function audibleDesignFromRow($row, $utmRequested){
+		$designArray = $this->designFromRow($row, $utmRequested);
+		
+		$auxArray = array(AUDIO_LENGTH=>$row[AUDIO_LENGTH], AUDIO_VOLUME=>$row[AUDIO_VOLUME], AUDIO_DIRECTIONX=>$row[AUDIO_DIRECTIONX],
+		AUDIO_DIRECTIONY=>$row[AUDIO_DIRECTIONY], AUDIO_DIRECTIONZ=>$row[AUDIO_DIRECTIONZ]);
+		
+		return array_merge((array)$designArray, (array)$auxArray);
+	}
+	
+	
+	private function sketchDesignFromRow($row, $utmRequested){
+		$designArray = $this->designFromRow($row, $utmRequested);
+		
+		$auxArray = array(SKETCH_ROTATION=>$row[SKETCH_ROTATION], SKETCH_LENGTH=>$row[SKETCH_LENGTH], SKETCH_WIDTH=>$row[SKETCH_WIDTH],
+		SKETCH_UPPLANE=>$row[SKETCH_UPPLANE]);
+		
+		return array_merge((array)$designArray, (array)$auxArray);
+	}
+	
+	
+	private function videoDesignFromRow($row, $utmRequested){
+		$designArray = $this->designFromRow($row, $utmRequested);
+		
+		$auxArray = array(VIDEO_LENGTH=>$row[VIDEO_LENGTH], VIDEO_VOLUME=>$row[VIDEO_VOLUME], VIDEO_DIRECTIONX=>$row[VIDEO_DIRECTIONX],
+		VIDEO_DIRECTIONY=>$row[VIDEO_DIRECTIONY], VIDEO_DIRECTIONZ=>$row[VIDEO_DIRECTIONZ], VIDEO_FORMAT=>$row[VIDEO_FORMAT]);
+		
+		return array_merge((array)$designArray, (array)$auxArray);
+	}
+	
 	/**
 	 * Not used at the moment
 	 *
