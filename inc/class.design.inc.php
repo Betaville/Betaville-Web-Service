@@ -25,6 +25,7 @@ class DesignActions{
 	
 	private $_db;
 	private $_coordinateActions;
+	private $selectFromWhat = "design LEFT JOIN modeldesign ON design.designID=modeldesign.designid LEFT JOIN audiodesign ON design.designID=audiodesign.designid LEFT JOIN videodesign ON design.designID=videodesign.designid LEFT JOIN sketchdesign ON design.designID=sketchdesign.designid";//GROUP BY design.designID
 
 	public function __construct($db=null){
 		include_once "config.php";
@@ -44,12 +45,31 @@ class DesignActions{
 	}
 
 	public function findDesignByID($id){
-		$sql = 'SELECT * FROM '.DESIGN_TABLE.' WHERE '.DESIGN_ID.'=:designID AND '.DESIGN_IS_ALIVE.'=1';
+	//echo $this->selectFromWhat;
+	$sql = "SELECT * FROM ".$this->selectFromWhat." WHERE design.designID=:dsgID AND design.isAlive=1";
+	echo $sql;
+		//$sql = 'SELECT * FROM '.DESIGN_TABLE.' JOIN modeldesign ON design.designID=modeldesign.designid WHERE '.DESIGN_ID.'=:designID AND '.DESIGN_IS_ALIVE.'=1';
 		try{
 			$stmt = $this->_db->prepare($sql);
 			$stmt->bindParam(":designID", $id, PDO::PARAM_INT);
 			$stmt->execute();
-			return $this->designFromRow($stmt->fetch(), $false);
+			$row = $stmt->fetch();
+			echo var_dump($row);
+			if($row[DESIGN_TYPE]===DESIGN_TYPE_AUDIO){
+				return $this->audibleDesignFromRow($row, $false);
+			}
+			else if($row[DESIGN_TYPE]===DESIGN_TYPE_VIDEO){
+				return $this->videoDesignFromRow($row, $false);
+			}
+			else if($row[DESIGN_TYPE]===DESIGN_TYPE_MODEL){
+				return $this->modeledDesignFromRow($row, $false);
+			}
+			else if($row[DESIGN_TYPE]===DESIGN_TYPE_SKETCH){
+				return $this->sketchDesignFromRow($row, $false);
+			}
+			else if($row[DESIGN_TYPE]===DESIGN_TYPE_EMPTY){
+				return $this->emptyDesignFromRow($row, $false);
+			}
 		}catch(PDOException $e){
 			echo'exception';
 			return false;
@@ -59,14 +79,28 @@ class DesignActions{
 	
 	public function findDesignByName($name){
 		$name = '%'.$name.'%';
-		$sql = 'SELECT * FROM '.DESIGN_TABLE.' WHERE '.DESIGN_NAME.' LIKE :designName AND '.DESIGN_IS_ALIVE.'=1';
+		$sql = 'SELECT * FROM '.$this->selectFromWhat.' WHERE '.DESIGN_TABLE.'.'.DESIGN_NAME.' LIKE :designName AND '.DESIGN_TABLE.'.'.DESIGN_IS_ALIVE.'=1';
 		try{
 			$stmt = $this->_db->prepare($sql);
 			$stmt->bindParam(":designName", $name, PDO::PARAM_STR);
 			$stmt->execute();
 			$designs = array();
 			while($row=$stmt->fetch()){
-				$designs[] = $this->designFromRow($row, $false);
+				if($row[DESIGN_TYPE]===DESIGN_TYPE_AUDIO){
+					$designs[] = $this->audibleDesignFromRow($row, $false);
+				}
+				else if($row[DESIGN_TYPE]===DESIGN_TYPE_VIDEO){
+					$designs[] = $this->videoDesignFromRow($row, $false);
+				}
+				else if($row[DESIGN_TYPE]===DESIGN_TYPE_MODEL){
+					$designs[] = $this->modeledDesignFromRow($row, $false);
+				}
+				else if($row[DESIGN_TYPE]===DESIGN_TYPE_SKETCH){
+					$designs[] = $this->sketchDesignFromRow($row, $false);
+				}
+				else if($row[DESIGN_TYPE]===DESIGN_TYPE_EMPTY){
+					$designs[] = $this->emptyDesignFromRow($row, $false);
+				}
 			}
 			return $designs;
 		}catch(PDOException $e){
@@ -77,14 +111,30 @@ class DesignActions{
 	}
 	
 	public function findDesignByUser($user){
-		$sql = 'SELECT * FROM '.DESIGN_TABLE.' WHERE '.DESIGN_USER.' LIKE :user AND '.DESIGN_IS_ALIVE.'=1';
+		$sql = 'SELECT * FROM '.$this->selectFromWhat.' WHERE '.DESIGN_TABLE.'.'.DESIGN_USER.' LIKE :user AND '.DESIGN_TABLE.'.'.DESIGN_IS_ALIVE.'=1';
 		try{
 			$stmt = $this->_db->prepare($sql);
 			$stmt->bindParam(":user", $user, PDO::PARAM_STR);
 			$stmt->execute();
 			$designs = array();
 			while($row=$stmt->fetch()){
-				$designs[] = $this->designFromRow($row, false);
+				
+				if($row[DESIGN_TYPE]===DESIGN_TYPE_AUDIO){
+					$designs[] = $this->audibleDesignFromRow($row, $false);
+				}
+				else if($row[DESIGN_TYPE]===DESIGN_TYPE_VIDEO){
+					$designs[] = $this->videoDesignFromRow($row, $false);
+				}
+				else if($row[DESIGN_TYPE]===DESIGN_TYPE_MODEL){
+					$designs[] = $this->modeledDesignFromRow($row, $false);
+				}
+				else if($row[DESIGN_TYPE]===DESIGN_TYPE_SKETCH){
+					$designs[] = $this->sketchDesignFromRow($row, $false);
+				}
+				else if($row[DESIGN_TYPE]===DESIGN_TYPE_EMPTY){
+					$designs[] = $this->emptyDesignFromRow($row, $false);
+				}
+				
 			}
 			return $designs;
 		}catch(PDOException $e){
@@ -95,14 +145,28 @@ class DesignActions{
 	}
 	
 	public function findDesignByCity($city){
-		$sql = 'SELECT * FROM '.DESIGN_TABLE.' WHERE '.DESIGN_CITY.'=:city AND '.DESIGN_IS_ALIVE.'=1';
+		$sql = 'SELECT * FROM '.$this->selectFromWhat.' WHERE '.DESIGN_TABLE.'.'.DESIGN_CITY.'=:city AND '.DESIGN_TABLE.'.'.DESIGN_IS_ALIVE.'=1';
 		try{
 			$stmt = $this->_db->prepare($sql);
 			$stmt->bindParam(":city", $city, PDO::PARAM_INT);
 			$stmt->execute();
 			$designs = array();
 			while($row=$stmt->fetch()){
-				$designs[] = $this->designFromRow($row, false);
+				if($row[DESIGN_TYPE]===DESIGN_TYPE_AUDIO){
+					$designs[] = $this->audibleDesignFromRow($row, $false);
+				}
+				else if($row[DESIGN_TYPE]===DESIGN_TYPE_VIDEO){
+					$designs[] = $this->videoDesignFromRow($row, $false);
+				}
+				else if($row[DESIGN_TYPE]===DESIGN_TYPE_MODEL){
+					$designs[] = $this->modeledDesignFromRow($row, $false);
+				}
+				else if($row[DESIGN_TYPE]===DESIGN_TYPE_SKETCH){
+					$designs[] = $this->sketchDesignFromRow($row, $false);
+				}
+				else if($row[DESIGN_TYPE]===DESIGN_TYPE_EMPTY){
+					$designs[] = $this->emptyDesignFromRow($row, $false);
+				}
 			}
 			return $designs;
 		}catch(PDOException $e){
@@ -228,7 +292,6 @@ class DesignActions{
 			$coordinateArray = $this->_coordinateActions->getLatLonCoordinate($row[DESIGN_COORDINATE]);
 		}
 		
-		
 		return array(DESIGN_ID=>$row[DESIGN_ID],DESIGN_NAME=>$row[DESIGN_NAME],DESIGN_FILE=>$row[DESIGN_FILE],
 			DESIGN_CITY=>$row[DESIGN_CITY],DESIGN_ADDRESS=>$row[DESIGN_ADDRESS],DESIGN_USER=>$row[DESIGN_USER],
 			"coordinate"=>$coordinateArray,DESIGN_DATE=>$row[DESIGN_DATE],DESIGN_DESCRIPTION=>$row[DESIGN_DESCRIPTION],
@@ -270,6 +333,14 @@ class DesignActions{
 		
 		$auxArray = array(VIDEO_LENGTH=>$row[VIDEO_LENGTH], VIDEO_VOLUME=>$row[VIDEO_VOLUME], VIDEO_DIRECTIONX=>$row[VIDEO_DIRECTIONX],
 		VIDEO_DIRECTIONY=>$row[VIDEO_DIRECTIONY], VIDEO_DIRECTIONZ=>$row[VIDEO_DIRECTIONZ], VIDEO_FORMAT=>$row[VIDEO_FORMAT]);
+		
+		return array_merge((array)$designArray, (array)$auxArray);
+	}
+	
+	private function emptyDesignFromRow($row, $utmRequested){
+		$designArray = $this->designFromRow($row, $utmRequested);
+		
+		$auxArray = array(EMPTY_LENGTH=>$row[EMPTY_LENGTH], EMPTY_WIDTH=>$row[EMPTY_WIDTH]);
 		
 		return array_merge((array)$designArray, (array)$auxArray);
 	}
