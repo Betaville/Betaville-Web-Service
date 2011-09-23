@@ -244,5 +244,11 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		// eh, I don't think we really need this for the web service
 		if($request=='getdesign'){}
 	}
+	else if($section=='time'){
+		if($request=='getformatted'){
+			header('Content-Type: application/json');
+			echo json_encode(array('serverTime'=>date("Y-m-d H:m:s")));
+		}
+	}
 }
 ?>
