@@ -19,11 +19,13 @@
  
 class UserActions{
 	private $_db;
+	public $id = 0;
+	private $failed = false;
 	
 	public function __construct($db=null){
-		include_once "config.php";
-		include_once "class_names.php";
-		include_once "db_constants.php";
+		include_once "../Betaville-Web-Service/config.php";
+		include_once "../Betaville-Web-Service/class_names.php";
+		include_once "../Betaville-Web-Service/db_constants.php";
 		
 		if(is_object($db)){
 			$this->_db=$db;
@@ -32,6 +34,13 @@ class UserActions{
 			$dsn = "mysql:host=".DB_HOST.";dbname=".DB_NAME;
 			$this->_db = new PDO($dsn, DB_USER, DB_PASS);
 		}
+	}
+	public function session_defaults() {
+		$_SESSION['logged'] = false;
+		$_SESSION['uid'] = 0;
+		$_SESSION['username'] = '';
+		$_SESSION['cookie'] = 0;
+		$_SESSION['remember'] = false;
 	}
 	
 	public function addUser($username, $password, $emailAddress){
@@ -100,8 +109,11 @@ class UserActions{
 			
 			if($generatedHash==$row[USER_STRONG_PASS]){
 				$stmt->closeCursor();
-				$_SESSION['username'] = $row['username'];
-				$_SESSION['LoggedIn']=1;
+				$username = $this->_db->quote($username);
+				$password = $this->_db->quote(md5($password));
+				$sql = "SELECT * FROM member WHERE " ."username = $username AND " . "password = $password LIMIT 1"; 
+				$res = $this->_db->query($sql);
+				$this->_setSession($res);
 				return true;
 			}
 			else{
@@ -112,7 +124,36 @@ class UserActions{
 			return false;
 		}
 	}
-	
+	private function _setSession ($values, $init=true ) {
+		$this->id = $values['id'];
+		$_SESSION['uid'] = $this->id;
+		$_SESSION['username'] = htmlspecialchars($values['username']);
+		$_SESSION['cookie'] = $values['cookie'];
+		$_SESSION['logged'] = true; 
+		if ($init) {
+			$session = $this->_db->quote(session_id());
+			$ip = $this->_db->quote($_SERVER['REMOTE_ADDR']);
+
+			$sql = "UPDATE member SET session = $session, ip = $ip WHERE " . "id = $this->id";
+			$this->_db->query($sql);
+		} 
+	}
+	public function _checkSession() {
+		$username = $this->_db->quote($_SESSION['userName']);
+		$cookie = $this->_db->quote($_SESSION['cookie']);
+		$session = $this->_db->quote(session_id());
+		$ip = $this->_db->quote($_SERVER['REMOTE_ADDR']);
+		$sql = "SELECT * FROM member WHERE " . "(username = $username) AND (cookie = $cookie) AND " . "(session = $session) AND (ip = $ip)";
+		$result=$this->_db->query($sql);
+		if (is_object($result) ) {
+			$this->_setSession($result, false);
+		} else {
+			$this->_logout();
+		}
+	} 
+	public function _logout(){
+		//$this->session_defaults();
+	}
 	private function createSalt(){
 		$salt = "";
 		
