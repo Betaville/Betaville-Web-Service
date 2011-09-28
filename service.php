@@ -148,10 +148,21 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			include_once "inc/class.design.inc.php";
 			$designActions = new DesignActions($db);
 			header('Content-Type: application/json');
-			$quantity = 50;
-			if(empty($_GET['quantity'])) $quantity = 50;
-			else $quantity = (int)$_GET['quantity'];
-			echo json_encode(array('designs'=>($designActions->getFeaturedProposals($quantity))));
+			
+			
+			// set default values
+			$start = 0;
+			$end = 50;
+			
+			if(hasStartEnd()){
+				$start = (int)$_GET['start'];
+				$end = (int)$_GET['end'];
+			}
+			else if(!empty($_GET['quantity'])){
+				$end = (int)$_GET['quantity'];
+			}
+			
+			echo json_encode(array('designs'=>($designActions->getFeaturedProposals($start, $end))));
 		}
 	}
 	else if($section=='version'){
@@ -176,19 +187,39 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			include_once "inc/class.design.inc.php";
 			$designActions = new DesignActions($db);
 			header('Content-Type: application/json');
-			$quantity = 50;
-			if(empty($_GET['quantity'])) $quantity = 50;
-			else $quantity = (int)$_GET['quantity'];
-			echo json_encode(array('designs'=>($designActions->getRecentDesigns($quantity))));
+			
+			// set default values
+			$start = 0;
+			$end = 50;
+			
+			if(hasStartEnd()){
+				$start = (int)$_GET['start'];
+				$end = (int)$_GET['end'];
+			}
+			else if(!empty($_GET['quantity'])){
+				$end = (int)$_GET['quantity'];
+			}
+			
+			echo json_encode(array('designs'=>($designActions->getRecentDesigns($start, $end))));
 		}
 		else if($request=='proposals'){
 			include_once "inc/class.design.inc.php";
 			$designActions = new DesignActions($db);
 			header('Content-Type: application/json');
-			$quantity = 50;
-			if(empty($_GET['quantity'])) $quantity = 50;
-			else $quantity = (int)$_GET['quantity'];
-			echo json_encode(array('designs'=>($designActions->getRecentProposals($quantity))));
+			
+			// set default values
+			$start = 0;
+			$end = 50;
+			
+			if(hasStartEnd()){
+				$start = (int)$_GET['start'];
+				$end = (int)$_GET['end'];
+			}
+			else if(!empty($_GET['quantity'])){
+				$end = (int)$_GET['quantity'];
+			}
+			
+			echo json_encode(array('designs'=>($designActions->getRecentProposals($start, $end))));
 		}
 		else if($request=='versions'){
 			include_once "inc/class.design.inc.php";
@@ -256,5 +287,9 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			echo json_encode(array('serverTime'=>$utilActions->getDateTime()));
 		}
 	}
+}
+
+function hasStartEnd(){
+	return (!empty($_GET['start']) && !empty($_GET['end']));
 }
 ?>

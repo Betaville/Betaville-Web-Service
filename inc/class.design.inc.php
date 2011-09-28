@@ -209,11 +209,12 @@ class DesignActions{
 		return null;
 	}
 	
-	public function getRecentDesigns($numberToReturn){
-		$sql = 'SELECT * FROM ' . DESIGN_TABLE . ' WHERE '.DESIGN_IS_ALIVE.' = 1  AND '.DESIGN_IS_ALIVE.'=1 ORDER BY '.DESIGN_ID .' DESC LIMIT :numberToReturn';
+	public function getRecentDesigns($start, $end){
+		$sql = 'SELECT * FROM ' . DESIGN_TABLE . ' WHERE '.DESIGN_IS_ALIVE.' = 1  AND '.DESIGN_IS_ALIVE.'=1 ORDER BY '.DESIGN_ID .' DESC LIMIT :start, :end';
 		try{
 			$stmt = $this->_db->prepare($sql);
-			$stmt->bindParam(":numberToReturn", $numberToReturn, PDO::PARAM_INT);
+			$stmt->bindParam(":start", $start, PDO::PARAM_INT);
+			$stmt->bindParam(":end", $end, PDO::PARAM_INT);
 			$stmt->execute();
 			$designs = array();
 			while($row=$stmt->fetch()){
@@ -227,11 +228,12 @@ class DesignActions{
 		return null;
 	}
 	
-	public function getFeaturedProposals($numberToReturn){
-		$sql = "SELECT * FROM design JOIN proposal ON designid=destinationid WHERE type='proposal' AND isAlive=1 AND featured IS NOT NULL ORDER BY featured DESC, designid DESC LIMIT :numberToReturn;";
+	public function getFeaturedProposals($start, $end){
+		$sql = "SELECT * FROM design JOIN proposal ON designid=destinationid WHERE type='proposal' AND isAlive=1 AND featured IS NOT NULL ORDER BY featured DESC, designid DESC LIMIT :start, :end";
 		try{
 			$stmt = $this->_db->prepare($sql);
-			$stmt->bindParam(":numberToReturn", $numberToReturn, PDO::PARAM_INT);
+			$stmt->bindParam(":start", $start, PDO::PARAM_INT);
+			$stmt->bindParam(":end", $end, PDO::PARAM_INT);
 			$stmt->execute();
 			$designs = array();
 			while($row=$stmt->fetch()){
@@ -245,11 +247,12 @@ class DesignActions{
 		return null;
 	}
 	
-	public function getRecentProposals($numberToReturn){
-		$sql = "SELECT * FROM design JOIN proposal ON designid=destinationid WHERE type='proposal' AND isAlive=1 ORDER BY designid DESC LIMIT :numberToReturn;";
+	public function getRecentProposals($start, $end){
+		$sql = "SELECT * FROM design JOIN proposal ON designid=destinationid WHERE type='proposal' AND isAlive=1 ORDER BY designid DESC LIMIT :start, :end";
 		try{
 			$stmt = $this->_db->prepare($sql);
-			$stmt->bindParam(":numberToReturn", $numberToReturn, PDO::PARAM_INT);
+			$stmt->bindParam(":start", $start, PDO::PARAM_INT);
+			$stmt->bindParam(":end", $end, PDO::PARAM_INT);
 			$stmt->execute();
 			$designs = array();
 			while($row=$stmt->fetch()){
