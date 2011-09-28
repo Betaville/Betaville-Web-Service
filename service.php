@@ -176,11 +176,22 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		if($request=='comments'){
 			include_once "inc/class.comment.inc.php";
 			$commentActions = new CommentActions($db);
-			$quantity = 50;
-			if(empty($_GET['quantity'])) $quantity = 50;
-			else $quantity = (int)$_GET['quantity'];
-			$comments = $commentActions->getRecentComments($quantity);
 			header('Content-Type: application/json');
+			
+			// set default values
+			$start = 0;
+			$end = 50;
+			
+			if(hasStartEnd()){
+				$start = (int)$_GET['start'];
+				$end = (int)$_GET['end'];
+			}
+			else if(!empty($_GET['quantity'])){
+				$end = (int)$_GET['quantity'];
+			}
+			
+			
+			$comments = $commentActions->getRecentComments($start, $end);
 			echo json_encode(array('comments'=>$comments));
 		}
 		else if($request=='designs'){
@@ -225,10 +236,20 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			include_once "inc/class.design.inc.php";
 			$designActions = new DesignActions($db);
 			header('Content-Type: application/json');
-			$quantity = 50;
-			if(empty($_GET['quantity'])) $quantity = 50;
-			else $quantity = (int)$_GET['quantity'];
-			echo json_encode(array('designs'=>($designActions->getRecentVersions($quantity))));
+			
+			// set default values
+			$start = 0;
+			$end = 50;
+			
+			if(hasStartEnd()){
+				$start = (int)$_GET['start'];
+				$end = (int)$_GET['end'];
+			}
+			else if(!empty($_GET['quantity'])){
+				$end = (int)$_GET['quantity'];
+			}
+			
+			echo json_encode(array('designs'=>($designActions->getRecentVersions($start, $end))));
 		}
 		else if($request=='myactivity'){
 			include_once "inc/class.comment.inc.php";

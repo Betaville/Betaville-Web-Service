@@ -60,12 +60,12 @@ class CommentActions{
 		return null;
 	}
 	
-	public function getRecentComments($numberOfComments){
-		// "SELECT * FROM " + DBConst.COMMENT_TABLE + " WHERE "+DBConst.COMMENT_SPAMVERIFIED+" = 0 ORDER BY "+DBConst.COMMENT_ID +" DESC LIMIT ?"
-		$sql = 'SELECT * FROM '.COMMENT_TABLE.' WHERE '.COMMENT_SPAMVERIFIED.' = 0 ORDER BY '.COMMENT_ID.' DESC LIMIT :numberOfComments';
+	public function getRecentComments($start, $end){
+		$sql = 'SELECT * FROM '.COMMENT_TABLE.' WHERE '.COMMENT_SPAMVERIFIED.' = 0 ORDER BY '.COMMENT_ID.' DESC LIMIT :start, :end';
 		try{
 			$stmt = $this->_db->prepare($sql);
-			$stmt->bindParam(":numberOfComments", $numberOfComments, PDO::PARAM_INT);
+			$stmt->bindParam(":start", $start, PDO::PARAM_INT);
+			$stmt->bindParam(":end", $end, PDO::PARAM_INT);
 			$stmt->execute();
 			$comments = array();
 			while($row=$stmt->fetch()){

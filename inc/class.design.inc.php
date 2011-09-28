@@ -266,11 +266,12 @@ class DesignActions{
 		return null;
 	}
 	
-	public function getRecentVersions($numberToReturn){
-		$sql = "SELECT * FROM design JOIN proposal ON designid=destinationid WHERE type='version' AND isAlive=1 ORDER BY designid DESC LIMIT :numberToReturn;";
+	public function getRecentVersions($start, $end){
+		$sql = "SELECT * FROM design JOIN proposal ON designid=destinationid WHERE type='version' AND isAlive=1 ORDER BY designid DESC LIMIT :start, :end";
 		try{
 			$stmt = $this->_db->prepare($sql);
-			$stmt->bindParam(":numberToReturn", $numberToReturn, PDO::PARAM_INT);
+			$stmt->bindParam(":start", $start, PDO::PARAM_INT);
+			$stmt->bindParam(":end", $end, PDO::PARAM_INT);
 			$stmt->execute();
 			$designs = array();
 			while($row=$stmt->fetch()){
