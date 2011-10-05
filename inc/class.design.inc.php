@@ -46,15 +46,15 @@ class DesignActions{
 
 	public function findDesignByID($id){
 	//echo $this->selectFromWhat;
-	$sql = "SELECT * FROM ".$this->selectFromWhat." WHERE design.designID=:dsgID AND design.isAlive=1";
-	echo $sql;
+	$sql = "SELECT * FROM ".$this->selectFromWhat." WHERE design.designID=:designID AND design.isAlive=1";
+	//echo $sql;
 		//$sql = 'SELECT * FROM '.DESIGN_TABLE.' JOIN modeldesign ON design.designID=modeldesign.designid WHERE '.DESIGN_ID.'=:designID AND '.DESIGN_IS_ALIVE.'=1';
 		try{
 			$stmt = $this->_db->prepare($sql);
 			$stmt->bindParam(":designID", $id, PDO::PARAM_INT);
 			$stmt->execute();
 			$row = $stmt->fetch();
-			echo var_dump($row);
+			
 			if($row[DESIGN_TYPE]===DESIGN_TYPE_AUDIO){
 				return $this->audibleDesignFromRow($row, $false);
 			}
