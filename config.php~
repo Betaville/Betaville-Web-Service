@@ -24,6 +24,6 @@ define('DB_PASS', 'mierda14');
 define('DB_NAME', 'betaville');
 
 define('BETAVILLE_FILE_STORE_URL', 'http://localhost');
-define('SERVICE_URL', 'http://localhost/Betaville-Web-Service/service.php');
+define('SERVICE_URL', 'http://localhost/Betaville-Web-Service');
 
 ?>
