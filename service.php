@@ -206,6 +206,7 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			if(hasStartEnd()){
 				$start = (int)$_GET['start'];
 				$end = (int)$_GET['end'];
+				
 			}
 			else if(!empty($_GET['quantity'])){
 				$end = (int)$_GET['quantity'];
@@ -225,6 +226,7 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			if(hasStartEnd()){
 				$start = (int)$_GET['start'];
 				$end = (int)$_GET['end'];
+				
 			}
 			else if(!empty($_GET['quantity'])){
 				$end = (int)$_GET['quantity'];
@@ -311,6 +313,6 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 }
 
 function hasStartEnd(){
-	return (!empty($_GET['start']) && !empty($_GET['end']));
+	return (isset($_GET['start']) && isset($_GET['end']));
 }
 ?>
