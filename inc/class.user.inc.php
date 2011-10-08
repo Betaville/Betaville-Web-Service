@@ -102,6 +102,10 @@ class UserActions{
 				$generatedHash=$password;
 			if($generatedHash==$row[USER_STRONG_PASS]){
 				$stmt->closeCursor();
+				if ( $encrypt ) 
+					$this->_setSession($row,false);
+				else 
+					$this->_setSession($row);
 				return true;
 			}
 			else{
@@ -111,6 +115,26 @@ class UserActions{
 		}catch(PDOException $e){
 			return false;
 		}
+	}
+	private function _setSession ($values, $storeSession = true ) {
+		session_start();
+		$_SESSION['uid'] = sha1($this->createSalt());
+		//$_SESSION['uid'] = the database value
+		$_SESSION['username'] = htmlspecialchars($values['username']);
+		$_SESSION['hashpass'] = $values[USER_STRONG_PASS];
+		$_SESSION['logged'] = true;
+		if ( !$storeSession )  {
+
+			//setcookie("user", htmlspecialchars($values['username']),time()+3600, "/", "localhost" );
+			//setcookie("pass", $values[USER_STRONG_PASS],time()+3600, "/", "localhost");
+		}
+	}
+	public function _logout(){
+		session_start();
+		session_unset();
+		session_destroy();
+		//setcookie("user", "", time()-3601, "/", "localhost");
+		//setcookie("pass", "", time()-3601, "/", "localhost");
 	}
 	private function createSalt(){
 		$salt = "";
