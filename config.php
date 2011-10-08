@@ -20,10 +20,10 @@
 // Database Connection Information
 define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
-define('DB_PASS', 'mierda14');
+define('DB_PASS', 'root');
 define('DB_NAME', 'betaville');
 
 define('BETAVILLE_FILE_STORE_URL', 'http://localhost');
-define('SERVICE_URL', 'http://localhost/Betaville-Web-Service/service.php');
+define('SERVICE_URL', 'http://localhost/Betaville-Web-Service');
 
 ?>
