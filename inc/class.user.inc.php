@@ -85,25 +85,18 @@ class UserActions{
 			}
 	}
 	
-	public function login($username, $password, $encrypt = true ){
+	public function login($username, $password ){
 		$hashSQL = "SELECT username, strongpass, strongsalt from user where username=:user LIMIT 1";
 		try{
 			$stmt = $this->_db->prepare($hashSQL);
 			$stmt->bindParam(":user", $username, PDO::PARAM_STR);
 			$stmt->execute();
 			$row=$stmt->fetch();
-			if ( $encrypt ){
-				$generatedHash=$row[USER_STRONG_SALT].$password;
-				for($i=0; $i<1000; $i++){
-					$generatedHash = SHA1($generatedHash);
-				}
-			}
-			else 
-				$generatedHash=$password;
+			$generatedHash=$row[USER_STRONG_SALT].$password;
+			for($i=0; $i<1000; $i++)
+				$generatedHash = SHA1($generatedHash);
 			if($generatedHash==$row[USER_STRONG_PASS]){
 				$stmt->closeCursor();
-				if ( $encrypt ) 
-				else 
 				return true;
 			}
 			else{
