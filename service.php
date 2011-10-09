@@ -27,15 +27,6 @@ if($_GET['gz']==1){
 	header('Content-Encoding: gzip');
 	ob_start("ob_gzhandler");
 }
-
-if ( isset($_GET['user']) && isset($_GET['pass'])) {
-	$user = $_GET['user'];
-	$pass = $_GET['pass'];
-	include_once "inc/class.user.inc.php";
-	$userActions = new UserActions($db);
-	$response = $userActions->login($user,$pass);
-	echo $response;
-}
 if(isset($_GET['section']) && isset($_GET['request'])){
 	$section = $_GET['section'];
 	$request = $_GET['request'];
