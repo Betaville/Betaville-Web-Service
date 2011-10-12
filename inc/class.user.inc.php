@@ -66,6 +66,36 @@ class UserActions{
 		}
 	}
 	
+	private function createToken($username){
+		session_start();
+		
+		// If the tokens array does not already exist, create it
+		if(!isset($_SESSION['tokens'])){
+			$tokensArray = array();
+			$_SESSION['tokens'] = $tokensArray;
+		}
+		
+		// create the hash that we will use and check that it is unique
+		$hash = SHA1($this->createSalt().$username);
+		while($this->checkForTokenMatch($hash)){
+			$hash = SHA1($this->createSalt().$username);
+		}
+		
+		// we now have a unique hash, let's create the token
+		$newToken = array('hash'=>$hash, 'username'=>$username, 'time'=>time());
+		$_SESSION['tokens'][] = $newToken;
+		
+		return $hash;
+	}
+	
+	private function checkForTokenMatch($hash){
+		foreach($_SESSION['tokens'] as &$token){
+				if($token['hash'] == $hash) return true;
+		}
+		
+		return false;
+	}
+	
 	public function getPublicInfo($user){
 		$sql = "SELECT * FROM user WHERE username LIKE :user";
 			
@@ -100,13 +130,13 @@ class UserActions{
 			
 			if($generatedHash==$row[USER_STRONG_PASS]){
 				$stmt->closeCursor();
-				$_SESSION['username'] = $row['username'];
-				$_SESSION['LoggedIn']=1;
-				return true;
+				//$_SESSION['username'] = $row['username'];
+				//$_SESSION['LoggedIn']=1;
+				return array('authenticationSuccess'=>true, 'token'=>$this->createToken($username));
 			}
 			else{
 				$stmt->closeCursor();
-				return false;
+				return array('authenticationSuccess'=>false);
 			}
 		}catch(PDOException $e){
 			return false;

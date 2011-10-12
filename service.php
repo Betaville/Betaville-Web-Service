@@ -20,7 +20,7 @@
 /* require the user as the parameter */
 
 // Should we be doing session start here?  How will it work?!
-//session_start();
+session_start();
 
 if($_GET['gz']==1){
 	// check if a zipped response is requested
@@ -37,7 +37,7 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		if($request=='auth'){
 			$response = $userActions->login($_GET['username'], $_GET['password']);
 			header('Content-Type: application/json');
-			echo json_encode(array('authenticationSuccess'=>$response));
+			echo json_encode($response);
 		}
 		else if($request=='startsession'){
 			
