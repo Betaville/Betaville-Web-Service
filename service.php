@@ -29,6 +29,13 @@ if($_GET['gz']==1){
 }
 
 if(isset($_GET['section']) && isset($_GET['request'])){
+	// get the auth token if it exists
+	$token = $_GET['token'];
+	if(isset($token)){
+		include "sessions.php";
+		$authorizedUser = authorizeWithToken($token);
+	}
+	
 	$section = $_GET['section'];
 	$request = $_GET['request'];
 	if($section=='user'){
@@ -40,10 +47,10 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			echo json_encode($response);
 		}
 		else if($request=='startsession'){
-			
+			// should only be called from the java application
 		}
 		else if($request=='endsession'){
-			
+			// should only be called from the java application
 		}
 		else if($request=='add'){
 			$response = $userActions->addUser($_GET['username'], $_GET['password'], $_GET['email']);
@@ -55,8 +62,15 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			header('Content-Type: application/json');
 			echo json_encode(array('usernameAvailable'=>$response));
 		}
-		else if($request=='changepass'){}
-		else if($request=='changebio'){}
+		else if($request=='changepass'){
+			$oldPass = $_GET['oldpass'];
+			$newPass = $_GET['newPass'];
+		}
+		else if($request=='changebio'){
+			if($authorizedUser!=null){
+				$userActions->changeBio($authorizedUser, $_GET['bio']);
+			}
+		}
 		else if($request=='getmail'){}
 		else if($request=='checklevel'){}
 		else if($request=='getlevel'){}
