@@ -68,7 +68,8 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		}
 		else if($request=='changebio'){
 			if($authorizedUser!=null){
-				$userActions->changeBio($authorizedUser, $_GET['bio']);
+				$newBio = $_GET['bio'];
+				if(isset($newBio)) $userActions->changeBio($authorizedUser, $newBio);
 			}
 		}
 		else if($request=='getmail'){}
