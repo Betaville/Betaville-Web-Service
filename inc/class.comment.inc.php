@@ -38,6 +38,21 @@ class CommentActions{
 			$this->_db = new PDO($dsn, DB_USER, DB_PASS);
 		}
 	}
+	
+	public function addComment($designID, $user, $comment, $repliesTo){
+		$sql = 'INSERT INTO '.COMMENT_TABLE.'(designID, user, comment, date, repliesTo) VALUES (:designID, :user, :comment, NOW(), :repliesTo)';
+		try{
+			$stmt = $this->_db->prepare($sql);
+			$stmt->bindParam(":designID", $designID, PDO::PARAM_INT);
+			$stmt->bindParam(":user", $user, PDO::PARAM_STR);
+			$stmt->bindParam(":comment", $comment, PDO::PARAM_STR);
+			$stmt->bindParam(":repliesTo", $repliesTo, PDO::PARAM_INT);
+			$stmt->execute();
+			return true;
+		}catch(PDOException $e){
+			return false;
+		}
+	}
 
 	public function getCommentsForDesign($id){
 		$sql = 'SELECT * FROM '.COMMENT_TABLE.' WHERE '.COMMENT_SPAMVERIFIED.' = 0 AND '.COMMENT_DESIGN.'=:designID';
