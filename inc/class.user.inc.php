@@ -158,6 +158,44 @@ class UserActions{
 		return true;
 	}
 	
+	public function changeBio($user, $bio){
+		$userSQL = "UPDATE user set bio = :newBio WHERE userName=:user";
+		try{
+			$stmt = $this->_db->prepare($userSQL);
+			$stmt->bindParam(":newBio", $bio, PDO::PARAM_STR);
+			$stmt->bindParam(":user", $user, PDO::PARAM_STR);
+			$stmt->execute();
+			$row=$stmt->fetch();
+		}catch(PDOException $e){
+			return false;
+		}
+	}
+	
+	public function changePass($user, $pass){
+		$sql = "UPDATE user SET strongpass=:strongpass AND strongsalt=:strongsalt WHERE userName=:user";
+			
+			try{
+				$stmt = $this->_db->prepare($sql);
+				
+				
+				$salt = $this->createSalt();
+				$generatedHash=$salt.$pass;
+				for($i=0; $i<1000; $i++){
+					$generatedHash = SHA1($generatedHash);
+				}
+				
+				$stmt->bindParam(":user", $user, PDO::PARAM_STR);
+				$stmt->bindParam(":strongpass", $generatedHash, PDO::PARAM_STR);
+				$stmt->bindParam(":strongsalt", $salt, PDO::PARAM_STR);
+				
+				$stmt->execute();
+				
+				
+			}catch(PDOException $e){
+				return false;
+			}
+	}
+	
 	public function isEmailAddressInUse($emailAddress){
 		$userSQL = "SELECT email FROM user where email=:emailAddress  LIMIT 1";
 		try{
