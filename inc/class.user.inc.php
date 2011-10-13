@@ -115,7 +115,7 @@ class UserActions{
 			}
 	}
 	
-	public function login($username, $password){
+	private function authenticate($username, $password){
 		$hashSQL = "SELECT username, strongpass, strongsalt from user where username=:user LIMIT 1";
 		try{
 			$stmt = $this->_db->prepare($hashSQL);
@@ -132,11 +132,44 @@ class UserActions{
 				$stmt->closeCursor();
 				//$_SESSION['username'] = $row['username'];
 				//$_SESSION['LoggedIn']=1;
-				return array('authenticationSuccess'=>true, 'token'=>$this->createToken($username));
+				return true;
 			}
 			else{
 				$stmt->closeCursor();
-				return array('authenticationSuccess'=>false);
+				return false;
+			}
+		}catch(PDOException $e){
+			return false;
+		}
+	}
+	
+	public function login($username, $password){
+	
+		$authResult = $this->authenticate($username, $password);
+		if($authResult) return array('authenticationSuccess'=>true, 'token'=>$this->createToken($username));
+		else return array('authenticationSuccess'=>false);
+	
+		$hashSQL = "SELECT username, strongpass, strongsalt from user where username=:user LIMIT 1";
+		try{
+			$stmt = $this->_db->prepare($hashSQL);
+			$stmt->bindParam(":user", $username, PDO::PARAM_STR);
+			$stmt->execute();
+			$row=$stmt->fetch();
+
+			$generatedHash=$row[USER_STRONG_SALT].$password;
+			for($i=0; $i<1000; $i++){
+				$generatedHash = SHA1($generatedHash);
+			}
+			
+			if($generatedHash==$row[USER_STRONG_PASS]){
+				$stmt->closeCursor();
+				//$_SESSION['username'] = $row['username'];
+				//$_SESSION['LoggedIn']=1;
+				
+			}
+			else{
+				$stmt->closeCursor();
+				
 			}
 		}catch(PDOException $e){
 			return false;
@@ -171,7 +204,10 @@ class UserActions{
 		}
 	}
 	
-	public function changePass($user, $pass){
+	public function changePass($user, $oldPass, $newPass){
+	
+		if(!$this->authenticate($user, $oldPass)) return false;
+	
 		$sql = "UPDATE user SET strongpass=:strongpass AND strongsalt=:strongsalt WHERE userName=:user";
 			
 			try{
@@ -179,7 +215,7 @@ class UserActions{
 				
 				
 				$salt = $this->createSalt();
-				$generatedHash=$salt.$pass;
+				$generatedHash=$salt.$newPass;
 				for($i=0; $i<1000; $i++){
 					$generatedHash = SHA1($generatedHash);
 				}
