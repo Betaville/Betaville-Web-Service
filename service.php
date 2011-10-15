@@ -65,10 +65,13 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		else if($request=='changepass'){
 			$oldPass = $_GET['oldpass'];
 			$newPass = $_GET['newPass'];
+			if($authorizedUser!=null){
+				if(isset($oldPass) && isset($newPass)) $userActions->changePass($authorizedUser, $oldPass, $newPass);
+			}
 		}
 		else if($request=='changebio'){
+			$newBio = $_GET['bio'];
 			if($authorizedUser!=null){
-				$newBio = $_GET['bio'];
 				if(isset($newBio)) $userActions->changeBio($authorizedUser, $newBio);
 			}
 		}
@@ -102,10 +105,34 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		else if($request=='addempty'){}
 		else if($request=='addproposal'){}
 		else if($request=='addbase'){}
-		else if($request=='changename'){}
-		else if($request=='changedescription'){}
-		else if($request=='changeaddress'){}
-		else if($request=='changeurl'){}
+		else if($request=='changename'){
+			$id = $_GET['id'];
+			$name = $_GET['name'];
+			if($authorizedUser!=null){
+				if(isset($id) && isset($name)){}
+			}
+		}
+		else if($request=='changedescription'){
+			$id = $_GET['id'];
+			$description = $_GET['description'];
+			if($authorizedUser!=null){
+				if(isset($id) && isset($description)){}
+			}
+		}
+		else if($request=='changeaddress'){
+			$id = $_GET['id'];
+			$address = $_GET['address'];
+			if($authorizedUser!=null){
+				if(isset($id) && isset($address)){}
+			}
+		}
+		else if($request=='changeurl'){
+			$id = $_GET['id'];
+			$url = $_GET['url'];
+			if($authorizedUser!=null){
+				if(isset($id) && isset($url)){}
+			}
+		}
 		else if($request=='changemodellocation'){}
 		else if($request=='findbyid'){
 			$design = $designActions->findDesignByID($_GET['id']);
@@ -282,7 +309,15 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 	else if($section=='comment'){
 		include_once "inc/class.comment.inc.php";
 		$commentActions = new CommentActions($db);
-		if($request=='add'){}
+		if($request=='add'){
+			$designID = $_GET['designID'];
+			$comment = $_GET['comment'];
+			$repliesTo = $_GET['repliesTo'];
+			if(!isset($repliesTo)) $repliesTo=0;
+			if($authorizedUser!=null){
+				if(isset($designID) && isset($comment)) $commentActions->addComment($designID, $authorizedUser, $comment, $repliesTo);
+			}
+		}
 		else if($request=='delete'){}
 		else if($request=='reportspam'){}
 		else if($request=='getforid'){
