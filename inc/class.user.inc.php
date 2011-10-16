@@ -35,9 +35,10 @@ class UserActions{
 	}
 	
 	public function addUser($username, $password, $emailAddress){
-		if($this->isEmailAddressInUse($emailAddress)) return -3;
-		if(!($this->isUsernameAvailable($username))) return -4;
-		else if(!($this->isValidUsername($username))) return -4;
+		if($this->isEmailAddressInUse($emailAddress)) return "This email address is already in use";
+		if(filter_var($username, FILTER_VALIDATE_EMAIL)) return "This is not a valid email address";
+		if(!($this->isUsernameAvailable($username))) return "This username is already in use";
+		else if(!($this->isValidUsername($username))) return "This is not a valid username";
 		else{
 			$sql = "INSERT INTO user (username, strongpass, strongsalt, email) VALUES (:username, :strongpass, :strongsalt, :email)";
 			
