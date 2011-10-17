@@ -26,4 +26,5 @@ define('DB_NAME', 'betaville');
 define('BETAVILLE_FILE_STORE_URL', 'http://localhost/storage');
 define('SERVICE_URL', 'http://localhost/service');
 
+define('BETAVILLE_FILE_STORE_URL', '/Users/skyebook/Documents/Development/Java/Betaville/BetavilleServer/storage');
 ?>
