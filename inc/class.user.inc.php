@@ -193,6 +193,19 @@ class UserActions{
 		return true;
 	}
 	
+	public function getUserType($username){
+		$sql = "SELECT ".USER_TYPE." FROM ".USER_TABLE." WHERE ".USER_NAME."=:user";
+		try{
+			$stmt = $this->_db->prepare($sql);
+			$stmt->bindParam(":user", $username, PDO::PARAM_STR);
+			$stmt->execute();
+			$row = $stmt->fetch();
+			return $row[USER_TYPE];
+		}catch(PDOException $e){
+			return false;
+		}
+	}
+	
 	public function changeBio($user, $bio){
 		$userSQL = "UPDATE user set bio = :newBio WHERE userName=:user";
 		try{
