@@ -176,6 +176,21 @@ class DesignActions{
 		return null;
 	}
 	
+	public function didUserCreateDesign($username, $designID){
+		$sql = 'SELECT '.DESIGN_USER.' FROM '.DESIGN_TABLE.' WHERE '.DESIGN_ID.'=:designID';
+		try{
+			$stmt = $this->_db->prepare($sql);
+			$stmt->bindParam(":designID", $designID, PDO::PARAM_INT);
+			$stmt->execute();
+			$row=$stmt->fetch();
+			return $row[DESIGN_USER]==$username;
+		}catch(PDOException $e){
+			echo'exception';
+			return false;
+		}
+		return false;
+	}
+	
 	public function getFilenameForDesignMedia($designID){
 		$sql = 'SELECT '.DESIGN_FILE.' FROM '.DESIGN_TABLE.' WHERE '.DESIGN_ID.'=:designID';
 		try{
