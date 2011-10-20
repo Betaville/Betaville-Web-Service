@@ -288,6 +288,7 @@ class UserActions{
 			return false;
 		}
 	}
+	
 	public function isUserActivated($username){
 		$userSQL = "SELECT username FROM user where username=:user  LIMIT 1";
 		try{
@@ -297,17 +298,18 @@ class UserActions{
 			$row=$stmt->fetch();
 			if($row['activated']==1){
 				$stmt->closeCursor();
-				return 1;
+				return true;
 			}
 			else{
 				$stmt->closeCursor();
-				return 0;
+				return true;
 			}
 		}catch(PDOException $e){
 			return false;
 		}
 	}
-	 public function validateUser($sCode){
+	
+	public function validateUser($sCode){
 		$codeSQL = "UPDATE user SET activated=1 where code=:secretCode";
 		try{
 			$stmt = $this->_db->prepare($codeSQL);
@@ -316,11 +318,11 @@ class UserActions{
 			$row=$stmt->fetch();
 			if ($row == 1 ){
 				$stmt->closeCursor();
-				return 1;
+				return true;
 			}  
 			else{
 				$stmt->closeCursor();
-				return 0;
+				return true;
 			}
 		}catch(PDOException $e){
 			return false;

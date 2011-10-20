@@ -16,8 +16,6 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
-/* require the user as the parameter */
 
 // Should we be doing session start here?  How will it work?!
 session_start();
@@ -61,16 +59,13 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		}
 		else if($request=='activateUser'){
 			$response = $userActions->activateUser($_GET['code']);
-			if ($response == true ) 
-				echo "Your account has been activated successfully! <br />";
-			else {
-				echo "Sorry we are unable to activate your account at the moment. Please contact our support team for help. <br />";
-			}
+			header('Content-Type: application/json');
+			echo json_encode(array('activationSuccess'=>$response));
 		}
 		else if($request=='activated'){
 			$response = $userActions->isUserActivated($_GET['username']);
 			header('Content-Type: application/json');
-			echo json_encode(array('userAdded'=>$response));
+			echo json_encode(array('userActivated'=>$response));
 		}
 		else if($request=='available'){
 			$response = $userActions->isUsernameAvailable($_GET['username']);
