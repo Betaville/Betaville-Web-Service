@@ -55,7 +55,7 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			// should only be called from the java application
 		}
 		else if($request=='add'){
-			$response = $userActions->addUser($_GET['username'], $_GET['password'], $_GET['email']);
+			$response = $userActions->addUser($_GET['username'], $_GET['password'], $_GET['email'], $_GET['code']);
 			header('Content-Type: application/json');
 			echo json_encode(array('userAdded'=>$response));
 		}
@@ -69,7 +69,8 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		}
 		else if($request=='activated'){
 			$response = $userActions->isUserActivated($_GET['username']);
-			echo $response;
+			header('Content-Type: application/json');
+			echo json_encode(array('userAdded'=>$response));
 		}
 		else if($request=='available'){
 			$response = $userActions->isUsernameAvailable($_GET['username']);
