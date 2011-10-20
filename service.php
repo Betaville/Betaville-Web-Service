@@ -42,7 +42,7 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 	$request = $_GET['request'];
 	if($section=='user'){
 		include_once "inc/class.user.inc.php";
-		$userActions = new UserActions($db);
+		$userActions = new UserActions(null);
 		if($request=='auth'){
 			$response = $userActions->login($_GET['username'], $_GET['password']);
 			header('Content-Type: application/json');
@@ -101,7 +101,7 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 	}
 	else if($section=='coordinate'){
 		include_once "inc/class.coordinate.inc.php";
-		$coordinateActions = new CoordinateActions($db);
+		$coordinateActions = new CoordinateActions(null);
 		if($request=='getutm'){
 			$utm = $coordinateActions->getUTMCoordinate($_GET['id']);
 			header('Content-Type: application/json');
@@ -117,8 +117,8 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 	else if($section=='design'){
 		include_once "inc/class.design.inc.php";
 		include_once "inc/class.user.inc.php";
-		$designActions = new DesignActions($db);
-		$userActions = new UserActions($db);
+		$designActions = new DesignActions(null);
+		$userActions = new UserActions(null);
 		if($request=='synchronizedata'){}
 		else if($request=='addempty'){}
 		else if($request=='addproposal'){}
@@ -240,7 +240,7 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		else if($request=='addversion'){}
 		else if($request=='getfeatured'){
 			include_once "inc/class.design.inc.php";
-			$designActions = new DesignActions($db);
+			$designActions = new DesignActions(null);
 			header('Content-Type: application/json');
 			
 			
@@ -269,7 +269,7 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 	else if($section=='activity'){
 		if($request=='comments'){
 			include_once "inc/class.comment.inc.php";
-			$commentActions = new CommentActions($db);
+			$commentActions = new CommentActions(null);
 			header('Content-Type: application/json');
 			
 			// set default values
@@ -290,7 +290,7 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		}
 		else if($request=='designs'){
 			include_once "inc/class.design.inc.php";
-			$designActions = new DesignActions($db);
+			$designActions = new DesignActions(null);
 			header('Content-Type: application/json');
 			
 			// set default values
@@ -310,7 +310,7 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		}
 		else if($request=='proposals'){
 			include_once "inc/class.design.inc.php";
-			$designActions = new DesignActions($db);
+			$designActions = new DesignActions(null);
 			header('Content-Type: application/json');
 			
 			// set default values
@@ -330,7 +330,7 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		}
 		else if($request=='versions'){
 			include_once "inc/class.design.inc.php";
-			$designActions = new DesignActions($db);
+			$designActions = new DesignActions(null);
 			header('Content-Type: application/json');
 			
 			// set default values
@@ -349,7 +349,7 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		}
 		else if($request=='myactivity'){
 			include_once "inc/class.comment.inc.php";
-			$commentActions = new CommentActions($db);
+			$commentActions = new CommentActions(null);
 			$comments = $commentActions->getNotificationsForUser($_GET['user']);
 			header('Content-Type: application/json');
 			echo json_encode(array('comments'=>$comments));
@@ -360,7 +360,7 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 	}
 	else if($section=='comment'){
 		include_once "inc/class.comment.inc.php";
-		$commentActions = new CommentActions($db);
+		$commentActions = new CommentActions(null);
 		if($request=='add'){
 			$designID = $_GET['designID'];
 			$comment = $_GET['comment'];
@@ -407,7 +407,7 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		}
 			else if($request=='getdb'){
 			include_once "inc/class.util.inc.php";
-			$utilActions = new UtilActions($db);
+			$utilActions = new UtilActions(null);
 			header('Content-Type: application/json');
 			echo json_encode(array('serverTime'=>$utilActions->getDateTime()));
 		}
