@@ -1,4 +1,6 @@
 <?php
+ini_set('display_errors',2); 
+error_reporting(E_ALL);
 /**  
  *  Betaville Web Service - A service for accessing data from a Betaville server via HTTP requests
  *  Copyright (C) 2011 Skye Book <skye.book@gmail.com>
@@ -34,11 +36,13 @@ class UserActions{
 		}
 	}
 	
-	public function addUser($username, $password, $emailAddress){
+	public function addUser($username, $password, $emailAddress, $code){
 		if($this->isEmailAddressInUse($emailAddress)) return -3;
-		else if(!($this->isValidUsername($username))) return -4;
+		if(!($this->isUsernameAvailable($username))) return -4;
+		else if (!($this->isValidUsername($username))) return -4;
 		else{
-			$sql = "INSERT INTO user (username, strongpass, strongsalt, email) VALUES (:username, :strongpass, :strongsalt, :email)";
+			$activated = 0;
+			$sql = "INSERT INTO user (userName, strongpass, strongsalt, email, activacted, code) VALUES (:username, :strongpass, :strongsalt, :email, :activacted, :code)";
 			
 			try{
 				$stmt = $this->_db->prepare($sql);
@@ -54,6 +58,8 @@ class UserActions{
 				$stmt->bindParam(":strongpass", $generatedHash, PDO::PARAM_STR);
 				$stmt->bindParam(":strongsalt", $salt, PDO::PARAM_STR);
 				$stmt->bindParam(":email", $emailAddress, PDO::PARAM_STR);
+				$stmt->bindParam(":activacted", $activated, PDO::PARAM_STR);
+				$stmt->bindParam(":code", $code, PDO::PARAM_STR);
 				
 				$stmt->execute();
 				
@@ -93,7 +99,7 @@ class UserActions{
 			$stmt->execute();
 			$row=$stmt->fetch();
 			$generatedHash=$row[USER_STRONG_SALT].$password;
-			for($i=0; $i<1000; $i++){
+			for($i=0; $i<1000; $i++)
 				$generatedHash = SHA1($generatedHash);
 			if($generatedHash==$row[USER_STRONG_PASS]){
 				$stmt->closeCursor();
@@ -103,7 +109,6 @@ class UserActions{
 				$stmt->closeCursor();
 				return false;
 			}
-		}
 		}catch(PDOException $e){
 			return false;
 		}
@@ -157,6 +162,44 @@ class UserActions{
 			else{
 				$stmt->closeCursor();
 				return true;
+			}
+		}catch(PDOException $e){
+			return false;
+		}
+	}
+	public function isUserActivated($username){
+		$userSQL = "SELECT username FROM user where username=:user  LIMIT 1";
+		try{
+			$stmt = $this->_db->prepare($userSQL);
+			$stmt->bindParam(":user", $username, PDO::PARAM_STR);
+			$stmt->execute();
+			$row=$stmt->fetch();
+			if($row['activacted']==0){
+				$stmt->closeCursor();
+				return true;
+			}
+			else{
+				$stmt->closeCursor();
+				return false;
+			}
+		}catch(PDOException $e){
+			return false;
+		}
+	}
+	 public function validateUser($sCode){
+		$codeSQL = "UPDATE user SET activacted=1 where code=:secretCode";
+		try{
+			$stmt = $this->_db->prepare($codeSQL);
+			$stmt->bindParam(":secretCode", $sCode, PDO::PARAM_STR);
+			$stmt->execute();
+			$row=$stmt->fetch();
+			if ($row == 1 ){
+				$stmt->closeCursor();
+				return 1;
+			}  
+			else{
+				$stmt->closeCursor();
+				return 0;
 			}
 		}catch(PDOException $e){
 			return false;
