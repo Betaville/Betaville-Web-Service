@@ -59,6 +59,18 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			header('Content-Type: application/json');
 			echo json_encode(array('userAdded'=>$response));
 		}
+		else if($request=='activateUser'){
+			$response = $userActions->activateUser($_GET['code']);
+			if ($response == true ) 
+				echo "Your account has been activated successfully! <br />";
+			else {
+				echo "Sorry we are unable to activate your account at the moment. Please contact our support team for help. <br />";
+			}
+		}
+		else if($request=='activated'){
+			$response = $userActions->isUserActivated($_GET['username']);
+			echo $response;
+		}
 		else if($request=='available'){
 			$response = $userActions->isUsernameAvailable($_GET['username']);
 			header('Content-Type: application/json');

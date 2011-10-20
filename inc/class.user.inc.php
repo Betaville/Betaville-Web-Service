@@ -33,14 +33,14 @@ class UserActions{
 			$this->_db = new PDO($dsn, DB_USER, DB_PASS);
 		}
 	}
-	
-	public function addUser($username, $password, $emailAddress){
+	public function addUser($username, $password, $emailAddress, $code){
 		if($this->isEmailAddressInUse($emailAddress)) return "This email address is already in use";
 		if(filter_var($username, FILTER_VALIDATE_EMAIL)) return "This is not a valid email address";
 		if(!($this->isUsernameAvailable($username))) return "This username is already in use";
 		else if(!($this->isValidUsername($username))) return "This is not a valid username";
 		else{
-			$sql = "INSERT INTO user (username, strongpass, strongsalt, email) VALUES (:username, :strongpass, :strongsalt, :email)";
+			$activated = 0;
+			$sql = "INSERT INTO user (userName, strongpass, strongsalt, email, activated, code) VALUES (:username, :strongpass, :strongsalt, :email, :activated, :code)";
 			
 			try{
 				$stmt = $this->_db->prepare($sql);
@@ -56,6 +56,8 @@ class UserActions{
 				$stmt->bindParam(":strongpass", $generatedHash, PDO::PARAM_STR);
 				$stmt->bindParam(":strongsalt", $salt, PDO::PARAM_STR);
 				$stmt->bindParam(":email", $emailAddress, PDO::PARAM_STR);
+				$stmt->bindParam(":activated", $activated, PDO::PARAM_STR);
+				$stmt->bindParam(":code", $code, PDO::PARAM_STR);
 				
 				$stmt->execute();
 				
@@ -281,6 +283,44 @@ class UserActions{
 			else{
 				$stmt->closeCursor();
 				return true;
+			}
+		}catch(PDOException $e){
+			return false;
+		}
+	}
+	public function isUserActivated($username){
+		$userSQL = "SELECT username FROM user where username=:user  LIMIT 1";
+		try{
+			$stmt = $this->_db->prepare($userSQL);
+			$stmt->bindParam(":user", $username, PDO::PARAM_STR);
+			$stmt->execute();
+			$row=$stmt->fetch();
+			if($row['activated']==1){
+				$stmt->closeCursor();
+				return 1;
+			}
+			else{
+				$stmt->closeCursor();
+				return 0;
+			}
+		}catch(PDOException $e){
+			return false;
+		}
+	}
+	 public function validateUser($sCode){
+		$codeSQL = "UPDATE user SET activated=1 where code=:secretCode";
+		try{
+			$stmt = $this->_db->prepare($codeSQL);
+			$stmt->bindParam(":secretCode", $sCode, PDO::PARAM_STR);
+			$stmt->execute();
+			$row=$stmt->fetch();
+			if ($row == 1 ){
+				$stmt->closeCursor();
+				return 1;
+			}  
+			else{
+				$stmt->closeCursor();
+				return 0;
 			}
 		}catch(PDOException $e){
 			return false;
