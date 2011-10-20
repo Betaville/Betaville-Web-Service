@@ -33,13 +33,14 @@ class UserActions{
 			$this->_db = new PDO($dsn, DB_USER, DB_PASS);
 		}
 	}
+	
 	public function addUser($username, $password, $emailAddress){
 		if($this->isEmailAddressInUse($emailAddress)) return "This email address is already in use";
 		if(filter_var($username, FILTER_VALIDATE_EMAIL)) return "This is not a valid email address";
 		if(!($this->isUsernameAvailable($username))) return "This username is already in use";
 		else if(!($this->isValidUsername($username))) return "This is not a valid username";
 		else{
-			$confirm_code = md5(uniqid(rand()));
+			$confirmCode = md5(uniqid(rand()));
 			$sql = "INSERT INTO user (userName, strongpass, strongsalt, email, activated, code) VALUES (:username, :strongpass, :strongsalt, :email, 0, :code)";
 			
 			try{
@@ -56,17 +57,37 @@ class UserActions{
 				$stmt->bindParam(":strongpass", $generatedHash, PDO::PARAM_STR);
 				$stmt->bindParam(":strongsalt", $salt, PDO::PARAM_STR);
 				$stmt->bindParam(":email", $emailAddress, PDO::PARAM_STR);
-				$stmt->bindParam(":code", $confirm_code, PDO::PARAM_STR);
+				$stmt->bindParam(":code", $confirmCode, PDO::PARAM_STR);
 				
 				$stmt->execute();
 				
-				return true;
-				
+				if($this->sendVerificationMail($emailAddress, $username, $confirmCode)){
+					return true;
+				}
+				else{
+					return false;
+				}
 				
 			}catch(PDOException $e){
 				return false;
 			}
 		}
+	}
+	
+	private function sendVerificationMail($emailAddress, $username, $confirmCode){
+		$from = "Quilvin@gmail.com";
+		$to = $emailAddress;
+		$subject = $username."'s ";
+		$subject .= "Betaville Activation link";
+		$eol = "\n";
+		$headers = 'From: Betaville <donotreply@betaville.net>'. $eol;
+		$headers .= "Reply-To: Please don't reply to this email .$eol";
+		$headers .= "Message-ID:< TheSystem@" . $_SERVER['SERVER_NAME'].">".$eol;
+		$headers .= "X-Mailer: PHP v" .phpversion() . $eol;
+		$message = "Hello " . $username . ", <br />";
+		$message .= "Thank you for signing up to Betaville. <br />";
+		$message .= "<a href='".SERVICE_URL."?section=user&request=activateUser&code=".$confirmCode."'> Please click on this link to activate your account now </a> <br />";
+		return @mail($to,$subject,$message,$headers);
 	}
 	
 	private function createToken($username){
