@@ -29,6 +29,8 @@ if($_GET['gz']==1){
 }
 
 if(isset($_GET['section']) && isset($_GET['request'])){
+	//include_once "db_constants.php";
+
 	// get the auth token if it exists
 	$token = $_GET['token'];
 	if(isset($token)){
@@ -100,11 +102,47 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 	}
 	else if($section=='design'){
 		include_once "inc/class.design.inc.php";
+		include_once "inc/class.user.inc.php";
 		$designActions = new DesignActions($db);
+		$userActions = new UserActions($db);
 		if($request=='synchronizedata'){}
 		else if($request=='addempty'){}
 		else if($request=='addproposal'){}
-		else if($request=='addbase'){}
+		else if($request=='addbase'){
+		
+			if($authorizedUser!=null){
+				
+				// is the user allowed to upload base models?
+				$userType = $userActions->getUserType($authorizedUser);
+				if($userType == USER_TYPE_BASE_COMMITTER
+					|| $userType == USER_TYPE_MODERATOR
+					|| $userType == USER_TYPE_ADMIN){
+					
+					// put metadata into the database
+					
+					// save the file
+					$filename = "something.txt";
+					$fileData = file_get_contents('php://input');
+					$fileHandle = fopen($filename, 'wb');
+					fwrite($fileHandle, $fileData);
+					fclose($fileHandle);
+				}
+				else{
+					// we are her because the user cannot upload base models
+				}
+			}
+		
+		}
+		else if($request=='addbasethumbnail'){
+			if($authorizedUser!=null){
+				$filename = "something.txt";
+				$fileData = file_get_contents('php://input');
+				$fileHandle = fopen($filename, 'wb');
+				fwrite($fileHandle, $fileData);
+				fclose($fileHandle);
+				//echo 'done';
+			}
+		}
 		else if($request=='changename'){
 			$id = $_GET['id'];
 			$name = $_GET['name'];
