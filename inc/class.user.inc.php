@@ -329,7 +329,7 @@ class UserActions{
 		}
 	}
 	
-	public function validateUser($sCode){
+	public function activateUser($sCode){
 		$codeSQL = "UPDATE user SET activated=1 where confirmcode=:secretCode";
 		try{
 			$stmt = $this->_db->prepare($codeSQL);

@@ -57,7 +57,7 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			header('Content-Type: application/json');
 			echo json_encode(array('userAdded'=>$response));
 		}
-		else if($request=='activateUser'){
+		else if($request=='activateuser'){
 			$response = $userActions->activateUser($_GET['code']);
 			header('Content-Type: application/json');
 			echo json_encode(array('activationSuccess'=>$response));
