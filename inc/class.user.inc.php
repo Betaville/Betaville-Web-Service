@@ -41,7 +41,7 @@ class UserActions{
 		else if(!($this->isValidUsername($username))) return "This is not a valid username";
 		else{
 			$confirmCode = md5(uniqid(rand()));
-			$sql = "INSERT INTO user (userName, strongpass, strongsalt, email, activated, code) VALUES (:username, :strongpass, :strongsalt, :email, 0, :code)";
+			$sql = "INSERT INTO user (userName, strongpass, strongsalt, email, activated, confirmcode) VALUES (:username, :strongpass, :strongsalt, :email, 0, :code)";
 			
 			try{
 				$stmt = $this->_db->prepare($sql);
@@ -310,7 +310,7 @@ class UserActions{
 	}
 	
 	public function isUserActivated($username){
-		$userSQL = "SELECT username FROM user where username=:user  LIMIT 1";
+		$userSQL = "SELECT activated FROM user where username=:user LIMIT 1";
 		try{
 			$stmt = $this->_db->prepare($userSQL);
 			$stmt->bindParam(":user", $username, PDO::PARAM_STR);
@@ -330,7 +330,7 @@ class UserActions{
 	}
 	
 	public function validateUser($sCode){
-		$codeSQL = "UPDATE user SET activated=1 where code=:secretCode";
+		$codeSQL = "UPDATE user SET activated=1 where confirmcode=:secretCode";
 		try{
 			$stmt = $this->_db->prepare($codeSQL);
 			$stmt->bindParam(":secretCode", $sCode, PDO::PARAM_STR);

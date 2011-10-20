@@ -98,6 +98,7 @@
 	define('USER_EMAIL', 'email');
 	define('USER_EMAIL_VISIBLE', 'showEmail');
 	define('USER_ACTIVATED', 'activated');
+	define('USER_CONFIRMCODE', 'confirmcode');
 	define('USER_BIO', 'bio');
 	define('USER_WEBSITE', 'website');
 	define('USER_TYPE', 'type');
