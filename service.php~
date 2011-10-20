@@ -100,7 +100,6 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			echo json_encode($latLon);
 		}
 	}
-	
 	else if($section=='design'){
 		include_once "inc/class.design.inc.php";
 		include_once "inc/class.user.inc.php";
