@@ -53,7 +53,7 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			// should only be called from the java application
 		}
 		else if($request=='add'){
-			$response = $userActions->addUser($_GET['username'], $_GET['password'], $_GET['email'], $_GET['code']);
+			$response = $userActions->addUser($_GET['username'], $_GET['password'], $_GET['email']);
 			header('Content-Type: application/json');
 			echo json_encode(array('userAdded'=>$response));
 		}

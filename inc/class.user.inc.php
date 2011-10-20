@@ -33,14 +33,14 @@ class UserActions{
 			$this->_db = new PDO($dsn, DB_USER, DB_PASS);
 		}
 	}
-	public function addUser($username, $password, $emailAddress, $code){
+	public function addUser($username, $password, $emailAddress){
 		if($this->isEmailAddressInUse($emailAddress)) return "This email address is already in use";
 		if(filter_var($username, FILTER_VALIDATE_EMAIL)) return "This is not a valid email address";
 		if(!($this->isUsernameAvailable($username))) return "This username is already in use";
 		else if(!($this->isValidUsername($username))) return "This is not a valid username";
 		else{
-			$activated = 0;
-			$sql = "INSERT INTO user (userName, strongpass, strongsalt, email, activated, code) VALUES (:username, :strongpass, :strongsalt, :email, :activated, :code)";
+			$confirm_code = md5(uniqid(rand()));
+			$sql = "INSERT INTO user (userName, strongpass, strongsalt, email, activated, code) VALUES (:username, :strongpass, :strongsalt, :email, 0, :code)";
 			
 			try{
 				$stmt = $this->_db->prepare($sql);
@@ -56,8 +56,7 @@ class UserActions{
 				$stmt->bindParam(":strongpass", $generatedHash, PDO::PARAM_STR);
 				$stmt->bindParam(":strongsalt", $salt, PDO::PARAM_STR);
 				$stmt->bindParam(":email", $emailAddress, PDO::PARAM_STR);
-				$stmt->bindParam(":activated", $activated, PDO::PARAM_STR);
-				$stmt->bindParam(":code", $code, PDO::PARAM_STR);
+				$stmt->bindParam(":code", $confirm_code, PDO::PARAM_STR);
 				
 				$stmt->execute();
 				
