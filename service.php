@@ -163,6 +163,9 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 					// we are her because the user cannot upload base models
 				}
 			}
+			else{
+				badTokenResponse('addbase');
+			}
 		
 		}
 		else if($request=='addbasethumbnail'){
@@ -174,6 +177,9 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 				fclose($fileHandle);
 				//echo 'done';
 			}
+			else{
+				badTokenResponse('addbasethumbnail');
+			}
 		}
 		else if($request=='changename'){
 			$id = $_GET['id'];
@@ -181,12 +187,18 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			if($authorizedUser!=null){
 				if(isset($id) && isset($name)){}
 			}
+			else{
+				badTokenResponse('changename');
+			}
 		}
 		else if($request=='changedescription'){
 			$id = $_GET['id'];
 			$description = $_GET['description'];
 			if($authorizedUser!=null){
 				if(isset($id) && isset($description)){}
+			}
+			else{
+				badTokenResponse('changedescription');
 			}
 		}
 		else if($request=='changeaddress'){
@@ -201,6 +213,9 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			$url = $_GET['url'];
 			if($authorizedUser!=null){
 				if(isset($id) && isset($url)){}
+			}
+			else{
+				badTokenResponse('changeurl');
 			}
 		}
 		else if($request=='changemodellocation'){}
