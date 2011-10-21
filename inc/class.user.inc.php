@@ -35,13 +35,14 @@ class UserActions{
 	}
 	
 	public function addUser($username, $password, $emailAddress){
-		if($this->isEmailAddressInUse($emailAddress)) return "This email address is already in use";
-		if(filter_var($username, FILTER_VALIDATE_EMAIL)) return "This is not a valid email address";
 		if(!($this->isUsernameAvailable($username))) return "This username is already in use";
+		if(filter_var($username, FILTER_VALIDATE_EMAIL)) return "This is not a valid email address";
+		if($this->isEmailAddressInUse($emailAddress)) return "This email address is already in use";
+		
 		else if(!($this->isValidUsername($username))) return "This is not a valid username";
 		else{
 			$confirmCode = md5(uniqid(rand()));
-			$sql = "INSERT INTO user (userName, strongpass, strongsalt, email, activated, confirmcode) VALUES (:username, :strongpass, :strongsalt, :email, 0, :code)";
+			$sql = "INSERT INTO user (userName, strongpass, strongsalt, email, confirmcode) VALUES (:username, :strongpass, :strongsalt, :email, :code)";
 			
 			try{
 				$stmt = $this->_db->prepare($sql);
@@ -86,7 +87,7 @@ class UserActions{
 		$headers .= "X-Mailer: PHP v" .phpversion() . $eol;
 		$message = "Hello " . $username . ", <br />";
 		$message .= "Thank you for signing up to Betaville. <br />";
-		$message .= "<a href='".SERVICE_URL."?section=user&request=activateUser&code=".$confirmCode."'> Please click on this link to activate your account now </a> <br />";
+		$message .= "<a href='".SERVICE_URL."?section=user&request=activateuser&code=".$confirmCode."> Please click on this link to activate your account now </a> <br />";
 		return @mail($to,$subject,$message,$headers);
 	}
 	
@@ -140,7 +141,7 @@ class UserActions{
 	}
 	
 	private function authenticate($username, $password){
-		$hashSQL = "SELECT username, strongpass, strongsalt from user where username=:user LIMIT 1";
+		$hashSQL = "SELECT username, strongpass, strongsalt, activated from user where username=:user LIMIT 1";
 		try{
 			$stmt = $this->_db->prepare($hashSQL);
 			$stmt->bindParam(":user", $username, PDO::PARAM_STR);
@@ -152,7 +153,7 @@ class UserActions{
 				$generatedHash = SHA1($generatedHash);
 			}
 			
-			if($generatedHash==$row[USER_STRONG_PASS]){
+			if($generatedHash==$row[USER_STRONG_PASS] && $row['activated']==1){
 				$stmt->closeCursor();
 				//$_SESSION['username'] = $row['username'];
 				//$_SESSION['LoggedIn']=1;
@@ -290,13 +291,14 @@ class UserActions{
 	}
 	
 	public function isUsernameAvailable($username){
-		$userSQL = "SELECT username FROM user where username=:user  LIMIT 1";
+		$userSQL = "SELECT userName FROM user where userName=:user LIMIT 1";
 		try{
 			$stmt = $this->_db->prepare($userSQL);
 			$stmt->bindParam(":user", $username, PDO::PARAM_STR);
 			$stmt->execute();
 			$row=$stmt->fetch();
-			if($row['username']==$username){
+			if(isset($row['userName'])){
+			
 				$stmt->closeCursor();
 				return false;
 			}
