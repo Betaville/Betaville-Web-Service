@@ -81,8 +81,8 @@ class UserActions{
 		$subject .= "Betaville Activation link";
 		$eol = "\n";
 		$headers = 'From: Betaville <donotreply@betaville.net>'. $eol;
-		$headers .= "Reply-To: Please don't reply to this email .$eol";
-		$headers .= "Message-ID:< TheSystem@" . $_SERVER['SERVER_NAME'].">".$eol;
+		//$headers .= "Reply-To: Please don't reply to this email".$eol;
+		//$headers .= "Message-ID:< TheSystem@" . $_SERVER['SERVER_NAME'].">".$eol;
 		$headers .= "X-Mailer: PHP v" .phpversion() . $eol;
 		$message = "Hello " . $username . ", <br />";
 		$message .= "Thank you for signing up to Betaville. <br />";
