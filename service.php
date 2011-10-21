@@ -169,7 +169,7 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		}
 		else if($request=='addbasethumbnail'){
 			if($authorizedUser!=null){
-				$filename = "something.txt";
+				$filename = BETAVILLE_FILE_STORE_URL."/designthumbs/".$_GET['designID'].".png";
 				$fileData = file_get_contents('php://input');
 				$fileHandle = fopen($filename, 'wb');
 				fwrite($fileHandle, $fileData);
