@@ -78,11 +78,34 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			if($authorizedUser!=null){
 				if(isset($oldPass) && isset($newPass)) $userActions->changePass($authorizedUser, $oldPass, $newPass);
 			}
+			else{
+				badTokenResponse('changepass');
+			}
 		}
 		else if($request=='changebio'){
 			$newBio = $_GET['bio'];
 			if($authorizedUser!=null){
 				if(isset($newBio)) $userActions->changeBio($authorizedUser, $newBio);
+			}
+			else{
+				badTokenResponse('changebio');
+			}
+		}
+		else if($request=='updateavatar'){
+			if($authorizedUser!=null){
+				$fileExtension = $_GET['extension'];
+				
+				// save the avatar file
+				$filename = BETAVILLE_FILE_STORE_URL."/avatars/".$authorizedUser.".".$fileExtension;
+				$fileData = file_get_contents('php://input');
+				$fileHandle = fopen($filename, 'wb');
+				fwrite($fileHandle, $fileData);
+				fclose($fileHandle);
+				header('Content-Type: application/json');
+				echo json_encode(array('updateavatar'=>true));
+			}
+			else{
+				badTokenResponse('updateavatar');
 			}
 		}
 		else if($request=='getmail'){}
@@ -407,6 +430,11 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			echo json_encode(array('serverTime'=>$utilActions->getDateTime()));
 		}
 	}
+}
+
+function badTokenResponse($requestName){
+	header('Content-Type: application/json');
+	echo json_encode(array($requestName=>"User authentication invalid or not supplied"));
 }
 
 function hasStartEnd(){
