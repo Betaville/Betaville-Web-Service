@@ -17,7 +17,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// Should we be doing session start here?  How will it work?!
 session_start();
 
 if($_GET['gz']==1){
