@@ -224,8 +224,13 @@ class DesignActions{
 		return null;
 	}
 	
-	public function getRecentDesigns($start, $end){
-		$sql = 'SELECT * FROM ' . DESIGN_TABLE . ' WHERE '.DESIGN_IS_ALIVE.' = 1  AND '.DESIGN_IS_ALIVE.'=1 ORDER BY '.DESIGN_ID .' DESC LIMIT :start, :end';
+	public function getRecentDesigns($start, $end, $excludeEmpty){
+		$excludeAddIn = "";
+		if($excludeEmpty){
+			echo "hey";
+			$excludeAddIn = " AND ".DESIGN_TYPE." != 'empty' ";
+		}
+		$sql = 'SELECT * FROM ' . DESIGN_TABLE . ' WHERE '.DESIGN_IS_ALIVE.' = 1 '.$excludeAddIn.' AND '.DESIGN_IS_ALIVE.'=1 ORDER BY '.DESIGN_ID .' DESC LIMIT :start, :end';
 		try{
 			$stmt = $this->_db->prepare($sql);
 			$stmt->bindParam(":start", $start, PDO::PARAM_INT);

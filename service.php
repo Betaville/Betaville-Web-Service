@@ -325,6 +325,11 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			$designActions = new DesignActions(null);
 			header('Content-Type: application/json');
 			
+			$excludeEmpty = false;
+			if(isset($_GET['excludeempty'])){
+				$excludeEmpty = $_GET['excludeempty'];
+			}
+			
 			// set default values
 			$start = 0;
 			$end = 50;
@@ -338,7 +343,7 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 				$end = (int)$_GET['quantity'];
 			}
 			
-			echo json_encode(array('designs'=>($designActions->getRecentDesigns($start, $end))));
+			echo json_encode(array('designs'=>($designActions->getRecentDesigns($start, $end, $excludeEmpty))));
 		}
 		else if($request=='proposals'){
 			include_once "inc/class.design.inc.php";
