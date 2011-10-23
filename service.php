@@ -109,7 +109,11 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		}
 		else if($request=='getmail'){}
 		else if($request=='checklevel'){}
-		else if($request=='getlevel'){}
+		else if($request=='getlevel'){
+			$response = $userActions->getUserType($_GET['username']);
+			header('Content-Type: application/json');
+			echo json_encode(array('userType'=>$response));
+		}
 		else if($request=='getpublicinfo'){
 			$response = $userActions->getPublicInfo($_GET['username']);
 			header('Content-Type: application/json');
