@@ -26,7 +26,7 @@ if($_GET['gz']==1){
 }
 
 if(isset($_GET['section']) && isset($_GET['request'])){
-	//include "sessions.php";
+	include "sessions.php";
 	//include_once "db_constants.php";
 
 	// get the auth token if it exists
@@ -484,42 +484,5 @@ function badTokenResponse($requestName){
 function hasStartEnd(){
 	return (isset($_GET['start']) && isset($_GET['end']));
 }
-
-
-function createToken($username){
-		
-		// create the hash that we will use and check that it is unique
-		$hash = SHA1(createSalt().$username);
-		while(checkForTokenMatch($hash)){
-			$hash = SHA1(createSalt().$username);
-		}
-		
-		$_SESSION[$hash] = $username;
-		
-		return $hash;
-	}
-	
-	function checkForTokenMatch($hash){
-		
-		return isset($_SESSION[$hash]);
-	}
-	
-	function authorizeWithToken($token){
-		
-		echo "size".sizeof($_SESSION);
-		
-		return $_SESSION[$token];
-	}
-	
-	function createSalt(){
-		$salt = "";
-		
-		for($i=0; $i<10; $i++){
-			$random = rand(0, 9);
-			$salt = $salt.$random;
-		}
-		
-		return $salt;
-	}
 
 ?>
