@@ -26,22 +26,34 @@ if($_GET['gz']==1){
 }
 
 if(isset($_GET['section']) && isset($_GET['request'])){
+	//include "sessions.php";
 	//include_once "db_constants.php";
 
 	// get the auth token if it exists
 	$token = $_GET['token'];
-	if(isset($token)){
-		include "sessions.php";
+	if(isset($_GET['token'])){
 		$authorizedUser = authorizeWithToken($token);
 	}
 	
 	$section = $_GET['section'];
 	$request = $_GET['request'];
+	
+	if($section=='authcheck'){
+		//echo $token;
+		//echo $authorizedUser;
+		echo "size".sizeof($_SESSION);
+		echo authorizeWithToken($token);
+	}
+	
 	if($section=='user'){
 		include_once "inc/class.user.inc.php";
 		$userActions = new UserActions(null);
 		if($request=='auth'){
 			$response = $userActions->login($_GET['username'], $_GET['password']);
+			if($response['authenticationSuccess']){
+				$response['token']=createToken($_GET['username']);
+				$response['size'] = sizeof($_SESSION);
+			}
 			header('Content-Type: application/json');
 			echo json_encode($response);
 		}
@@ -406,9 +418,18 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			$designID = $_GET['designID'];
 			$comment = $_GET['comment'];
 			$repliesTo = $_GET['repliesTo'];
-			if(!isset($repliesTo)) $repliesTo=0;
+			if(!isset($repliesTo)){
+				$repliesTo=0;
+			}
 			if($authorizedUser!=null){
-				if(isset($designID) && isset($comment)) $commentActions->addComment($designID, $authorizedUser, $comment, $repliesTo);
+				if(isset($designID) && isset($comment)){
+					$response = $commentActions->addComment($designID, $authorizedUser, $comment, $repliesTo);
+					header('Content-Type: application/json');
+					echo json_encode(array('addcomment'=>$response));
+				}
+			}
+			else{
+				badTokenResponse('addcomment');
 			}
 		}
 		else if($request=='delete'){}
@@ -463,4 +484,42 @@ function badTokenResponse($requestName){
 function hasStartEnd(){
 	return (isset($_GET['start']) && isset($_GET['end']));
 }
+
+
+function createToken($username){
+		
+		// create the hash that we will use and check that it is unique
+		$hash = SHA1(createSalt().$username);
+		while(checkForTokenMatch($hash)){
+			$hash = SHA1(createSalt().$username);
+		}
+		
+		$_SESSION[$hash] = $username;
+		
+		return $hash;
+	}
+	
+	function checkForTokenMatch($hash){
+		
+		return isset($_SESSION[$hash]);
+	}
+	
+	function authorizeWithToken($token){
+		
+		echo "size".sizeof($_SESSION);
+		
+		return $_SESSION[$token];
+	}
+	
+	function createSalt(){
+		$salt = "";
+		
+		for($i=0; $i<10; $i++){
+			$random = rand(0, 9);
+			$salt = $salt.$random;
+		}
+		
+		return $salt;
+	}
+
 ?>
