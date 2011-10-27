@@ -52,18 +52,30 @@
 	}
 	
 	function authorizeWithToken($token){
-		$sql = 'SELECT user FROM live_sessions WHERE session_token=:token AND NOW() < DATE_ADD(last_touched, INTERVAL :sessionTTL MINUTE)';
+		$sql = 'SELECT user FROM live_sessions WHERE session_token=:token';// AND NOW() < DATE_ADD(last_touched, INTERVAL :sessionTTL MINUTE)
 		try{
 			$stmt = $_SESSION['sessionDB']->prepare($sql);
-			$stmt->bindParam(":token", $hash, PDO::PARAM_STR);
-			$stmt->bindParam(":sessionTTL", $sessionTTL, PDO::PARAM_INT);
+			$stmt->bindParam(":token", $token, PDO::PARAM_STR);
+			//$stmt->bindParam(":sessionTTL", $sessionTTL, PDO::PARAM_INT);
 			$stmt->execute();
 			if($row=$stmt->fetch()){
+				updateLastTouched($token);
 				return $row['user'];
 			}
 			else{
 				return false;
 			}
+		}catch(PDOException $e){
+			return false;
+		}
+	}
+	
+	function updateLastTouched($token){
+		$sql = 'UPDATE live_sessions SET last_touched = NOW() WHERE session_token=:token';
+		try{
+			$stmt = $_SESSION['sessionDB']->prepare($sql);
+			$stmt->bindParam(":token", $token, PDO::PARAM_STR);
+			$stmt->execute();
 		}catch(PDOException $e){
 			return false;
 		}
