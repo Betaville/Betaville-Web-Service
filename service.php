@@ -49,6 +49,7 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		include_once "inc/class.user.inc.php";
 		$userActions = new UserActions(null);
 		if($request=='auth'){
+			// NOTE: Same as startsession
 			$response = $userActions->login($_GET['username'], $_GET['password']);
 			if($response['authenticationSuccess']){
 				$response['token']=createToken($_GET['username']);
@@ -58,7 +59,14 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			echo json_encode($response);
 		}
 		else if($request=='startsession'){
-			// should only be called from the java application
+			// NOTE: Same as auth
+			$response = $userActions->login($_GET['username'], $_GET['password']);
+			if($response['authenticationSuccess']){
+				$response['token']=createToken($_GET['username']);
+				$response['size'] = sizeof($_SESSION);
+			}
+			header('Content-Type: application/json');
+			echo json_encode($response);
 		}
 		else if($request=='endsession'){
 			// should only be called from the java application
