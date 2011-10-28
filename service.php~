@@ -41,7 +41,7 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 	if($section=='authcheck'){
 		//echo $token;
 		//echo $authorizedUser;
-		//echo "size".sizeof($_SESSION);
+		echo "size".sizeof($_SESSION);
 		echo authorizeWithToken($token);
 	}
 	
