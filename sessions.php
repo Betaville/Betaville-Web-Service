@@ -81,6 +81,18 @@
 		}
 	}
 	
+	function endSession($token){
+		$sql = 'DELETE FROM live_sessions WHERE session_token=:token';
+		try{
+			$stmt = $_SESSION['sessionDB']->prepare($sql);
+			$stmt->bindParam(":token", $token, PDO::PARAM_STR);
+			$stmt->execute();
+			return true;
+		}catch(PDOException $e){
+			return false;
+		}
+	}
+	
 	function createSalt(){
 		$salt = "";
 		

@@ -69,7 +69,8 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			echo json_encode($response);
 		}
 		else if($request=='endsession'){
-			// should only be called from the java application
+			header('Content-Type: application/json');
+			echo json_encode(array('sessionended'=>endSession($token)));
 		}
 		else if($request=='add'){
 			$response = $userActions->addUser($_GET['username'], $_GET['password'], $_GET['email']);
