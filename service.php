@@ -450,8 +450,15 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		}
 	}
 	else if($section=='city'){
+		include_once "inc/class.city.inc.php";
+		$cityActions=new CityActions(null);
+		
 		if($request=='add'){}
-		else if($request=='findbyname'){}
+		else if($request=='findbyname'){
+			$cities = $cityActions->findCityByName($_GET['name']);
+			header('Content-Type: application/json');
+			echo json_encode(array('cities'=>$cities));
+		}
 		else if($request=='findbystate'){}
 		else if($request=='findbycountry'){}
 		else if($request=='findbyid'){}
