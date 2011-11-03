@@ -46,7 +46,7 @@ public function findCityByName($name){
 
 }
 
-public function cityFromRow(){
+public function cityFromRow($row){
 
 	return array(CITY_ID=>$row[CITY_ID], CITY_NAME=>$row[CITY_NAME], CITY_STATE=>$row[CITY_STATE],CITY_COUNTRY=>$row[CITY_COUNTRY]);
 
