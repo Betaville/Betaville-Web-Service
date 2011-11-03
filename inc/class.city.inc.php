@@ -35,7 +35,7 @@ public function findCityByName($name){
 			$stmt->execute();
 			$cities = array();
 			while($row=$stmt->fetch()){
-				$cities[] = $this->commentFromRow($row);
+				$cities[] = $this->cityFromRow($row);
 				}
 			return $cities;
 		}catch(PDOException $e){
@@ -46,7 +46,7 @@ public function findCityByName($name){
 
 }
 
-public function returnCityFromRow(){
+public function cityFromRow(){
 
 	return array(CITY_ID=>$row[CITY_ID], CITY_NAME=>$row[CITY_NAME], CITY_STATE=>$row[CITY_STATE],CITY_COUNTRY=>$row[CITY_COUNTRY]);
 
