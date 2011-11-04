@@ -464,7 +464,11 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		else if($request=='findbycountry'){}
 		else if($request=='findbyid'){}
 		else if($request=='findbyall'){}
-		else if($request=='getall'){}
+		else if($request=='getall'){
+			$cities = $cityActions->findAllCity();
+			header('Content-Type: application/json');
+			echo json_encode(array('cities'=>$cities));
+		}
 	}
 	else if($section=='wormhole'){
 		if($request=='add'){}
