@@ -521,14 +521,13 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		}
 	}
 
+}
+function hasStartEnd(){
+	return (isset($_GET['start']) && isset($_GET['end']));
+	}
 
 function badTokenResponse($requestName){
 	header('Content-Type: application/json');
 	echo json_encode(array($requestName=>"User authentication invalid or not supplied"));
-}
-
-function hasStartEnd(){
-	return (isset($_GET['start']) && isset($_GET['end']));
-}
 }
 ?>
