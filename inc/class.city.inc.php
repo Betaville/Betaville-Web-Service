@@ -21,6 +21,8 @@
  * Actions for interaction with city Table
  * @author Skye Book
  */
+
+
 class CityActions{
 	
 	private $_db;
@@ -39,6 +41,7 @@ class CityActions{
 		}
 	}
 
+//Returns array of all the city parameters querying the entire city table
 public function findAllCity(){
 
 	$sql = 'SELECT * FROM '.CITY_TABLE;
@@ -47,7 +50,51 @@ public function findAllCity(){
 		$stmt->execute();
 		$cities = array();
 		while($row=$stmt->fetch()){
-		$cities[] = $this->cityFromRow($row);
+		$cities[] = $this->AllCityParameters($row);
+		}
+		return $cities;
+	}catch(PDOException $e){
+		echo'exception';
+		return false;
+		}
+		return null;
+	}
+
+//Returns array of cityname querying on cityId
+public function findCityByID($id){
+
+	$sql = 'SELECT * FROM '.CITY_TABLE.' WHERE '.CITY_TABLE.'.'.CITY_ID.' = '.$id;
+		try{
+		$stmt = $this->_db->prepare($sql);
+		$stmt->execute();
+		$cities = array();
+		while($row=$stmt->fetch()){
+		$cities[] = $this->cityName($row);
+		}
+		return $cities;
+	}catch(PDOException $e){
+		echo'exception';
+		return false;
+		}
+		return null;
+	}
+
+//Returns array of cityname querying on cityname,statename and countryname
+public function findCityByAll($cityname,$statename,$countryname){
+
+	$cityname = '%'.$cityname.'%';
+	$statename = '%'.$statename.'%';
+	$countryname = '%'.$countryname.'%';
+	$sql = 'SELECT * FROM '.CITY_TABLE.' WHERE '.CITY_TABLE.'.'.CITY_NAME.' LIKE :cityName OR '.CITY_TABLE.'.'.CITY_STATE.' LIKE :cityState OR '.CITY_TABLE.'.'.CITY_COUNTRY.' LIKE :cityCountry';
+		try{
+		$stmt = $this->_db->prepare($sql);
+		$stmt->bindParam(":cityName", $cityname, PDO::PARAM_STR);
+		$stmt->bindParam(":cityState", $statename, PDO::PARAM_STR);
+		$stmt->bindParam(":cityCountry", $countryname, PDO::PARAM_STR);
+		$stmt->execute();
+		$cities = array();
+		while($row=$stmt->fetch()){
+		$cities[] = $this->cityName($row);
 		}
 		return $cities;
 	}catch(PDOException $e){
@@ -58,17 +105,18 @@ public function findAllCity(){
 	}
 
 
-public function findCityByName($name){
+//Returns array of cityID's querying on statename
+public function findCityByState($name){
 
 	$name = '%'.$name.'%';
-	$sql = 'SELECT * FROM '.CITY_TABLE.' WHERE '.CITY_TABLE.'.'.CITY_NAME.' LIKE :cityName';
+	$sql = 'SELECT * FROM '.CITY_TABLE.' WHERE '.CITY_TABLE.'.'.CITY_STATE.' LIKE :cityState';
 		try{
 			$stmt = $this->_db->prepare($sql);
-			$stmt->bindParam(":cityName", $name, PDO::PARAM_STR);
+			$stmt->bindParam(":cityState", $name, PDO::PARAM_STR);
 			$stmt->execute();
 			$cities = array();
 			while($row=$stmt->fetch()){
-				$cities[] = $this->cityFromRow($row);
+				$cities[] = $this->cityID($row);
 				}
 			return $cities;
 		}catch(PDOException $e){
@@ -79,7 +127,65 @@ public function findCityByName($name){
 
 	}
 
-private function cityFromRow($row){
+//Returns array of cityID's querying on country name
+public function findCityByCountry($name){
+
+	$name = '%'.$name.'%';
+	$sql = 'SELECT * FROM '.CITY_TABLE.' WHERE '.CITY_TABLE.'.'.CITY_COUNTRY.' LIKE :cityCountry';
+		try{
+			$stmt = $this->_db->prepare($sql);
+			$stmt->bindParam(":cityCountry", $name, PDO::PARAM_STR);
+			$stmt->execute();
+			$cities = array();
+			while($row=$stmt->fetch()){
+				$cities[] = $this->cityID($row);
+				}
+			return $cities;
+		}catch(PDOException $e){
+			echo'exception';
+			return false;
+		}
+		return null;
+
+	}
+
+
+//Returns array of cityID's querying on cityname
+public function findCityByName($name){
+
+	$name = '%'.$name.'%';
+	$sql = 'SELECT * FROM '.CITY_TABLE.' WHERE '.CITY_TABLE.'.'.CITY_NAME.' LIKE :cityName';
+		try{
+			$stmt = $this->_db->prepare($sql);
+			$stmt->bindParam(":cityName", $name, PDO::PARAM_STR);
+			$stmt->execute();
+			$cities = array();
+			while($row=$stmt->fetch()){
+				$cities[] = $this->cityID($row);
+				}
+			return $cities;
+		}catch(PDOException $e){
+			echo'exception';
+			return false;
+		}
+		return null;
+
+	}
+
+//Private functions from used by above functions
+private function cityName($row){
+
+	return array(CITY_NAME=>$row[CITY_NAME]);
+
+	}
+
+private function cityID($row){
+
+	return array(CITY_ID=>$row[CITY_ID]);
+
+	}
+
+private function allCityParameters($row){
 
 	return array(CITY_ID=>$row[CITY_ID], CITY_NAME=>$row[CITY_NAME], CITY_STATE=>$row[CITY_STATE],CITY_COUNTRY=>$row[CITY_COUNTRY]);
 
