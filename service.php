@@ -455,15 +455,40 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		$cityActions=new CityActions(null);
 		
 		if($request=='add'){}
+		//Return city id querying on the cityname		
 		else if($request=='findbyname'){
 			$cities = $cityActions->findCityByName($_GET['name']);
 			header('Content-Type: application/json');
 			echo json_encode(array('cities'=>$cities));
 		}
-		else if($request=='findbystate'){}
-		else if($request=='findbycountry'){}
-		else if($request=='findbyid'){}
-		else if($request=='findbyall'){}
+		//Return city id querying on the state			
+		else if($request=='findbystate'){
+			$cities = $cityActions->findCityByState($_GET['name']);
+			header('Content-Type: application/json');
+			echo json_encode(array('cities'=>$cities));
+		}
+		//Return city id querying on the country
+		else if($request=='findbycountry'){
+			$cities = $cityActions->findCityByCountry($_GET['name']);
+			header('Content-Type: application/json');
+			echo json_encode(array('cities'=>$cities));	
+		}
+		//Return city name querying on the cityID
+		else if($request=='findbyid'){
+			$cities = $cityActions->findCityByID($_GET['cityid']);
+			header('Content-Type: application/json');
+			echo json_encode(array('cities'=>$cities));	
+		}
+		//Return city name querying on the city name,state name and the country name		
+		else if($request=='findbyall'){
+			$cityname = $_GET['cityname'];
+			$statename = $_GET['statename'];
+			$countryname = $_GET['countryname'];
+			$cities = $cityActions->findCityByAll($cityname,$statename,$countryname);
+			header('Content-Type: application/json');
+			echo json_encode(array('cities'=>$cities));	
+		}
+		//Return all city Parameters of all the entries in the city table
 		else if($request=='getall'){
 			$cities = $cityActions->findAllCity();
 			header('Content-Type: application/json');
