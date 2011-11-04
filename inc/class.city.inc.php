@@ -172,7 +172,7 @@ public function findCityByName($name){
 
 	}
 
-//Private functions from used by above functions
+//Private functions from used by above functions depending on request by JSONClientManager
 private function cityName($row){
 
 	return array(CITY_NAME=>$row[CITY_NAME]);
