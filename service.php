@@ -449,8 +449,8 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			echo json_encode(array('comments'=>$comments));
 		}
 	}
+	//Not sure how we use this, but maybe if needed in the future	
 	else if($section=='city'){
-		//Not sure how we use this, but maybe if needed in the future		
 		include_once "inc/class.city.inc.php";
 		$cityActions=new CityActions(null);
 		
