@@ -26,7 +26,7 @@ if($_GET['gz']==1){
 }
 
 if(isset($_GET['section']) && isset($_GET['request'])){
-	include "sessions.php";
+	include_once "sessions.php";
 	//include_once "db_constants.php";
 
 	// get the auth token if it exists
@@ -34,7 +34,7 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 	if(isset($_GET['token'])){
 		$authorizedUser = authorizeWithToken($token);
 	}
-	
+
 	$section = $_GET['section'];
 	$request = $_GET['request'];
 	
@@ -44,7 +44,7 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		//echo "size".sizeof($_SESSION);
 		echo authorizeWithToken($token);
 	}
-	
+
 	if($section=='user'){
 		include_once "inc/class.user.inc.php";
 		$userActions = new UserActions(null);
@@ -450,6 +450,7 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		}
 	}
 	else if($section=='city'){
+		//Not sure how we use this, but maybe if needed in the future		
 		include_once "inc/class.city.inc.php";
 		$cityActions=new CityActions(null);
 		
@@ -490,7 +491,7 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			echo json_encode(array('serverTime'=>$utilActions->getDateTime()));
 		}
 	}
-}
+
 
 function badTokenResponse($requestName){
 	header('Content-Type: application/json');
@@ -500,5 +501,5 @@ function badTokenResponse($requestName){
 function hasStartEnd(){
 	return (isset($_GET['start']) && isset($_GET['end']));
 }
-
+}
 ?>
