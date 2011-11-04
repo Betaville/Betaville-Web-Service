@@ -18,7 +18,7 @@
  */
 
 /**
- * Actions for interacting with comments
+ * Actions for interaction with city Table
  * @author Skye Book
  */
 class CityActions{
@@ -39,10 +39,29 @@ class CityActions{
 		}
 	}
 
+public function findAllCity(){
+
+	$sql = 'SELECT * FROM '.CITY_TABLE;
+		try{
+		$stmt = $this->_db->prepare($sql);
+		$stmt->execute();
+		$cities = array();
+		while($row=$stmt->fetch()){
+		$cities[] = $this->cityFromRow($row);
+		}
+		return $cities;
+	}catch(PDOException $e){
+		echo'exception';
+		return false;
+		}
+		return null;
+	}
+
+
 public function findCityByName($name){
 
-	$name='%'.$name.'%';
-	$sql='SELECT * FROM '.CITY_TABLE.' WHERE '.CITY_TABLE.'.'.CITY_NAME.' LIKE :cityName';
+	$name = '%'.$name.'%';
+	$sql = 'SELECT * FROM '.CITY_TABLE.' WHERE '.CITY_TABLE.'.'.CITY_NAME.' LIKE :cityName';
 		try{
 			$stmt = $this->_db->prepare($sql);
 			$stmt->bindParam(":cityName", $name, PDO::PARAM_STR);
@@ -58,7 +77,7 @@ public function findCityByName($name){
 		}
 		return null;
 
-}
+	}
 
 private function cityFromRow($row){
 
