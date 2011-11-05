@@ -110,11 +110,17 @@ class DesignActions{
 		return null;
 	}
 	
-	public function findDesignByUser($user){
-		$sql = 'SELECT * FROM '.$this->selectFromWhat.' WHERE '.DESIGN_TABLE.'.'.DESIGN_USER.' LIKE :user AND '.DESIGN_TABLE.'.'.DESIGN_IS_ALIVE.'=1';
+	public function findDesignByUser($user, $start, $end, $excludeEmpty){
+		$excludeAddIn = "";
+		if($excludeEmpty){
+			$excludeAddIn = " AND ".DESIGN_TYPE." != 'empty' ";
+		}
+		$sql = 'SELECT * FROM '.$this->selectFromWhat.' WHERE '.DESIGN_TABLE.'.'.DESIGN_USER.' LIKE :user AND '.DESIGN_TABLE.'.'.DESIGN_IS_ALIVE.'=1 '.$excludeAddIn.' ORDER BY design.designID DESC LIMIT :start, :end';
 		try{
 			$stmt = $this->_db->prepare($sql);
 			$stmt->bindParam(":user", $user, PDO::PARAM_STR);
+			$stmt->bindParam(":start", $start, PDO::PARAM_INT);
+			$stmt->bindParam(":end", $end, PDO::PARAM_INT);
 			$stmt->execute();
 			$designs = array();
 			while($row=$stmt->fetch()){

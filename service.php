@@ -34,6 +34,11 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 	if(isset($_GET['token'])){
 		$authorizedUser = authorizeWithToken($token);
 	}
+	
+	$excludeEmpty = false;
+	if(isset($_GET['excludeempty'])){
+		$excludeEmpty = $_GET['excludeempty'] === "1";
+	}
 
 	$section = $_GET['section'];
 	$request = $_GET['request'];
@@ -254,7 +259,20 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			echo json_encode(array('designs'=>$designs));
 		}
 		else if($request=='findbyuser'){
-			$designs = $designActions->findDesignByUser($_GET['user']);
+		
+			// set default values
+			$start = 0;
+			$end = 50;
+			
+			if(hasStartEnd()){
+				$start = (int)$_GET['start'];
+				$end = (int)$_GET['end'];
+			}
+			else if(!empty($_GET['quantity'])){
+				$end = (int)$_GET['quantity'];
+			}
+		
+			$designs = $designActions->findDesignByUser($_GET['user'], $start, $end, $excludeEmpty);
 			header('Content-Type: application/json');
 			echo json_encode(array('designs'=>$designs));
 		}
@@ -349,11 +367,6 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			include_once "inc/class.design.inc.php";
 			$designActions = new DesignActions(null);
 			header('Content-Type: application/json');
-			
-			$excludeEmpty = false;
-			if(isset($_GET['excludeempty'])){
-				$excludeEmpty = $_GET['excludeempty'];
-			}
 			
 			// set default values
 			$start = 0;
