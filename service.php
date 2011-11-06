@@ -424,6 +424,7 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		}
 		else if($request=='myactivity'){
 			include_once "inc/class.comment.inc.php";
+			include_once "inc/class.design.inc.php";
 			$commentActions = new CommentActions(null);
 			$comments = $commentActions->getNotificationsForUser($_GET['user']);
 			header('Content-Type: application/json');
