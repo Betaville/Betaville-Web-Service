@@ -64,7 +64,7 @@ class CommentActions{
 			while($row=$stmt->fetch()){
 				// only include this result if it hasn't been verified as spam
 				if($row[COMMENT_SPAMVERIFIED]==0){
-					$comments[] = $this->commentFromRow($row, COMMENT_USER);
+					$comments[] = $this->commentFromRow($row, COMMENT_USER, COMMENT_DATE);
 				}
 			}
 			return $comments;
@@ -86,7 +86,7 @@ class CommentActions{
 			while($row=$stmt->fetch()){
 				// only include this result if it hasn't been verified as spam
 				if($row[COMMENT_SPAMVERIFIED]==0){
-					$comments[] = $this->commentFromRow($row, COMMENT_USER);
+					$comments[] = $this->commentFromRow($row, COMMENT_USER, COMMENT_DATE);
 				}
 			}
 			return $comments;
@@ -98,7 +98,7 @@ class CommentActions{
 	}
 	
 	public function getNotificationsForUser($username){
-		$sql = 'SELECT *, '.COMMENT_TABLE.'.'.COMMENT_USER.' AS commentuser, '.DESIGN_TABLE.'.'.DESIGN_USER.' AS designuser FROM '.COMMENT_TABLE.' JOIN '.DESIGN_TABLE.' ON '.COMMENT_TABLE.'.'.COMMENT_DESIGN.' = '.DESIGN_TABLE.'.'.DESIGN_ID.' WHERE '.DESIGN_TABLE.'.'.DESIGN_IS_ALIVE.'=1 AND ('.DESIGN_TABLE.'.'.DESIGN_FAVE_LIST.' LIKE :wildcardname OR '.DESIGN_TABLE.'.'.DESIGN_USER.' LIKE :username OR '.COMMENT_TABLE.'.'.COMMENT_USER.' LIKE :username) ORDER BY '.COMMENT_ID.' DESC';
+		$sql = 'SELECT *, '.COMMENT_TABLE.'.'.COMMENT_USER.' AS commentuser, '.DESIGN_TABLE.'.'.DESIGN_USER.' AS designuser, '.COMMENT_TABLE.'.'.COMMENT_DATE.' AS commentdate FROM '.COMMENT_TABLE.' JOIN '.DESIGN_TABLE.' ON '.COMMENT_TABLE.'.'.COMMENT_DESIGN.' = '.DESIGN_TABLE.'.'.DESIGN_ID.' WHERE '.DESIGN_TABLE.'.'.DESIGN_IS_ALIVE.'=1 AND ('.DESIGN_TABLE.'.'.DESIGN_FAVE_LIST.' LIKE :wildcardname OR '.DESIGN_TABLE.'.'.DESIGN_USER.' LIKE :username OR '.COMMENT_TABLE.'.'.COMMENT_USER.' LIKE :username) ORDER BY '.COMMENT_ID.' DESC';
 		$wildcardName = '%'.$username.'%';
 			try{
 			$stmt = $this->_db->prepare($sql);
@@ -109,7 +109,7 @@ class CommentActions{
 			while($row=$stmt->fetch()){
 				// only include this result if it hasn't been verified as spam
 				if($row[COMMENT_SPAMVERIFIED]==0){
-					$comments[] = $this->commentFromRow($row, 'commentuser');
+					$comments[] = $this->commentFromRow($row, 'commentuser', 'commentdate');
 				}
 			}
 			return $comments;
@@ -123,9 +123,9 @@ class CommentActions{
 	private function commentFromSpecificRow($row) {
 		return array(COMMENT_ID=>$row[COMMENT_ID], COMMENT_DESIGN=>$row[COMMENT_DESIGN], DESIGN_NAME=>$row[DESIGN_NAME], DESIGN_FILE=>$row[DESIGN_FILE], COMMENT_USER=>$row[COMMENT_USER], COMMENT_TEXT=>$row[COMMENT_TEXT], COMMENT_DATE=>$row[COMMENT_DATE], COMMENT_REPLIESTO=>$row[COMMENT_REPLIESTO]);
 }
-	private function commentFromRow($row, $commentUserAlias){
+	private function commentFromRow($row, $commentUserAlias, $commentDateAlias){
 		return array(COMMENT_ID=>$row[COMMENT_ID], COMMENT_DESIGN=>$row[COMMENT_DESIGN], COMMENT_USER=>$row[$commentUserAlias],COMMENT_TEXT=>$row[COMMENT_TEXT],
-		COMMENT_DATE=>$row[COMMENT_DATE],COMMENT_REPLIESTO=>$row[COMMENT_REPLIESTO]);
+		COMMENT_DATE=>$row[$commentDateAlias],COMMENT_REPLIESTO=>$row[COMMENT_REPLIESTO]);
 	}
 }
 ?>
