@@ -189,7 +189,7 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 					fclose($fileHandle);
 				}
 				else{
-					// we are her because the user cannot upload base models
+					// we are here because the user cannot upload base models
 				}
 			}
 			else{
