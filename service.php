@@ -105,10 +105,28 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		else if($request=='changebio'){
 			$newBio = $_GET['bio'];
 			if($authorizedUser!=null){
-				if(isset($newBio)) $userActions->changeBio($authorizedUser, $newBio);
+				if(isset($newBio)) {
+					$response = $userActions->changeBio($authorizedUser, $newBio);
+					header('Content-Type: application/json');
+					echo json_encode(array('bioChanged'=>$response));
+				}
 			}
 			else{
 				badTokenResponse('changebio');
+			}
+		}
+		//website
+		else if($request=='changewebsite'){
+			$newWebsite = $_GET['website'];
+			if($authorizedUser!=null){
+				if(isset($newWebsite)) {
+					$response = $userActions->changeWebsite($authorizedUser, $newWebsite);
+					header('Content-Type: application/json');
+					echo json_encode(array('websiteChanged'=>$response));
+				}
+			}
+			else{
+				badTokenResponse('changewebsite');
 			}
 		}
 		else if($request=='updateavatar'){

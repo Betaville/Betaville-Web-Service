@@ -214,6 +214,22 @@ class UserActions{
 			$stmt->bindParam(":user", $user, PDO::PARAM_STR);
 			$stmt->execute();
 			$row=$stmt->fetch();
+			return true;
+		}catch(PDOException $e){
+			return false;
+		}
+	}
+	
+	//website
+	public function changeWebsite($user, $website){
+		$userSQL = "UPDATE user set website = :newWebsite WHERE userName=:user";
+		try{
+			$stmt = $this->_db->prepare($userSQL);
+			$stmt->bindParam(":newWebsite", $website, PDO::PARAM_STR);
+			$stmt->bindParam(":user", $user, PDO::PARAM_STR);
+			$stmt->execute();
+			$row=$stmt->fetch();
+			return true;
 		}catch(PDOException $e){
 			return false;
 		}
