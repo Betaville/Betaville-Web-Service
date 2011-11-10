@@ -16,7 +16,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
+//error_reporting (E_ALL ^ E_NOTICE); 
 session_start();
 
 if($_GET['gz']==1){
@@ -26,7 +26,7 @@ if($_GET['gz']==1){
 }
 
 if(isset($_GET['section']) && isset($_GET['request'])){
-	include "sessions.php";
+	include_once "sessions.php";
 	//include_once "db_constants.php";
 
 	// get the auth token if it exists
@@ -35,6 +35,11 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		$authorizedUser = authorizeWithToken($token);
 	}
 	
+	$excludeEmpty = false;
+	if(isset($_GET['excludeempty'])){
+		$excludeEmpty = $_GET['excludeempty'] === "1";
+	}
+
 	$section = $_GET['section'];
 	$request = $_GET['request'];
 	
@@ -44,7 +49,7 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		//echo "size".sizeof($_SESSION);
 		echo authorizeWithToken($token);
 	}
-	
+
 	if($section=='user'){
 		include_once "inc/class.user.inc.php";
 		$userActions = new UserActions(null);
@@ -202,7 +207,7 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 					fclose($fileHandle);
 				}
 				else{
-					// we are her because the user cannot upload base models
+					// we are here because the user cannot upload base models
 				}
 			}
 			else{
@@ -272,7 +277,20 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			echo json_encode(array('designs'=>$designs));
 		}
 		else if($request=='findbyuser'){
-			$designs = $designActions->findDesignByUser($_GET['user']);
+		
+			// set default values
+			$start = 0;
+			$end = 50;
+			
+			if(hasStartEnd()){
+				$start = (int)$_GET['start'];
+				$end = (int)$_GET['end'];
+			}
+			else if(!empty($_GET['quantity'])){
+				$end = (int)$_GET['quantity'];
+			}
+		
+			$designs = $designActions->findDesignByUser($_GET['user'], $start, $end, $excludeEmpty);
 			header('Content-Type: application/json');
 			echo json_encode(array('designs'=>$designs));
 		}
@@ -368,11 +386,6 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			$designActions = new DesignActions(null);
 			header('Content-Type: application/json');
 			
-			$excludeEmpty = false;
-			if(isset($_GET['excludeempty'])){
-				$excludeEmpty = $_GET['excludeempty'];
-			}
-			
 			// set default values
 			$start = 0;
 			$end = 50;
@@ -429,6 +442,7 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		}
 		else if($request=='myactivity'){
 			include_once "inc/class.comment.inc.php";
+			include_once "inc/class.design.inc.php";
 			$commentActions = new CommentActions(null);
 			$comments = $commentActions->getNotificationsForUser($_GET['user']);
 			header('Content-Type: application/json');
@@ -467,14 +481,51 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			echo json_encode(array('comments'=>$comments));
 		}
 	}
+	//Not sure how we use this, but maybe if needed in the future	
 	else if($section=='city'){
+		include_once "inc/class.city.inc.php";
+		$cityActions=new CityActions(null);
+		
 		if($request=='add'){}
-		else if($request=='findbyname'){}
-		else if($request=='findbystate'){}
-		else if($request=='findbycountry'){}
-		else if($request=='findbyid'){}
-		else if($request=='findbyall'){}
-		else if($request=='getall'){}
+		//Return city id querying on the cityname		
+		else if($request=='findbyname'){
+			$cities = $cityActions->findCityByName($_GET['name']);
+			header('Content-Type: application/json');
+			echo json_encode(array('cities'=>$cities));
+		}
+		//Return city id querying on the state			
+		else if($request=='findbystate'){
+			$cities = $cityActions->findCityByState($_GET['name']);
+			header('Content-Type: application/json');
+			echo json_encode(array('cities'=>$cities));
+		}
+		//Return city id querying on the country
+		else if($request=='findbycountry'){
+			$cities = $cityActions->findCityByCountry($_GET['name']);
+			header('Content-Type: application/json');
+			echo json_encode(array('cities'=>$cities));	
+		}
+		//Return city name querying on the cityID
+		else if($request=='findbyid'){
+			$cities = $cityActions->findCityByID($_GET['cityid']);
+			header('Content-Type: application/json');
+			echo json_encode(array('cities'=>$cities));	
+		}
+		//Return city name querying on the city name,state name and the country name		
+		else if($request=='findbyall'){
+			$cityname = $_GET['cityname'];
+			$statename = $_GET['statename'];
+			$countryname = $_GET['countryname'];
+			$cities = $cityActions->findCityByAll($cityname,$statename,$countryname);
+			header('Content-Type: application/json');
+			echo json_encode(array('cities'=>$cities));	
+		}
+		//Return all city Parameters of all the entries in the city table
+		else if($request=='getall'){
+			$cities = $cityActions->findAllCity();
+			header('Content-Type: application/json');
+			echo json_encode(array('cities'=>$cities));
+		}
 	}
 	else if($section=='wormhole'){
 		if($request=='add'){}
@@ -501,15 +552,14 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			echo json_encode(array('serverTime'=>$utilActions->getDateTime()));
 		}
 	}
+
 }
+function hasStartEnd(){
+	return (isset($_GET['start']) && isset($_GET['end']));
+	}
 
 function badTokenResponse($requestName){
 	header('Content-Type: application/json');
 	echo json_encode(array($requestName=>"User authentication invalid or not supplied"));
 }
-
-function hasStartEnd(){
-	return (isset($_GET['start']) && isset($_GET['end']));
-}
-
 ?>

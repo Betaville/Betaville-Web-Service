@@ -11,7 +11,7 @@
 		<p>You're probably looking for some information on how to use the web service, right?  Well we have a number of resources</p>
 		<ul>
 			<li>Reading the <a href="http://wiki.betaville.net/">Wiki</a></li>
-			<li>Examining the <a href="http://betaville.googlecode.com/">Source Code</a>
+			<li>Examining the <a href="http://betaville.googlecode.com/">Source Code</a></li>
 		</ul>
 	</div>
 	
