@@ -54,6 +54,27 @@ class CommentActions{
 		}
 	}
 
+
+	public function getOnlyUserNotification($user){
+		$sql = 'SELECT * FROM '.COMMENT_TABLE.' WHERE user="'.$user.'" ORDER BY commentid DESC LIMIT 5';
+		try{
+			$stmt = $this->_db->prepare($sql);
+			$stmt->execute();
+			$comments = array();
+			while($row=$stmt->fetch()){
+				// only include this result if it hasn't been verified as spam
+				if($row[COMMENT_SPAMVERIFIED]==0){
+					$comments[] = $this->commentFromRow($row, COMMENT_USER, COMMENT_DATE);
+				}
+			}
+			return $comments;
+		}catch(PDOException $e){
+			echo'exception';
+			return false;
+		}
+		return null;
+	}
+	
 	public function getCommentsForDesign($id){
 		$sql = 'SELECT * FROM '.COMMENT_TABLE.' WHERE '.COMMENT_SPAMVERIFIED.' = 0 AND '.COMMENT_DESIGN.'=:designID';
 		try{
@@ -97,6 +118,7 @@ class CommentActions{
 		return null;
 	}
 	
+	//Function to retrieve comments only for a specific user
 	public function getNotificationsForUser($username){
 		$sql = 'SELECT *, '.COMMENT_TABLE.'.'.COMMENT_USER.' AS commentuser, '.DESIGN_TABLE.'.'.DESIGN_USER.' AS designuser, '.COMMENT_TABLE.'.'.COMMENT_DATE.' AS commentdate FROM '.COMMENT_TABLE.' JOIN '.DESIGN_TABLE.' ON '.COMMENT_TABLE.'.'.COMMENT_DESIGN.' = '.DESIGN_TABLE.'.'.DESIGN_ID.' WHERE '.DESIGN_TABLE.'.'.DESIGN_IS_ALIVE.'=1 AND ('.DESIGN_TABLE.'.'.DESIGN_FAVE_LIST.' LIKE :wildcardname OR '.DESIGN_TABLE.'.'.DESIGN_USER.' LIKE :username OR '.COMMENT_TABLE.'.'.COMMENT_USER.' LIKE :username) ORDER BY '.COMMENT_ID.' DESC';
 		$wildcardName = '%'.$username.'%';
