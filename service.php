@@ -16,9 +16,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-//error_reporting (E_ALL ^ E_NOTICE); 
 session_start();
-
 if($_GET['gz']==1){
 	// check if a zipped response is requested
 	header('Content-Encoding: gzip');
@@ -430,6 +428,14 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			header('Content-Type: application/json');
 			echo json_encode(array('comments'=>$comments));
 		}
+		else if($request=='peruseractivity'){
+			include_once "inc/class.comment.inc.php";
+			include_once "inc/class.design.inc.php";
+			$commentActions = new CommentActions(null);
+			$comments = $commentActions->getOnlyUserNotification($_GET['user']);
+			header('Content-Type: application/json');
+			echo json_encode(array('comments'=>$comments));
+			}
 	}
 	else if($section=='share'){
 		// share does not currently use the request parameter
