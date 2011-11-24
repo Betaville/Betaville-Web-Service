@@ -143,6 +143,11 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			header('Content-Type: application/json');
 			echo json_encode(array('userInfo'=>$response));
 		}
+		else if($request=='finduser'){
+			$response = $userActions->searchForUser($_GET['username']);
+			header('Content-Type: application/json');
+			echo json_encode(array('users'=>$response));
+		}
 	}
 	else if($section=='coordinate'){
 		include_once "inc/class.coordinate.inc.php";
