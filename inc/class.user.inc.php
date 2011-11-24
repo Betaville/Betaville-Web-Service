@@ -247,7 +247,7 @@ class UserActions{
 		$userSQL = "UPDATE user set type = :newType WHERE userName=:user";
 		try{
 			$stmt = $this->_db->prepare($userSQL);
-			$stmt->bindParam(":newType", $type, PDO::PARAM_);
+			$stmt->bindParam(":newType", $type, PDO::PARAM_STR);
 			$stmt->bindParam(":user", $user, PDO::PARAM_STR);
 			$stmt->execute();
 			$row=$stmt->fetch();

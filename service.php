@@ -107,9 +107,11 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		}
 		else if($request=='changebio'){
 			$newBio = $_GET['bio'];
-			header('Content-Type: application/json');
 			if($authorizedUser!=null){
-				if(isset($newBio)) echo json_encode(array('changetype'=>$userActions->changeBio($authorizedUser, $newBio)));
+				if(isset($newBio)){
+					header('Content-Type: application/json');
+					echo json_encode(array('changebio'=>$userActions->changeBio($authorizedUser, $newBio)));
+				}
 			}
 			else{
 				badTokenResponse('changebio');
@@ -122,12 +124,13 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 				$userType = $userActions->getUserType($authorizedUser);
 				if($userType=="moderator" || $userType=="admin"){
 					if(isset($newType)){
-						$userActions->changeType($_GET['username'], $newType);
+						header('Content-Type: application/json');
+						echo json_encode(array('changetype'=>$userActions->changeType($_GET['username'], $newType)));
 					}
 				}
 			}
 			else{
-				badTokenResponse('changebio');
+				badTokenResponse('changetype');
 			}
 		}
 		else if($request=='updateavatar'){
