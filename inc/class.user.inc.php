@@ -243,6 +243,20 @@ class UserActions{
 		}
 	}
 	
+	public function changeType($user, $type){
+		$userSQL = "UPDATE user set type = :newType WHERE userName=:user";
+		try{
+			$stmt = $this->_db->prepare($userSQL);
+			$stmt->bindParam(":newType", $type, PDO::PARAM_);
+			$stmt->bindParam(":user", $user, PDO::PARAM_STR);
+			$stmt->execute();
+			$row=$stmt->fetch();
+			return true;
+		}catch(PDOException $e){
+			return false;
+		}
+	}
+	
 	public function changePass($user, $oldPass, $newPass){
 	
 		if(!$this->authenticate($user, $oldPass)) return false;
