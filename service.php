@@ -16,9 +16,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-//error_reporting (E_ALL ^ E_NOTICE); 
 session_start();
-
 if($_GET['gz']==1){
 	// check if a zipped response is requested
 	header('Content-Encoding: gzip');
@@ -115,14 +113,29 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		else if($request=='changebio'){
 			$newBio = $_GET['bio'];
 			if($authorizedUser!=null){
-				if(isset($newBio)) {
-					$response = $userActions->changeBio($authorizedUser, $newBio);
+				if(isset($newBio)){
 					header('Content-Type: application/json');
-					echo json_encode(array('bioChanged'=>$response));
+					echo json_encode(array('bioChanged'=>$userActions->changeBio($authorizedUser, $newBio)));
 				}
 			}
 			else{
 				badTokenResponse('changebio');
+			}
+		}
+		else if($request=='changetype'){
+			$newType = $_GET['type'];
+			if(!isset($newType)) $newType = $_POST['type'];
+			if($authorizedUser!=null){
+				$userType = $userActions->getUserType($authorizedUser);
+				if($userType=="moderator" || $userType=="admin"){
+					if(isset($newType)){
+						header('Content-Type: application/json');
+						echo json_encode(array('changetype'=>$userActions->changeType($_GET['username'], $newType)));
+					}
+				}
+			}
+			else{
+				badTokenResponse('changetype');
 			}
 		}
 		//website
@@ -167,6 +180,11 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			$response = $userActions->getPublicInfo($_GET['username']);
 			header('Content-Type: application/json');
 			echo json_encode(array('userInfo'=>$response));
+		}
+		else if($request=='finduser'){
+			$response = $userActions->searchForUser($_GET['username']);
+			header('Content-Type: application/json');
+			echo json_encode(array('users'=>$response));
 		}
 	}
 	else if($section=='coordinate'){
@@ -453,6 +471,14 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			header('Content-Type: application/json');
 			echo json_encode(array('comments'=>$comments));
 		}
+		else if($request=='peruseractivity'){
+			include_once "inc/class.comment.inc.php";
+			include_once "inc/class.design.inc.php";
+			$commentActions = new CommentActions(null);
+			$comments = $commentActions->getOnlyUserNotification($_GET['user']);
+			header('Content-Type: application/json');
+			echo json_encode(array('comments'=>$comments));
+			}
 	}
 	else if($section=='share'){
 		// share does not currently use the request parameter

@@ -99,6 +99,26 @@ class UserActions{
 		return false;
 	}
 	
+	public function searchForUser($user){
+		$userString = "%".$user."%";
+		$sql = "SELECT userName from user WHERE  userName LIKE :user";
+		try{
+			$stmt = $this->_db->prepare($sql);
+			$stmt->bindParam(":user", $userString, PDO::PARAM_STR);
+			$stmt->execute();
+			
+			$users = array();
+			
+			while($row = $stmt->fetch()){
+				$users[] = $row['userName'];
+			}
+			
+			return $users;
+		}catch(PDOException $e){
+			return false;
+		}
+	}
+	
 	public function getPublicInfo($user){
 		$sql = "SELECT * FROM user WHERE username LIKE :user";
 			
@@ -108,8 +128,12 @@ class UserActions{
 				$stmt->execute();
 				
 				if($row=$stmt->fetch()){
+					// get the user's avatar link:
+					
+					$gravatarLink = $this->get_gravatar($row[USER_EMAIL]);
+					
 					return array(USER_NAME=>$row[USER_NAME],USER_DISPLAY_NAME=>$row[USER_DISPLAY_NAME],USER_BIO=>$row[USER_BIO],
-					USER_WEBSITE=>$row[USER_WEBSITE],USER_TYPE=>$row[USER_TYPE]);
+					USER_WEBSITE=>$row[USER_WEBSITE],USER_TYPE=>$row[USER_TYPE], "avatar"=>$gravatarLink);
 				}
 				
 				
@@ -219,13 +243,27 @@ class UserActions{
 			return false;
 		}
 	}
-	
+
 	//website
 	public function changeWebsite($user, $website){
 		$userSQL = "UPDATE user set website = :newWebsite WHERE userName=:user";
 		try{
 			$stmt = $this->_db->prepare($userSQL);
 			$stmt->bindParam(":newWebsite", $website, PDO::PARAM_STR);
+			$stmt->bindParam(":user", $user, PDO::PARAM_STR);
+			$stmt->execute();
+			$row=$stmt->fetch();
+			return true;
+		}catch(PDOException $e){
+			return false;
+		}
+	}
+	
+	public function changeType($user, $type){
+		$userSQL = "UPDATE user set type = :newType WHERE userName=:user";
+		try{
+			$stmt = $this->_db->prepare($userSQL);
+			$stmt->bindParam(":newType", $type, PDO::PARAM_STR);
 			$stmt->bindParam(":user", $user, PDO::PARAM_STR);
 			$stmt->execute();
 			$row=$stmt->fetch();
@@ -343,5 +381,32 @@ class UserActions{
 			return false;
 		}
 	}
+	
+	/**
+ 	* Get either a Gravatar URL or complete image tag for a specified email address.
+ 	* 
+ 	* @param string $email The email address
+ 	* @param string $s Size in pixels, defaults to 80px [ 1 - 512 ]
+ 	* @param string $d Default imageset to use [ 404 | mm | identicon | monsterid | wavatar ]
+ 	* @param string $r Maximum rating (inclusive) [ g | pg | r | x ]
+ 	* @param boole $img True to return a complete IMG tag False for just the URL
+ 	* @param array $atts Optional, additional key/value attributes to include in the IMG tag
+ 	* @return String containing either just a URL or a complete image tag
+ 	* @source http://gravatar.com/site/implement/images/php/
+ 	*/
+	function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts = array() ) {
+		$url = 'http://www.gravatar.com/avatar/';
+		$url .= md5( strtolower( trim( $email ) ) );
+		$url .= "?s=$s&d=$d&r=$r";
+		if ( $img ) {
+			$url = '<img src="' . $url . '"';
+			foreach ( $atts as $key => $val ){
+				$url .= ' ' . $key . '="' . $val . '"';
+			}
+			$url .= ' />';
+		}
+	return $url;
+}
+
 }
 ?>
