@@ -45,7 +45,7 @@ class CommentActions{
 			$stmt = $this->_db->prepare($sql);
 			$stmt->bindParam(":designID", $designID, PDO::PARAM_INT);
 			$stmt->bindParam(":user", $user, PDO::PARAM_STR);
-			$stmt->bindParam(":comment", $comment, PDO::PARAM_STR);
+			$stmt->bindParam(":comment", stripslashes($comment), PDO::PARAM_STR);
 			$stmt->bindParam(":repliesTo", $repliesTo, PDO::PARAM_INT);
 			$stmt->execute();
 			return true;
