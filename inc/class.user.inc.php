@@ -256,7 +256,7 @@ class UserActions{
 				$stmt->bindParam(":strongsalt", $salt, PDO::PARAM_STR);
 				
 				$stmt->execute();
-				
+				return true;
 				
 			}catch(PDOException $e){
 				return false;

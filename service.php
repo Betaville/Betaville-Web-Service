@@ -98,10 +98,15 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			echo json_encode(array('usernameAvailable'=>$response));
 		}
 		else if($request=='changepass'){
-			$oldPass = $_GET['oldpass'];
+			$oldPass = $_GET['oldPass'];
 			$newPass = $_GET['newPass'];
 			if($authorizedUser!=null){
-				if(isset($oldPass) && isset($newPass)) $userActions->changePass($authorizedUser, $oldPass, $newPass);
+				if(isset($oldPass) && isset($newPass)) 
+				{	
+					$response = $userActions->changePass($authorizedUser, $oldPass, $newPass);
+					header('Content-Type: application/json');
+					echo json_encode(array('passChanged'=>$response));
+				}
 			}
 			else{
 				badTokenResponse('changepass');
