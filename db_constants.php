@@ -145,7 +145,7 @@
 	define('PROPOSAL_PERMISSIONS_LEVEL_CLOSED', 'closed');
 	define('PROPOSAL_PERMISSIONS_LEVEL_GROUP', 'group');
 	define('PROPOSAL_PERMISSIONS_LEVEL_ALL', 'all');
-	define('PROPOSAL_PERMISSIONS_GROUP_ARRAY', 'group');
+	define('PROPOSAL_PERMISSIONS_GROUP_ARRAY', 'user_group');
 	
 	define('WORMHOLE_TABLE', 'wormhole');
 	define('WORMHOLE_ID', 'wormholeid');
