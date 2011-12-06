@@ -412,8 +412,5 @@ class DesignActions{
 
 		echo $doc->saveXML();
 	}
-
-	function createJSON(){
-	}
 }
 ?>

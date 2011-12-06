@@ -265,7 +265,9 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			$id = $_GET['id'];
 			$description = $_GET['description'];
 			if($authorizedUser!=null){
-				if(isset($id) && isset($description)){}
+				if(isset($id) && isset($description)){
+					
+				}
 			}
 			else{
 				badTokenResponse('changedescription');
