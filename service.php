@@ -356,6 +356,7 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		else if($request=='synchronize'){}
 		else if($request=='userhaswriteaccess'){
 			if($authorizedUser!=null){
+				$id = $_GET['id'];
 				if(isset($id)){
 					$userType = $userActions->getUserType($authorizedUser);
 					$response = ($userType=="moderator" || $userType=="admin" || $designActions->userHasWriteAccessToDesign($id, $authorizedUser));
