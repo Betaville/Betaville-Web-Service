@@ -266,7 +266,10 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			$description = $_GET['description'];
 			if($authorizedUser!=null){
 				if(isset($id) && isset($description)){
-					
+					$userType = $userActions->getUserType($authorizedUser);
+					if($userType=="moderator" || $userType=="admin" || $designActions->userHasWriteAccessToDesign($id, $authorizedUser)){
+						$designActions->changeDesignDescription($id, $description);
+					}
 				}
 			}
 			else{
@@ -351,6 +354,19 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		else if($request=='reserve'){}
 		else if($request=='remove'){}
 		else if($request=='synchronize'){}
+		else if($request=='userhaswriteaccess'){
+			if($authorizedUser!=null){
+				if(isset($id)){
+					$userType = $userActions->getUserType($authorizedUser);
+					$response = ($userType=="moderator" || $userType=="admin" || $designActions->userHasWriteAccessToDesign($id, $authorizedUser));
+					header('Content-Type: application/json');
+					echo json_encode(array('userhaswriteaccess'=>$response));
+				}
+			}
+			else{
+				badTokenResponse('userhaswriteaccess');
+			}
+		}
 	}
 	else if($section=='proposal'){
 		if($request=='findinradius'){}

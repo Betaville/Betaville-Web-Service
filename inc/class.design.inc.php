@@ -412,5 +412,35 @@ class DesignActions{
 
 		echo $doc->saveXML();
 	}
+	
+	public function userHasWriteAccessToDesign($designID, $user){
+		$sql = "SELECT designid FROM design JOIN proposal ON designid=destinationid WHERE designid = :designID AND user LIKE :user";  // eventually we will need to check if the user is part of the group
+		try{
+			$stmt = $this->_db->prepare($sql);
+			$stmt->bindParam(":user", $user, PDO::PARAM_STR);
+			$stmt->bindParam(":designID", $designID, PDO::PARAM_INT);
+			$stmt->execute();
+			if($stmt->fetch()){
+				return true;
+			}
+			else return false;
+		}catch(PDOException $e){
+			return false;
+		}
+	}
+	
+	public function changeDesignDescription($designID, $newDescription){
+		$sql = "UPDATE design SET description = :newDescription WHERE designID = :designID";
+		try{
+			$stmt = $this->_db->prepare($sql);
+			$stmt->bindParam(":newDescription", $newDescription, PDO::PARAM_STR);
+			$stmt->bindParam(":designID", $designID, PDO::PARAM_INT);
+			$stmt->execute();
+			$designs = array();
+			return true;
+		}catch(PDOException $e){
+			return false;
+		}
+	}
 }
 ?>
