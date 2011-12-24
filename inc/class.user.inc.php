@@ -239,6 +239,7 @@ class UserActions{
 			$stmt->execute();
 			$row=$stmt->fetch();
 			return true;
+
 		}catch(PDOException $e){
 			return false;
 		}
@@ -284,7 +285,7 @@ class UserActions{
 				
 				
 				$salt = $this->createSalt();
-				$generatedHash=$salt.$newPass;
+				$generaPROPOSAL_PERMISSIONS_GROUP_ARRAYtedHash=$salt.$newPass;
 				for($i=0; $i<1000; $i++){
 					$generatedHash = SHA1($generatedHash);
 				}
@@ -408,5 +409,55 @@ class UserActions{
 	return $url;
 }
 
+
+	public function getUserGroup($did) {
+			$sql = 'SELECT groupName FROM '.PROPOSAL_TABLE.' WHERE '.PROPOSAL_DEST.' = '.$did;
+				try {
+					$stmt = $this->_db->prepare($sql);
+					$stmt->execute();
+					$users = array();
+						while($row=$stmt->fetch()){
+							$users[] = $this->allUserInfo($row);
+						}
+						return $users;
+				}	
+				catch(PDOException $e){
+					return false;
+				}
+			return null;
+		}
+
+	public function deleteUserFromGroup($entry,$did) {
+			$sql = 'UPDATE '.PROPOSAL_TABLE.' SET groupName = "'.$entry.'" WHERE destinationID = '.$did;
+				try {
+					$stmt = $this->_db->prepare($sql);
+					$stmt->execute();
+					return true;
+				}	
+				catch(PDOException $e){
+					return false;
+				}
+			
+		
+		}
+
+	public function addUserToGroup($name,$did) {
+			$sql = 'UPDATE '.PROPOSAL_TABLE.' SET groupName = CONCAT(groupName,"'.$name.'") WHERE destinationID = '.$did;
+				try {
+					$stmt = $this->_db->prepare($sql);
+					$stmt->execute();
+					return true;
+				}	
+				catch(PDOException $e){
+					return false;
+				}
+			
+		
+		}
+	private function allUserInfo($row){
+			return array(PROPOSAL_PERMISSIONS_GROUP_ARRAY=>$row[PROPOSAL_PERMISSIONS_GROUP_ARRAY]);
+		}
 }
+
+
 ?>
