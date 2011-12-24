@@ -16,6 +16,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 session_start();
 if($_GET['gz']==1){
 	// check if a zipped response is requested
@@ -26,7 +27,7 @@ if($_GET['gz']==1){
 if(isset($_GET['section']) && isset($_GET['request'])){
 	include_once "sessions.php";
 	//include_once "db_constants.php";
-
+	include_once('head.php');
 	// get the auth token if it exists
 	$token = $_GET['token'];
 	if(isset($_GET['token'])){
@@ -121,6 +122,26 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			else{
 				badTokenResponse('changebio');
 			}
+		}
+		else if($request=='getusergroup') {
+			$designid = $_GET['designid'];
+			$response = $userActions->getUserGroup($designid);
+			header('Content-Type: application/json');
+			echo json_encode(array('users'=>$response));
+		}
+		else if($request=='deleteuserfromgroup') {
+			$name = $_GET['entry'];
+			$designid = $_GET['designid'];
+			$response = $userActions->deleteUserFromGroup($name,$designid);
+			header('Content-Type: application/json');
+			echo json_encode($response);		
+		}
+		else if($request=='addusertogroup') {
+			$name = $_GET['addname'];
+			$designid = $_GET['designid'];
+			$response = $userActions->addUserToGroup($name,$designid);
+			header('Content-Type: application/json');
+			echo json_encode($response);		
 		}
 		else if($request=='changetype'){
 			$newType = $_GET['type'];
@@ -267,8 +288,8 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			if($authorizedUser!=null){
 				if(isset($id) && isset($description)){
 					$userType = $userActions->getUserType($authorizedUser);
-					if($userType=="moderator" || $userType=="admin" || $designActions->userHasWriteAccessToDesign($id, $authorizedUser)){
-						$designActions->changeDesignDescription($id, $description);
+				if($userType=="moderator" || $userType=="admin" || $designActions->userHasWriteAccessToDesign($id, $authorizedUser)){
+					$designActions->changeDesignDescription($id, $description);
 					}
 				}
 			}
