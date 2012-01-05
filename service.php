@@ -354,6 +354,14 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		else if($request=='findimagebycity'){}
 		else if($request=='findvideobycity'){}
 		else if($request=='allproposals'){}
+		//Service request to check if the given design is a proposal		
+		else if($request=='checkproposal'){
+			$designid = $_GET['id'];
+			$response = $designActions->checkIfProposal($designid);
+			header('Content-Type: application/json');
+			echo json_encode(array('checkdesign'=>$response));	
+
+		}
 		else if($request=='requestfile'){
 			// returns an http link to a file
 			$fileName = $designActions->getFilenameForDesignMedia($_GET['id']);
