@@ -427,8 +427,10 @@ class UserActions{
 			return null;
 		}
 
+	// select from proposals where user_group like %,username,%
+
 	public function deleteUserFromGroup($entry,$did) {
-			$sql = 'UPDATE '.PROPOSAL_TABLE.' SET groupName = "'.$entry.'" WHERE destinationID = '.$did;
+			$sql = 'UPDATE '.PROPOSAL_TABLE.' SET user_group = "'.$entry.'" WHERE destinationID = '.$did;
 				try {
 					$stmt = $this->_db->prepare($sql);
 					$stmt->execute();
@@ -442,7 +444,7 @@ class UserActions{
 		}
 
 	public function addUserToGroup($name,$did) {
-			$sql = 'UPDATE '.PROPOSAL_TABLE.' SET groupName = CONCAT(groupName,"'.$name.'") WHERE destinationID = '.$did;
+			$sql = 'UPDATE '.PROPOSAL_TABLE.' SET user_group = CONCAT(groupName,"'.$name.'") WHERE destinationID = '.$did;
 				try {
 					$stmt = $this->_db->prepare($sql);
 					$stmt->execute();
