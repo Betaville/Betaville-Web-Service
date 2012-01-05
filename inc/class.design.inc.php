@@ -414,7 +414,7 @@ class DesignActions{
 	}
 	
 	public function userHasWriteAccessToDesign($designID, $user){
-		$sql = "SELECT designid FROM design JOIN proposal ON designid=destinationid WHERE designid = :designID AND user LIKE :user";  // eventually we will need to check if the user is part of the group
+		$sql = "SELECT designid FROM design JOIN proposal ON designid=destinationid WHERE designid = :designID AND proposal.groupName LIKE %:user%";  // eventually we will need to check if the user is part of the group
 		try{
 			$stmt = $this->_db->prepare($sql);
 			$stmt->bindParam(":user", $user, PDO::PARAM_STR);
@@ -441,6 +441,23 @@ class DesignActions{
 		}catch(PDOException $e){
 			return false;
 		}
+	}
+
+	//Check if the design is a proposal, used in the Add user to functionality group
+	public function checkIfProposal($designID) {
+		$sql = 'SELECT * FROM proposal WHERE (destinationID="'.$designID.'" OR sourceID="'.$designID.'") AND type = "proposal"';
+		try {
+			$stmt = $this->_db->prepare($sql);
+			$stmt->execute();
+			if($stmt->fetch()){
+				return true;
+			}
+			else return false;
+		}
+		catch(PDOException $e) {
+			return false;
+		}
+		
 	}
 }
 ?>
