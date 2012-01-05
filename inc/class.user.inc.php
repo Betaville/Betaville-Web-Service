@@ -411,7 +411,7 @@ class UserActions{
 
 
 	public function getUserGroup($did) {
-			$sql = 'SELECT groupName FROM '.PROPOSAL_TABLE.' WHERE '.PROPOSAL_DEST.' = '.$did;
+			$sql = 'SELECT user_group FROM '.PROPOSAL_TABLE.' WHERE '.PROPOSAL_DEST.' = '.$did;
 				try {
 					$stmt = $this->_db->prepare($sql);
 					$stmt->execute();
