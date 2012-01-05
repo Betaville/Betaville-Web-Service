@@ -444,7 +444,7 @@ class UserActions{
 		}
 
 	public function addUserToGroup($name,$did) {
-			$sql = 'UPDATE '.PROPOSAL_TABLE.' SET user_group = CONCAT(groupName,"'.$name.'") WHERE destinationID = '.$did;
+			$sql = 'UPDATE '.PROPOSAL_TABLE.' SET user_group = CONCAT(user_group,"'.$name.'") WHERE destinationID = '.$did;
 				try {
 					$stmt = $this->_db->prepare($sql);
 					$stmt->execute();
