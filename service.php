@@ -143,6 +143,12 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			header('Content-Type: application/json');
 			echo json_encode($response);		
 		}
+		else if($request=='getallusersingroup') {
+			$designid = $_GET['id'];
+			$response = $userActions->getAllInGroup($designid);
+			header('Content-Type: application/json');
+			echo json_encode(array('usy'=>$response));
+		}
 		else if($request=='changetype'){
 			$newType = $_GET['type'];
 			if(!isset($newType)) $newType = $_POST['type'];
