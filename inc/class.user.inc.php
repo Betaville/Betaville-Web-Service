@@ -456,6 +456,29 @@ class UserActions{
 			
 		
 		}
+		public function getAllInGroup($did) {
+			$sql = 'SELECT user_group FROM '.PROPOSAL_TABLE.' WHERE '.PROPOSAL_DEST.' = '.$did.' AND type = "proposal"';
+				try {
+					$stmt = $this->_db->prepare($sql);
+					$stmt->execute();
+					$users = array();
+						while($row=$stmt->fetch()){
+							$users[] = $row[PROPOSAL_PERMISSIONS_GROUP_ARRAY];
+						}
+						$usy = explode(',',$users[0]);
+						array_pop($usy);
+						if($usy) { 
+						
+						return $usy;
+						}
+						else {
+						return null;
+						}
+				}	
+				catch(PDOException $e){
+					return false;
+				}
+		}
 	private function allUserInfo($row){
 			return array(PROPOSAL_PERMISSIONS_GROUP_ARRAY=>$row[PROPOSAL_PERMISSIONS_GROUP_ARRAY]);
 		}
