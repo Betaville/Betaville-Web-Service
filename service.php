@@ -147,7 +147,7 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			$designid = $_GET['id'];
 			$response = $userActions->getAllInGroup($designid);
 			header('Content-Type: application/json');
-			echo json_encode(array('usy'=>$response));
+			echo json_encode(array('users'=>$response));
 		}
 		else if($request=='changetype'){
 			$newType = $_GET['type'];
