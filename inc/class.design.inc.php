@@ -414,11 +414,11 @@ class DesignActions{
 	}
 	
 	public function userHasWriteAccessToDesign($designID, $user){
-		$sql = "SELECT designid FROM design JOIN proposal ON designid=destinationid WHERE designid = :designID AND proposal.groupName LIKE %:user%";  // eventually we will need to check if the user is part of the group
+		//$sql = "SELECT * FROM design JOIN proposal ON designID=destinationID WHERE designID = :designID OR proposal.user_group LIKE %".$user.",%";  // eventually we will need to check if the user is part of the group
+		$sql = "SELECT * FROM design JOIN proposal ON design.designID=proposal.destinationID WHERE design.user='".$user."' OR proposal.user_group LIKE  '%,".$user.",%'";
+				
 		try{
 			$stmt = $this->_db->prepare($sql);
-			$stmt->bindParam(":user", $user, PDO::PARAM_STR);
-			$stmt->bindParam(":designID", $designID, PDO::PARAM_INT);
 			$stmt->execute();
 			if($stmt->fetch()){
 				return true;
