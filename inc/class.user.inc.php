@@ -407,7 +407,7 @@ class UserActions{
 			$url .= ' />';
 		}
 	return $url;
-}
+	}
 
 
 	public function getUserGroup($did) {
@@ -425,12 +425,12 @@ class UserActions{
 					return false;
 				}
 			return null;
-		}
+	}
 
 	// select from proposals where user_group like %,username,%
 
 	public function deleteUserFromGroup($entry,$did) {
-			$sql = 'UPDATE '.PROPOSAL_TABLE.' SET user_group = "'.$entry.'" WHERE destinationID = '.$did;
+			$sql = "UPDATE ".PROPOSAL_TABLE." SET user_group = '".$entry."' WHERE destinationID = '".$did."' AND type = 'proposal'";
 				try {
 					$stmt = $this->_db->prepare($sql);
 					$stmt->execute();
@@ -441,7 +441,7 @@ class UserActions{
 				}
 			
 		
-		}
+	}
 
 	public function addUserToGroup($name,$did) {
 			$sql = 'UPDATE '.PROPOSAL_TABLE.' SET user_group = CONCAT(user_group,"'.$name.'") WHERE destinationID = '.$did;
@@ -455,8 +455,9 @@ class UserActions{
 				}
 			
 		
-		}
-		public function getAllInGroup($did) {
+	}
+	
+	public function getAllInGroup($did) {
 			$sql = 'SELECT user_group FROM '.PROPOSAL_TABLE.' WHERE '.PROPOSAL_DEST.' = '.$did.' AND type = "proposal"';
 				try {
 					$stmt = $this->_db->prepare($sql);
@@ -467,8 +468,8 @@ class UserActions{
 						}
 						$usy = explode(',',$users[0]);
 						array_pop($usy);
+						array_shift($usy);
 						if($usy) { 
-						
 						return $usy;
 						}
 						else {
@@ -478,10 +479,11 @@ class UserActions{
 				catch(PDOException $e){
 					return false;
 				}
-		}
+	}
+
 	private function allUserInfo($row){
 			return array(PROPOSAL_PERMISSIONS_GROUP_ARRAY=>$row[PROPOSAL_PERMISSIONS_GROUP_ARRAY]);
-		}
+	}
 }
 
 
