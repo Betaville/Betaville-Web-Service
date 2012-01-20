@@ -443,6 +443,20 @@ class DesignActions{
 		}
 	}
 
+
+	public function deleteDesign($designID) {
+		$sql = "UPDATE design SET isAlive=0,lastModified=NOW() WHERE designID = :designID";
+		try{
+			$stmt = $this->_db->prepare($sql);
+			$stmt->bindParam(":designID", $designID, PDO::PARAM_INT);
+			$stmt->execute();
+			$designs = array();
+			return true;
+		}catch(PDOException $e) {
+			return false;
+		}
+	}
+
 	//Check if the design is a proposal, used in the Add user to functionality group
 	public function checkIfProposal($designID) {
 		$sql = 'SELECT * FROM proposal WHERE (destinationID="'.$designID.'" OR sourceID="'.$designID.'") AND type = "proposal"';
