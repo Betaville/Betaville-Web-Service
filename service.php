@@ -1,7 +1,7 @@
 <?php
 /**  
  *  Betaville Web Service - A service for accessing data from a Betaville server via HTTP requests
- *  Copyright (C) 2011 Skye Book <skye.book@gmail.com>
+ *  Copyright (C) 2011-2012 Skye Book <skye.book@gmail.com>
  *  
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,8 +26,6 @@ if($_GET['gz']==1){
 
 if(isset($_GET['section']) && isset($_GET['request'])){
 	include_once "sessions.php";
-	//include_once "db_constants.php";
-	include_once('head.php');
 	// get the auth token if it exists
 	$token = $_GET['token'];
 	if(isset($_GET['token'])){
@@ -43,9 +41,6 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 	$request = $_GET['request'];
 	
 	if($section=='authcheck'){
-		//echo $token;
-		//echo $authorizedUser;
-		//echo "size".sizeof($_SESSION);
 		echo authorizeWithToken($token);
 	}
 
@@ -314,10 +309,15 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 
 		//Delete Design , change isAlive to 0
 		else if($request=='deletedesign') {
-			$designID = $_GET['id'];
-			$design = $designActions->deleteDesign($designID);
-			header('Content-Type: application/json');
-			echo json_encode(array('design'=>$design));
+			if($authorizedUser!=null){
+				$designID = $_GET['id'];
+				$design = $designActions->deleteDesign($designID, $authorizedUser);
+				header('Content-Type: application/json');
+				echo json_encode(array('design'=>$design));
+			}
+			else{
+				badTokenResponse('deletedesign');
+			}
 		}
 		else if($request=='changeurl'){
 			$id = $_GET['id'];

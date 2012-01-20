@@ -444,11 +444,12 @@ class DesignActions{
 	}
 
 
-	public function deleteDesign($designID) {
-		$sql = "UPDATE design SET isAlive=0,lastModified=NOW() WHERE designID = :designID";
+	public function deleteDesign($designID, $authorizedUser) {
+		$sql = "UPDATE design SET isAlive=0,lastModified=NOW() WHERE designID = :designID AND user LIKE :user";
 		try{
 			$stmt = $this->_db->prepare($sql);
 			$stmt->bindParam(":designID", $designID, PDO::PARAM_INT);
+			$stmt->bindParam(":user", $authorizedUser, PDO::PARAM_STR);
 			$stmt->execute();
 			$designs = array();
 			return true;
