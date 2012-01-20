@@ -1,6 +1,6 @@
 <?php
 
-	$sessionTTL = 60;
+	$sessionTTL = 7200;
 
 	if(!isset($_SESSION['sessionDB'])){
 		include_once "config.php";
@@ -60,6 +60,7 @@
 			$stmt->execute();
 			if($row=$stmt->fetch()){
 				updateLastTouched($token);
+				pruneOldSessions();
 				return $row['user'];
 			}
 			else{
@@ -86,6 +87,18 @@
 		try{
 			$stmt = $_SESSION['sessionDB']->prepare($sql);
 			$stmt->bindParam(":token", $token, PDO::PARAM_STR);
+			$stmt->execute();
+			return true;
+		}catch(PDOException $e){
+			return false;
+		}
+	}
+	
+	function pruneOldSessions(){
+		$sql = "DELETE FROM live_sessions WHERE DATE_ADD(session_start, INTERVAL :ttl SECOND) < NOW()";
+		try{
+			$stmt = $_SESSION['sessionDB']->prepare($sql);
+			$stmt->bindParam(":ttl", $sessionTTL, PDO::PARAM_INT);
 			$stmt->execute();
 			return true;
 		}catch(PDOException $e){
