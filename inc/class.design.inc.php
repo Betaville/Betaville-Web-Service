@@ -1,7 +1,7 @@
 <?php
 /**  
  *  Betaville Web Service - A service for accessing data from a Betaville server via HTTP requests
- *  Copyright (C) 2011 Skye Book <skye.book@gmail.com>
+ *  Copyright (C) 2011-2012 Skye Book <skye.book@gmail.com>
  *  
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -451,7 +451,6 @@ class DesignActions{
 			$stmt->bindParam(":designID", $designID, PDO::PARAM_INT);
 			$stmt->bindParam(":user", $authorizedUser, PDO::PARAM_STR);
 			$stmt->execute();
-			$designs = array();
 			return true;
 		}catch(PDOException $e) {
 			return false;
