@@ -310,6 +310,15 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 				if(isset($id) && isset($address)){}
 			}
 		}
+	
+
+		//Delete Design , change isAlive to 0
+		else if($request=='deletedesign') {
+			$designID = $_GET['id'];
+			$design = $designActions->deleteDesign($designID);
+			header('Content-Type: application/json');
+			echo json_encode(array('design'=>$design));
+		}
 		else if($request=='changeurl'){
 			$id = $_GET['id'];
 			$url = $_GET['url'];
