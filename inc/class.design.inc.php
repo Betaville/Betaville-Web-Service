@@ -442,7 +442,34 @@ class DesignActions{
 			return false;
 		}
 	}
-
+	
+	public function changeDesignName($designID, $newName){
+		$sql = "UPDATE design SET name = :newName WHERE designID = :designID";
+		try{
+			$stmt = $this->_db->prepare($sql);
+			$stmt->bindParam(":newName", $newName, PDO::PARAM_STR);
+			$stmt->bindParam(":designID", $designID, PDO::PARAM_INT);
+			$stmt->execute();
+			$designs = array();
+			return true;
+		}catch(PDOException $e){
+			return false;
+		}
+	}
+	
+	public function changeDesignAddress($designID, $newAddress){
+		$sql = "UPDATE design SET address = :newAddress WHERE designID = :designID";
+		try{
+			$stmt = $this->_db->prepare($sql);
+			$stmt->bindParam(":newAddress", $newAddress, PDO::PARAM_STR);
+			$stmt->bindParam(":designID", $designID, PDO::PARAM_INT);
+			$stmt->execute();
+			$designs = array();
+			return true;
+		}catch(PDOException $e){
+			return false;
+		}
+	}
 
 	public function deleteDesign($designID, $authorizedUser) {
 		$sql = "UPDATE design SET isAlive=0,lastModified=NOW() WHERE designID = :designID AND user LIKE :user";

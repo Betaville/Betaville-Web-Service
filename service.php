@@ -277,7 +277,12 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			$id = $_GET['id'];
 			$name = $_GET['name'];
 			if($authorizedUser!=null){
-				if(isset($id) && isset($name)){}
+				if(isset($id) && isset($description)){
+					$userType = $userActions->getUserType($authorizedUser);
+					if($userType=="moderator" || $userType=="admin" || $designActions->userHasWriteAccessToDesign($id, $authorizedUser)){
+						$designActions->changeDesignName($id, $name);
+					}
+				}
 			}
 			else{
 				badTokenResponse('changename');
@@ -289,8 +294,8 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			if($authorizedUser!=null){
 				if(isset($id) && isset($description)){
 					$userType = $userActions->getUserType($authorizedUser);
-				if($userType=="moderator" || $userType=="admin" || $designActions->userHasWriteAccessToDesign($id, $authorizedUser)){
-					$designActions->changeDesignDescription($id, $description);
+					if($userType=="moderator" || $userType=="admin" || $designActions->userHasWriteAccessToDesign($id, $authorizedUser)){
+						$designActions->changeDesignDescription($id, $description);
 					}
 				}
 			}
@@ -302,7 +307,15 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			$id = $_GET['id'];
 			$address = $_GET['address'];
 			if($authorizedUser!=null){
-				if(isset($id) && isset($address)){}
+				if(isset($id) && isset($description)){
+					$userType = $userActions->getUserType($authorizedUser);
+					if($userType=="moderator" || $userType=="admin" || $designActions->userHasWriteAccessToDesign($id, $authorizedUser)){
+						$designActions->changeDesignAddress($id, $address);
+					}
+				}
+			}
+			else{
+				badTokenResponse('changeaddress');
 			}
 		}
 	
