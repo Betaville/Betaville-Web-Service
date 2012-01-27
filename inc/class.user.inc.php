@@ -278,14 +278,14 @@ class UserActions{
 	
 		if(!$this->authenticate($user, $oldPass)) return false;
 	
-		$sql = "UPDATE user SET strongpass=:strongpass AND strongsalt=:strongsalt WHERE userName=:user";
+		$sql = "UPDATE user SET strongpass=:strongpass, strongsalt=:strongsalt WHERE userName=:user";
 			
 			try{
 				$stmt = $this->_db->prepare($sql);
 				
 				
 				$salt = $this->createSalt();
-				$generaPROPOSAL_PERMISSIONS_GROUP_ARRAYtedHash=$salt.$newPass;
+				$generatedHash=$salt.$newPass;
 				for($i=0; $i<1000; $i++){
 					$generatedHash = SHA1($generatedHash);
 				}
