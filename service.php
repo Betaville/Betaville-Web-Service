@@ -277,7 +277,7 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			$id = $_GET['id'];
 			$name = $_GET['name'];
 			if($authorizedUser!=null){
-				if(isset($id) && isset($description)){
+				if(isset($id) && isset($name)){
 					$userType = $userActions->getUserType($authorizedUser);
 					if($userType=="moderator" || $userType=="admin" || $designActions->userHasWriteAccessToDesign($id, $authorizedUser)){
 						$designActions->changeDesignName($id, $name);
@@ -307,7 +307,7 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			$id = $_GET['id'];
 			$address = $_GET['address'];
 			if($authorizedUser!=null){
-				if(isset($id) && isset($description)){
+				if(isset($id) && isset($address)){
 					$userType = $userActions->getUserType($authorizedUser);
 					if($userType=="moderator" || $userType=="admin" || $designActions->userHasWriteAccessToDesign($id, $authorizedUser)){
 						$designActions->changeDesignAddress($id, $address);
