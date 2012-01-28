@@ -455,8 +455,28 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		if($request=='versionsofproposal'){}
 	}
 	else if($section=='fave'){
-		if($request=='add'){}
-		else if($request=='remove'){}
+		include_once "inc/class.user.inc.php";
+		$userActions = new UserActions(null);
+			if($request=='add'){
+				$designID = $_GET['id'];
+				$name = $_GET['name'];
+				$response = $userActions->addUserToFave($name,$designID);
+				header('Content-Type: application/json');
+				echo json_encode($response);	
+			}
+			else if($request=='remove'){
+				$designID = $_GET['id'];
+				$name = $_GET['name'];
+				$response = $userActions->deleteUserFromProposalGroup($name,$designID);
+				header('Content-Type: application/json');
+				echo json_encode($response);	
+			}
+			else if($request=='designfaveList') {
+				$designID = $_GET['id'];
+				$response = $userActions->getAllFave($designID);
+				header('Content-Type: application/json');
+				echo json_encode(array('users'=>$response));
+			}
 	}
 	else if($section=='activity'){
 		if($request=='comments'){
