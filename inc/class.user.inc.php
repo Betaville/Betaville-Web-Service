@@ -457,8 +457,8 @@ class UserActions{
 		
 	}
 	
-	public function getAllInGroup($did) {
-			$sql = 'SELECT user_group FROM '.PROPOSAL_TABLE.' WHERE '.PROPOSAL_DEST.' = '.$did.' AND type = "proposal"';
+	public function getAllInGroup($designID) {
+			$sql = 'SELECT user_group FROM '.PROPOSAL_TABLE.' WHERE '.PROPOSAL_DEST.' = '.$designID.' AND type = "proposal"';
 				try {
 					$stmt = $this->_db->prepare($sql);
 					$stmt->execute();
@@ -481,6 +481,62 @@ class UserActions{
 				}
 	}
 
+	public function getAllFave($designID) {
+	$sql = 'SELECT '.DESIGN_FAVE_LIST.' FROM '.DESIGN_TABLE.' WHERE '.DESIGN_ID.'=:designid';
+				try {
+					$stmt = $this->_db->prepare($sql);
+					$stmt->bindParam(":designid", $designID, PDO::PARAM_STR);				
+					$stmt->execute();
+					$users = array();
+						while($row=$stmt->fetch()){
+							$users[] = $row[DESIGN_FAVE_LIST];
+						}
+						$usy = explode(',',$users[0]);
+						array_pop($usy);
+						array_shift($usy);
+						if($usy) { 
+						return $usy;
+						}
+						else {
+						return null;
+						}
+				}	
+				catch(PDOException $e){
+					return false;
+				}
+	}
+
+	public function addUserToFave($name,$did) {
+			$name = $name.',';
+			$sql = 'UPDATE '.DESIGN_TABLE.' SET favelist = CONCAT(favelist,"'.$name.'") WHERE designID = '.$did;
+				try {
+					$stmt = $this->_db->prepare($sql);
+					$stmt->execute();
+					return true;
+				}	
+				catch(PDOException $e){
+					return false;
+				}
+			
+		
+	}
+
+
+
+	public function deleteUserFromProposalGroup($entry,$did) {
+			$sql = 'UPDATE '.DESIGN_TABLE.' SET favelist = "'.$entry.'" WHERE designID = "'.$did.'"';
+				try {
+					$stmt = $this->_db->prepare($sql);
+					$stmt->execute();
+					return true;
+				}	
+				catch(PDOException $e){
+					return false;
+				}
+			
+		
+	}
+	
 	private function allUserInfo($row){
 			return array(PROPOSAL_PERMISSIONS_GROUP_ARRAY=>$row[PROPOSAL_PERMISSIONS_GROUP_ARRAY]);
 	}
