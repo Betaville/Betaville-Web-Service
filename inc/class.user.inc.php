@@ -395,6 +395,7 @@ class UserActions{
  	* @return String containing either just a URL or a complete image tag
  	* @source http://gravatar.com/site/implement/images/php/
  	*/
+	
 	function get_gravatar( $email, $s = 80, $d = 'mm', $r = 'g', $img = false, $atts = array() ) {
 		$url = 'http://www.gravatar.com/avatar/';
 		$url .= md5( strtolower( trim( $email ) ) );
@@ -408,31 +409,13 @@ class UserActions{
 		}
 	return $url;
 	}
-
-
-	public function getUserGroup($did) {
-			$sql = 'SELECT user_group FROM '.PROPOSAL_TABLE.' WHERE '.PROPOSAL_DEST.' = '.$did.' AND type = "proposal"';
+	
+	public function deleteUserFromGroup($name,$designID) {
+			$sql = 'UPDATE '.PROPOSAL_TABLE.' SET user_group =:name WHERE destinationID = :designid AND type = "proposal"';
 				try {
 					$stmt = $this->_db->prepare($sql);
-					$stmt->execute();
-					$users = array();
-						while($row=$stmt->fetch()){
-							$users[] = $this->allUserInfo($row);
-						}
-						return $users;
-				}	
-				catch(PDOException $e){
-					return false;
-				}
-			return null;
-	}
-
-	// select from proposals where user_group like %,username,%
-
-	public function deleteUserFromGroup($entry,$did) {
-			$sql = "UPDATE ".PROPOSAL_TABLE." SET user_group = '".$entry."' WHERE destinationID = '".$did."' AND type = 'proposal'";
-				try {
-					$stmt = $this->_db->prepare($sql);
+					$stmt->bindParam(":name", $name, PDO::PARAM_STR);
+					$stmt->bindParam(":designid", $designID, PDO::PARAM_STR);
 					$stmt->execute();
 					return true;
 				}	
@@ -443,10 +426,12 @@ class UserActions{
 		
 	}
 
-	public function addUserToGroup($name,$did) {
-			$sql = 'UPDATE '.PROPOSAL_TABLE.' SET user_group = CONCAT(user_group,"'.$name.'") WHERE destinationID = '.$did;
+	public function addUserToGroup($name,$designID) {
+			$sql = 'UPDATE '.PROPOSAL_TABLE.' SET user_group = CONCAT(user_group,"":name"") WHERE (destinationID =:designid AND type="proposal")';
 				try {
 					$stmt = $this->_db->prepare($sql);
+					$stmt->bindParam(":name", $name, PDO::PARAM_STR);
+					$stmt->bindParam(":designid", $designID, PDO::PARAM_STR);
 					$stmt->execute();
 					return true;
 				}	
@@ -458,9 +443,10 @@ class UserActions{
 	}
 	
 	public function getAllInGroup($designID) {
-			$sql = 'SELECT user_group FROM '.PROPOSAL_TABLE.' WHERE '.PROPOSAL_DEST.' = '.$designID.' AND type = "proposal"';
+			$sql = 'SELECT user_group FROM '.PROPOSAL_TABLE.' WHERE '.PROPOSAL_DEST.' =:designid AND type ="proposal"';
 				try {
 					$stmt = $this->_db->prepare($sql);
+					$stmt->bindParam(":designid", $designID, PDO::PARAM_STR);
 					$stmt->execute();
 					$users = array();
 						while($row=$stmt->fetch()){
@@ -506,11 +492,13 @@ class UserActions{
 				}
 	}
 
-	public function addUserToFave($name,$did) {
+	public function addUserToFave($name,$designID) {
 			$name = $name.',';
-			$sql = 'UPDATE '.DESIGN_TABLE.' SET favelist = CONCAT(favelist,"'.$name.'") WHERE designID = '.$did;
+			$sql = 'UPDATE '.DESIGN_TABLE.' SET favelist = CONCAT(favelist,"":name"") WHERE designID =:designid';
 				try {
 					$stmt = $this->_db->prepare($sql);
+					$stmt->bindParam(":name", $name, PDO::PARAM_STR);
+					$stmt->bindParam(":designid", $designID, PDO::PARAM_STR);
 					$stmt->execute();
 					return true;
 				}	
@@ -521,12 +509,12 @@ class UserActions{
 		
 	}
 
-
-
-	public function deleteUserFromProposalGroup($entry,$did) {
-			$sql = 'UPDATE '.DESIGN_TABLE.' SET favelist = "'.$entry.'" WHERE designID = "'.$did.'"';
+	public function deleteUserFromProposalGroup($listGroup,$designID) {
+			$sql = 'UPDATE '.DESIGN_TABLE.' SET favelist =:listGroup WHERE designID =:designid';
 				try {
 					$stmt = $this->_db->prepare($sql);
+					$stmt->bindParam(":listGroup", $listGroup, PDO::PARAM_STR);
+					$stmt->bindParam(":designid", $designID, PDO::PARAM_STR);
 					$stmt->execute();
 					return true;
 				}	
