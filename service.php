@@ -118,12 +118,6 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 				badTokenResponse('changebio');
 			}
 		}
-		else if($request=='getusergroup') {
-			$designid = $_GET['designid'];
-			$response = $userActions->getUserGroup($designid);
-			header('Content-Type: application/json');
-			echo json_encode(array('users'=>$response));
-		}
 		else if($request=='deleteuserfromgroup') {
 			$name = $_GET['entry'];
 			$designid = $_GET['designid'];
