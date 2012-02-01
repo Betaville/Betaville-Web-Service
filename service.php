@@ -450,20 +450,31 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 	}
 	else if($section=='fave'){
 		include_once "inc/class.user.inc.php";
+		include_once "inc/class.design.inc.php";
 		$userActions = new UserActions(null);
 			if($request=='add'){
-				$designID = $_GET['id'];
-				$name = $_GET['name'];
-				$response = $userActions->addUserToFave($name,$designID);
-				header('Content-Type: application/json');
-				echo json_encode($response);	
+				if($authorizedUser!=null) {
+					$designID = $_GET['id'];
+					$name = $_GET['name'];
+					$response = $userActions->addUserToFave($authorizedUser,$designID);
+					header('Content-Type: application/json');
+					echo json_encode($response);	
+				}
+				else {
+					badTokenResponse('Cannot Add');
+				}	
 			}
 			else if($request=='remove'){
-				$designID = $_GET['id'];
-				$name = $_GET['name'];
-				$response = $userActions->deleteUserFromProposalGroup($name,$designID);
-				header('Content-Type: application/json');
-				echo json_encode($response);	
+				if(authorizedUser!=null) {
+					$designID = $_GET['id'];
+					$name = $_GET['name'];
+					$response = $userActions->deleteUserFromProposalGroup($name,$designID);
+					header('Content-Type: application/json');
+					echo json_encode($response);	
+				}
+				else {
+					badTokenResponse('Cannot Remove');	
+				}
 			}
 			else if($request=='designfaveList') {
 				$designID = $_GET['id'];
