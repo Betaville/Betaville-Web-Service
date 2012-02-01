@@ -410,11 +410,11 @@ class UserActions{
 	return $url;
 	}
 	
-	public function deleteUserFromGroup($name,$designID) {
+	public function deleteUserFromGroup($authorizedUser,$designID) {
 			$sql = 'UPDATE '.PROPOSAL_TABLE.' SET user_group =:name WHERE destinationID = :designid AND type = "proposal"';
 				try {
 					$stmt = $this->_db->prepare($sql);
-					$stmt->bindParam(":name", $name, PDO::PARAM_STR);
+					$stmt->bindParam(":name", $authorizedUser, PDO::PARAM_STR);
 					$stmt->bindParam(":designid", $designID, PDO::PARAM_STR);
 					$stmt->execute();
 					return true;
@@ -426,11 +426,11 @@ class UserActions{
 		
 	}
 
-	public function addUserToGroup($name,$designID) {
+	public function addUserToGroup($authorizedUser,$designID) {
 			$sql = 'UPDATE '.PROPOSAL_TABLE.' SET user_group = CONCAT(user_group,"":name"") WHERE (destinationID =:designid AND type="proposal")';
 				try {
 					$stmt = $this->_db->prepare($sql);
-					$stmt->bindParam(":name", $name, PDO::PARAM_STR);
+					$stmt->bindParam(":name", $authorizedUser, PDO::PARAM_STR);
 					$stmt->bindParam(":designid", $designID, PDO::PARAM_STR);
 					$stmt->execute();
 					return true;
