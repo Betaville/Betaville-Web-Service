@@ -18,6 +18,7 @@
  */
 
 // Database Connection Information
+//Testing changes to see if new repos working
 define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
 define('DB_PASS', 'root');
