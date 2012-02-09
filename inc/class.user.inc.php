@@ -76,7 +76,6 @@ class UserActions{
 	}
 	
 	private function sendVerificationMail($emailAddress, $username, $confirmCode){
-		$from = "Quilvin@gmail.com";
 		$to = $emailAddress;
 		$subject = $username."'s ";
 		$subject .= "Betaville Activation link";
@@ -87,7 +86,7 @@ class UserActions{
 		$headers .= "X-Mailer: PHP v" .phpversion() . $eol;
 		$message = "Hello " . $username . ", <br />";
 		$message .= "Thank you for signing up to Betaville. <br />";
-		$message .= "<a href='".SERVICE_URL."?section=user&request=activateuser&code=".$confirmCode."> Please click on this link to activate your account now </a> <br />";
+		$message .= "<a href='robert.betaville.net?section=user&request=activateuser&code=".$confirmCode."> Please click on this link to activate your account now </a> <br />";
 		return @mail($to,$subject,$message,$headers);
 	}
 	
