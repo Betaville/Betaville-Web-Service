@@ -82,7 +82,8 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			echo json_encode(array('activationSuccess'=>$response));
 		}
 		else if($request=='changeCode') {
-			$response = $userActions->changeCode($_GET['email']);
+			$webURL=$_GET['websiteUrl'];
+			$response = $userActions->changeCode($_GET['email'],$webURL);
 			header('Content-Type: application/json');
 			echo json_encode(array('codeChangeSuccess'=>$response));
 		}
