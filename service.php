@@ -81,6 +81,24 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			header('Content-Type: application/json');
 			echo json_encode(array('activationSuccess'=>$response));
 		}
+		else if($request=='changeCode') {
+			$response = $userActions->changeCode($_GET['email']);
+			header('Content-Type: application/json');
+			echo json_encode(array('codeChangeSuccess'=>$response));
+		}
+		else if($request=='checkCode'){
+			$code=$_GET['newCode'];
+			$response = $userActions->checkCode($_GET['newCode']);
+			header('Content-Type: application/json');
+			echo json_encode(array('codeChangeSuccess'=>$response));		
+		}
+		else if($request=='changePassword'){
+			$newCode=$_GET['newCode'];
+			$password=$_GET['password'];
+			$response = $userActions->passwordChange($newCode,$password);
+			header('Content-Type: application/json');
+			echo json_encode(array('PassChanged'=>$response));
+		}
 		else if($request=='activated'){
 			$response = $userActions->isUserActivated($_GET['username']);
 			header('Content-Type: application/json');
