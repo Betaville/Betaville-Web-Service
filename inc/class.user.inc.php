@@ -123,7 +123,7 @@
 	
 	
 	
-	private function sendUpdatePassMail($emailAddress,$username,$confirmcode) {
+	private function sendUpdatePassMail($emailAddress,$username,$confirmcode,$sendUserTo) {
 			if(!($this->isUserActivated($username))) {
 				return "you have not been activated";
 				}
@@ -138,7 +138,7 @@
 				$headers .= "X-Mailer: PHP v" .phpversion() . $eol;
 				$message = "Hello " . $username . ", <br />";
 				$message .= "Password update request <br />";
-				$message .= "<a href='localhost/ForgotPass.php?newCode=".$confirmcode."> Please click on this link to change your password </a> <br />";
+				$message .= "<a href=".$sendUserTo.$confirmcode."> Please click on this link to change your password </a> <br />";
 				return @mail($to,$subject,$message,$headers);
 				
 			}
@@ -146,7 +146,7 @@
 	
 	
 	//Change the code for the given email address, check if address is in use, if yes check if user is activated, if yes go thru, else fail
-	public function changeCode($emailAddress) {
+	public function changeCode($emailAddress,$sendUserTo) {
 				if(($this->isEmailAddressInUse($emailAddress))) {
 					$checkUser = "SELECT userName FROM user WHERE email=:email";
 					try {
@@ -180,7 +180,7 @@
 					$stmt->bindParam(":email", $emailAddress, PDO::PARAM_STR);
 					$stmt->bindParam(":code", $confirmCode, PDO::PARAM_STR);
 					$stmt->execute();
-					if($this->sendUpdatePassMail($emailAddress, $username, $confirmCode)){
+					if($this->sendUpdatePassMail($emailAddress, $username, $confirmCode,$sendUserTo)){
 						return true;
 					}
 					else{
