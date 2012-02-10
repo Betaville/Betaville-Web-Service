@@ -17,23 +17,53 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
  
-class UserActions{
-	private $_db;
-	
-	public function __construct($db=null){
-		include_once "config.php";
-		include_once "class_names.php";
-		include_once "db_constants.php";
+
+
+	class UserActions{
+		private $_db;
 		
-		if(is_object($db)){
-			$this->_db=$db;
+		public function __construct($db=null){
+			include_once "config.php";
+			include_once "class_names.php";
+			include_once "db_constants.php";
+			
+			if(is_object($db)){
+				$this->_db=$db;
+			}
+			else{
+				$dsn = "mysql:host=".DB_HOST.";dbname=".DB_NAME;
+				$this->_db = new PDO($dsn, DB_USER, DB_PASS);
+			}
 		}
-		else{
-			$dsn = "mysql:host=".DB_HOST.";dbname=".DB_NAME;
-			$this->_db = new PDO($dsn, DB_USER, DB_PASS);
-		}
-	}
 	
+	
+	
+	public function passwordChange($code,$password) {
+				
+					$sql = "UPDATE user SET strongpass=:strongpass, strongsalt=:strongsalt, confirmcode=:newCode WHERE confirmcode=:codeVeri";
+				$set="";
+					try{
+					$stmt = $this->_db->prepare($sql);
+					$salt = $this->createSalt();
+					$generatedHash=$salt.$password;
+					for($i=0; $i<1000; $i++){
+						$generatedHash = SHA1($generatedHash);
+					}
+					//Set confirm code back to "" if it matches and generate the new password
+					$stmt->bindParam(":strongpass", $generatedHash, PDO::PARAM_STR);
+					$stmt->bindParam(":strongsalt", $salt, PDO::PARAM_STR);
+					$stmt->bindParam(":newCode", $set, PDO::PARAM_STR);
+					$stmt->bindParam(":codeVeri",$code, PDO::PARAM_STR);
+					$stmt->execute();
+					return true;
+				}catch(PDOException $e){
+					return false;
+				}	
+	
+		}
+	
+	
+		
 	public function addUser($username, $password, $emailAddress){
 		if(!($this->isUsernameAvailable($username))) return "This username is already in use";
 		if(filter_var($username, FILTER_VALIDATE_EMAIL)) return "This is not a valid email address";
@@ -74,30 +104,146 @@ class UserActions{
 			}
 		}
 	}
+		
 	
 	private function sendVerificationMail($emailAddress, $username, $confirmCode){
-		$to = $emailAddress;
-		$subject = $username."'s ";
-		$subject .= "Betaville Activation link";
-		$eol = "\n";
-		$headers = 'From: Betaville <donotreply@betaville.net>'. $eol;
-		//$headers .= "Reply-To: Please don't reply to this email".$eol;
-		//$headers .= "Message-ID:< TheSystem@" . $_SERVER['SERVER_NAME'].">".$eol;
-		$headers .= "X-Mailer: PHP v" .phpversion() . $eol;
-		$message = "Hello " . $username . ", <br />";
-		$message .= "Thank you for signing up to Betaville. <br />";
-		$message .= "<a href='".SERVICE_URL."?section=user&request=activateuser&code=".$confirmCode."> Please click on this link to activate your account now </a> <br />";
-		return @mail($to,$subject,$message,$headers);
+			$to = $emailAddress;
+			$subject = $username."'s ";
+			$subject .= "Betaville Activation link";
+			$eol = "\n";
+			$headers = 'From: Betaville <donotreply@betaville.net>'. $eol;
+			//$headers .= "Reply-To: Please don't reply to this email".$eol;
+			//$headers .= "Message-ID:< TheSystem@" . $_SERVER['SERVER_NAME'].">".$eol;
+			$headers .= "X-Mailer: PHP v" .phpversion() . $eol;
+			$message = "Hello " . $username . ", <br />";
+			$message .= "Thank you for signing up to Betaville. <br />";
+		$message .= "<a href='robert.betaville.net?section=user&request=activateuser&code=".$confirmCode."> Please click on this link to activate your account now </a> <br />";
+			return @mail($to,$subject,$message,$headers);
+		}
+	
+	
+	
+	private function sendUpdatePassMail($emailAddress,$username,$confirmcode) {
+			if(!($this->isUserActivated($username))) {
+				return "you have not been activated";
+				}
+			else {
+				$to = $emailAddress;
+				$subject = $username."'s ";
+				$subject .= "Password change request";
+				$eol = "\n";
+				$headers = 'From: Betaville <donotreply@betaville.net>'. $eol;
+				//$headers .= "Reply-To: Please don't reply to this email".$eol;
+				//$headers .= "Message-ID:< TheSystem@" . $_SERVER['SERVER_NAME'].">".$eol;
+				$headers .= "X-Mailer: PHP v" .phpversion() . $eol;
+				$message = "Hello " . $username . ", <br />";
+				$message .= "Password update request <br />";
+				$message .= "<a href='localhost/UpdatePass.php?newCode=".$confirmCode."> Please click on this link to change your password </a> <br />";
+				return @mail($to,$subject,$message,$headers);
+				
+			}
 	}
+	
+	
+	//Change the code for the given email address, check if address is in use, if yes check if user is activated, if yes go thru, else fail
+	public function changeCode($emailAddress) {
+				if(($this->isEmailAddressInUse($emailAddress))) {
+					$checkUser = "SELECT userName FROM user WHERE email=:email";
+					try {
+						$stmt = $this->_db->prepare($checkUser);
+						$stmt->bindParam(":email", $emailAddress, PDO::PARAM_STR);
+						$stmt->execute();
+						$row=$stmt->fetch();
+						$username=$row['userName'];
+							if(isset($username)){
+								if(!($this->isUserActivated($username))) return "false";
+								
+							}
+							else{
+								$stmt->closeCursor();
+								return false;
+							}
+						}
+						catch(PDOException $e) {
+							return false;
+						}
+						
+				}
+				else {
+					return false;				
+				}
+				//generate a new random code and add it to the database
+				$confirmCode = md5(uniqid(rand()));
+				$sql = "UPDATE user SET confirmcode=:code WHERE email=:email";
+				try{
+					$stmt = $this->_db->prepare($sql);
+					$stmt->bindParam(":email", $emailAddress, PDO::PARAM_STR);
+					$stmt->bindParam(":code", $confirmCode, PDO::PARAM_STR);
+					$stmt->execute();
+					if($this->sendUpdatePassMail($emailAddress, $username, $confirmCode)){
+						return true;
+					}
+					else{
+						return false;
+					}
+					
+				}catch(PDOException $e){
+					return false;
+				}
+				
+	}
+		
+	
+	//Service request to check if the code exists
+	public function checkCode($confirmCode) {
+					$codeCheck= "SELECT confirmcode FROM user WHERE confirmcode=:code";
+					try{
+						$stmt = $this->_db->prepare($codeCheck);
+						$stmt->bindParam(":code", $confirmCode, PDO::PARAM_STR);
+						$stmt->execute();
+						$row=$stmt->fetch();
+						$trueCheck=$row['confirmcode'];
+							if(isset($trueCheck)){
+								return true;
+							}
+							else{
+								return false;
+							}
+					}catch(PDOException $e){
+						return false;
+					}
+	}
+	
+	
+	public function isEmailAddressInUse($emailAddress){
+					$userSQL = "SELECT email FROM user where email=:emailAddress  LIMIT 1";
+					try{
+						$stmt = $this->_db->prepare($userSQL);
+						$stmt->bindParam(":emailAddress", $emailAddress, PDO::PARAM_STR);
+						$stmt->execute();
+						$row=$stmt->fetch();
+							if($row['email']==$emailAddress){
+							$stmt->closeCursor();
+							return true;
+							}
+						else{
+							$stmt->closeCursor();
+							return false;
+						}
+					}catch(PDOException $e){
+						return false;
+					}
+	}
+	
 	
 	private function checkForTokenMatch($hash){
 		foreach($_SESSION['tokens'] as &$token){
 				if($token['hash'] == $hash) return true;
+			}
+			
+			return false;
 		}
 		
-		return false;
-	}
-	
 	public function searchForUser($user){
 		$userString = "%".$user."%";
 		$sql = "SELECT userName from user WHERE  userName LIKE :user";
@@ -118,7 +264,9 @@ class UserActions{
 		}
 	}
 	
-	public function getPublicInfo($user){
+
+
+public function getPublicInfo($user){
 		$sql = "SELECT * FROM user WHERE username LIKE :user";
 			
 			try{
@@ -139,16 +287,19 @@ class UserActions{
 			}catch(PDOException $e){
 				return false;
 			}
-	}
-	
-	private function authenticate($username, $password){
+}
+
+
+
+private function authenticate($username, $password){
 		$hashSQL = "SELECT username, strongpass, strongsalt, activated from user where username=:user LIMIT 1";
 		try{
 			$stmt = $this->_db->prepare($hashSQL);
+
+
 			$stmt->bindParam(":user", $username, PDO::PARAM_STR);
 			$stmt->execute();
 			$row=$stmt->fetch();
-
 			$generatedHash=$row[USER_STRONG_SALT].$password;
 			for($i=0; $i<1000; $i++){
 				$generatedHash = SHA1($generatedHash);
@@ -176,6 +327,7 @@ class UserActions{
 	
 		$hashSQL = "SELECT username, strongpass, strongsalt from user where username=:user LIMIT 1";
 		try{
+
 			$stmt = $this->_db->prepare($hashSQL);
 			$stmt->bindParam(":user", $username, PDO::PARAM_STR);
 			$stmt->execute();
@@ -273,6 +425,31 @@ class UserActions{
 		}
 	}
 	
+	public function UpdatePass($user,$newPass){
+		$sql = "UPDATE user SET strongpass=:strongpass, strongsalt=:strongsalt WHERE userName=:user";
+			
+			try{
+				$stmt = $this->_db->prepare($sql);
+				
+				
+				$salt = $this->createSalt();
+				$generatedHash=$salt.$newPass;
+				for($i=0; $i<1000; $i++){
+					$generatedHash = SHA1($generatedHash);
+				}
+				
+				$stmt->bindParam(":user", $user, PDO::PARAM_STR);
+				$stmt->bindParam(":strongpass", $generatedHash, PDO::PARAM_STR);
+				$stmt->bindParam(":strongsalt", $salt, PDO::PARAM_STR);
+				
+				$stmt->execute();
+				return true;
+				
+			}catch(PDOException $e){
+				return false;
+			}
+		
+	}
 	public function changePass($user, $oldPass, $newPass){
 	
 		if(!$this->authenticate($user, $oldPass)) return false;
@@ -301,25 +478,7 @@ class UserActions{
 			}
 	}
 	
-	public function isEmailAddressInUse($emailAddress){
-		$userSQL = "SELECT email FROM user where email=:emailAddress  LIMIT 1";
-		try{
-			$stmt = $this->_db->prepare($userSQL);
-			$stmt->bindParam(":emailAddress", $emailAddress, PDO::PARAM_STR);
-			$stmt->execute();
-			$row=$stmt->fetch();
-			if($row['email']==$emailAddress){
-				$stmt->closeCursor();
-				return true;
-			}
-			else{
-				$stmt->closeCursor();
-				return false;
-			}
-		}catch(PDOException $e){
-			return false;
-		}
-	}
+	
 	
 	public function isUsernameAvailable($username){
 		$userSQL = "SELECT userName FROM user where userName=:user LIMIT 1";
@@ -355,7 +514,7 @@ class UserActions{
 			}
 			else{
 				$stmt->closeCursor();
-				return true;
+				return false;
 			}
 		}catch(PDOException $e){
 			return false;
