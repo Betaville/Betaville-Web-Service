@@ -138,7 +138,7 @@
 				$headers .= "X-Mailer: PHP v" .phpversion() . $eol;
 				$message = "Hello " . $username . ", <br />";
 				$message .= "Password update request <br />";
-				$message .= "<a href='localhost/ForgotPass.php?newCode=".$confirmCode."> Please click on this link to change your password </a> <br />";
+				$message .= "<a href='localhost/ForgotPass.php?newCode=".$confirmcode."> Please click on this link to change your password </a> <br />";
 				return @mail($to,$subject,$message,$headers);
 				
 			}
