@@ -345,6 +345,19 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 				badTokenResponse('deletedesign');
 			}
 		}
+		else if($request=='setpermission') {
+			$designID = $_GET['id'];
+				$permission = $_GET['permission'];			
+			if($authorizedUser!=null) {
+				$design = $designActions->setDesignPermission($designID,$permission);
+				header('Content-Type: application/json');
+				echo json_encode(array('changedPermission'=>$design));	
+			}
+			else {
+				badTokenResponse('did not happen');			
+			}
+			
+		}
 		else if($request=='changeurl'){
 			$id = $_GET['id'];
 			$url = $_GET['url'];
