@@ -429,6 +429,22 @@ class DesignActions{
 		}
 	}
 	
+	public function setDesignPermission($designID,$permission) {
+		$sql = 'UPDATE design SET viewability ="'.$permission.'" WHERE designID = :designID';
+
+		try{
+			$stmt = $this->_db->prepare($sql);
+			$stmt->bindParam(":designID", $designID, PDO::PARAM_INT);
+			$stmt->execute();
+			$designs = array();
+			return true;
+		}catch(PDOException $e){
+			return false;
+		}
+		
+
+	}
+	
 	public function changeDesignDescription($designID, $newDescription){
 		$sql = "UPDATE design SET description = :newDescription WHERE designID = :designID";
 		try{
