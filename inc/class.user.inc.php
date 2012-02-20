@@ -1,7 +1,7 @@
 <?php
 /**  
  *  Betaville Web Service - A service for accessing data from a Betaville server via HTTP requests
- *  Copyright (C) 2011 Skye Book <skye.book@gmail.com>
+ *  Copyright (C) 2011-2012 Betaville
  *  
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
