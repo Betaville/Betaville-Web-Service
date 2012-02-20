@@ -430,7 +430,7 @@ class DesignActions{
 	}
 	
 	public function setDesignPermission($designID,$permission) {
-		$sql = 'UPDATE design SET viewability ="'.$permission.'" WHERE designID = :designID';
+		$sql = 'UPDATE design SET viewability ="'.$permission.'",lastModified = NOW() WHERE designID = :designID';
 
 		try{
 			$stmt = $this->_db->prepare($sql);
