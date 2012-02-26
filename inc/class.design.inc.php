@@ -253,8 +253,14 @@ class DesignActions{
 		return null;
 	}
 	
-	public function getFeaturedProposals($start, $end){
-		$sql = "SELECT * FROM design JOIN proposal ON designid=destinationid WHERE type='proposal' AND isAlive=1 AND featured IS NOT NULL ORDER BY featured DESC, designid DESC LIMIT :start, :end";
+	public function getFeaturedProposals($start, $end,$permission,$username){
+	
+		if(isset($username)) {
+			$sql = 'SELECT * FROM design JOIN proposal ON designid=destinationid WHERE type="proposal" AND ( design.user="'.$username.'" OR proposal.viewability ="all" OR proposal.user_group LIKE "%,'.$username.',%" ) 				AND isAlive=1 AND featured IS NOT NULL ORDER BY featured DESC, designid DESC LIMIT :start, :end';
+		}
+		else {
+			$sql = 'SELECT * FROM design JOIN proposal ON designid=destinationid WHERE type="proposal" AND proposal.viewability ="all" AND isAlive=1 AND featured IS NOT NULL ORDER BY featured DESC, designid DESC 			LIMIT :start, :end';
+		}
 		try{
 			$stmt = $this->_db->prepare($sql);
 			$stmt->bindParam(":start", $start, PDO::PARAM_INT);
@@ -430,11 +436,12 @@ class DesignActions{
 	}
 	
 	public function setDesignPermission($designID,$permission) {
-		$sql = 'UPDATE design SET viewability ="'.$permission.'",lastModified = NOW() WHERE designID = :designID';
+		$sql = 'UPDATE proposal SET viewability ="'.$permission.'" WHERE (destinationID = :designID OR sourceID = :sourceID)';
 
 		try{
 			$stmt = $this->_db->prepare($sql);
 			$stmt->bindParam(":designID", $designID, PDO::PARAM_INT);
+			$stmt->bindParam(":sourceID", $designID, PDO::PARAM_INT);
 			$stmt->execute();
 			$designs = array();
 			return true;
