@@ -345,19 +345,6 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 				badTokenResponse('deletedesign');
 			}
 		}
-		else if($request=='setpermission') {
-			$designID = $_GET['id'];
-				$permission = $_GET['permission'];			
-			if($authorizedUser!=null) {
-				$design = $designActions->setDesignPermission($designID,$permission);
-				header('Content-Type: application/json');
-				echo json_encode(array('changedPermission'=>$design));	
-			}
-			else {
-				badTokenResponse('did not happen');			
-			}
-			
-		}
 		else if($request=='changeurl'){
 			$id = $_GET['id'];
 			$url = $_GET['url'];
@@ -453,19 +440,40 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		}
 	}
 	else if($section=='proposal'){
+		include_once "inc/class.design.inc.php";
+		include_once "inc/class.user.inc.php";
+		$designActions = new DesignActions(null);
+		$userActions = new UserActions(null);
 		if($request=='findinradius'){}
 		else if($request=='getpermissions'){}
 		else if($request=='addversion'){}
+		else if($request=='setpermission') {
+			$designID = $_GET['id'];
+				$permission = $_GET['permission'];			
+			if($authorizedUser!=null) {
+				$design = $designActions->setDesignPermission($designID,$permission);
+				header('Content-Type: application/json');
+				echo json_encode(array('changedPermission'=>$design));	
+			}
+			else {
+				badTokenResponse('did not happen');			
+			}
+			
+		}
 		else if($request=='getfeatured'){
 			include_once "inc/class.design.inc.php";
 			$designActions = new DesignActions(null);
 			header('Content-Type: application/json');
-			
-			
 			// set default values
 			$start = 0;
 			$end = 50;
-			
+			if($authorizedUser==null){
+				$permission="all";
+			}
+			else{
+				$username=$_GET['username'];
+				$permission="all";
+			}
 			if(hasStartEnd()){
 				$start = (int)$_GET['start'];
 				$end = (int)$_GET['end'];
@@ -474,7 +482,7 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 				$end = (int)$_GET['quantity'];
 			}
 			
-			echo json_encode(array('designs'=>($designActions->getFeaturedProposals($start, $end))));
+			echo json_encode(array('designs'=>($designActions->getFeaturedProposals($start, $end,$permission,$username))));
 		}
 	}
 	else if($section=='version'){
