@@ -56,19 +56,19 @@ class DesignActions{
 			$row = $stmt->fetch();
 			
 			if($row[DESIGN_TYPE]===DESIGN_TYPE_AUDIO){
-				return $this->audibleDesignFromRow($row, $false);
+				return $this->audibleDesignFromRow($row, false);
 			}
 			else if($row[DESIGN_TYPE]===DESIGN_TYPE_VIDEO){
-				return $this->videoDesignFromRow($row, $false);
+				return $this->videoDesignFromRow($row, false);
 			}
 			else if($row[DESIGN_TYPE]===DESIGN_TYPE_MODEL){
-				return $this->modeledDesignFromRow($row, $false);
+				return $this->modeledDesignFromRow($row, false);
 			}
 			else if($row[DESIGN_TYPE]===DESIGN_TYPE_SKETCH){
-				return $this->sketchDesignFromRow($row, $false);
+				return $this->sketchDesignFromRow($row, false);
 			}
 			else if($row[DESIGN_TYPE]===DESIGN_TYPE_EMPTY){
-				return $this->emptyDesignFromRow($row, $false);
+				return $this->emptyDesignFromRow($row, false);
 			}
 		}catch(PDOException $e){
 			echo'exception';
