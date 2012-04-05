@@ -87,19 +87,19 @@ class DesignActions{
 			$designs = array();
 			while($row=$stmt->fetch()){
 				if($row[DESIGN_TYPE]===DESIGN_TYPE_AUDIO){
-					$designs[] = $this->audibleDesignFromRow($row, $false);
+					$designs[] = $this->audibleDesignFromRow($row, false);
 				}
 				else if($row[DESIGN_TYPE]===DESIGN_TYPE_VIDEO){
-					$designs[] = $this->videoDesignFromRow($row, $false);
+					$designs[] = $this->videoDesignFromRow($row, false);
 				}
 				else if($row[DESIGN_TYPE]===DESIGN_TYPE_MODEL){
-					$designs[] = $this->modeledDesignFromRow($row, $false);
+					$designs[] = $this->modeledDesignFromRow($row, false);
 				}
 				else if($row[DESIGN_TYPE]===DESIGN_TYPE_SKETCH){
-					$designs[] = $this->sketchDesignFromRow($row, $false);
+					$designs[] = $this->sketchDesignFromRow($row, false);
 				}
 				else if($row[DESIGN_TYPE]===DESIGN_TYPE_EMPTY){
-					$designs[] = $this->emptyDesignFromRow($row, $false);
+					$designs[] = $this->emptyDesignFromRow($row, false);
 				}
 			}
 			return $designs;
@@ -126,19 +126,19 @@ class DesignActions{
 			while($row=$stmt->fetch()){
 				
 				if($row[DESIGN_TYPE]===DESIGN_TYPE_AUDIO){
-					$designs[] = $this->audibleDesignFromRow($row, $false);
+					$designs[] = $this->audibleDesignFromRow($row, false);
 				}
 				else if($row[DESIGN_TYPE]===DESIGN_TYPE_VIDEO){
-					$designs[] = $this->videoDesignFromRow($row, $false);
+					$designs[] = $this->videoDesignFromRow($row, false);
 				}
 				else if($row[DESIGN_TYPE]===DESIGN_TYPE_MODEL){
-					$designs[] = $this->modeledDesignFromRow($row, $false);
+					$designs[] = $this->modeledDesignFromRow($row, false);
 				}
 				else if($row[DESIGN_TYPE]===DESIGN_TYPE_SKETCH){
-					$designs[] = $this->sketchDesignFromRow($row, $false);
+					$designs[] = $this->sketchDesignFromRow($row, false);
 				}
 				else if($row[DESIGN_TYPE]===DESIGN_TYPE_EMPTY){
-					$designs[] = $this->emptyDesignFromRow($row, $false);
+					$designs[] = $this->emptyDesignFromRow($row, false);
 				}
 				
 			}
@@ -159,19 +159,19 @@ class DesignActions{
 			$designs = array();
 			while($row=$stmt->fetch()){
 				if($row[DESIGN_TYPE]===DESIGN_TYPE_AUDIO){
-					$designs[] = $this->audibleDesignFromRow($row, $false);
+					$designs[] = $this->audibleDesignFromRow($row, false);
 				}
 				else if($row[DESIGN_TYPE]===DESIGN_TYPE_VIDEO){
-					$designs[] = $this->videoDesignFromRow($row, $false);
+					$designs[] = $this->videoDesignFromRow($row, false);
 				}
 				else if($row[DESIGN_TYPE]===DESIGN_TYPE_MODEL){
-					$designs[] = $this->modeledDesignFromRow($row, $false);
+					$designs[] = $this->modeledDesignFromRow($row, false);
 				}
 				else if($row[DESIGN_TYPE]===DESIGN_TYPE_SKETCH){
-					$designs[] = $this->sketchDesignFromRow($row, $false);
+					$designs[] = $this->sketchDesignFromRow($row, false);
 				}
 				else if($row[DESIGN_TYPE]===DESIGN_TYPE_EMPTY){
-					$designs[] = $this->emptyDesignFromRow($row, $false);
+					$designs[] = $this->emptyDesignFromRow($row, false);
 				}
 			}
 			return $designs;
