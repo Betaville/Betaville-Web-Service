@@ -26,4 +26,7 @@ define('DB_NAME', 'betaville');
 
 define('BETAVILLE_FILE_STORE_URL', 'http://localhost/storage');
 define('SERVICE_URL', 'http://localhost/service/service.php');
+
+// Set the default timezone
+date_default_timezone_set('America/New_York');
 ?>
