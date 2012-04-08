@@ -18,17 +18,20 @@
  */
 
 session_start();
-if($_GET['gz']==1){
-	// check if a zipped response is requested
-	header('Content-Encoding: gzip');
-	ob_start("ob_gzhandler");
+if(isset($_GET['gz'])){
+	if($_GET['gz']==1){
+		// check if a zipped response is requested
+		header('Content-Encoding: gzip');
+		ob_start("ob_gzhandler");
+	}
 }
 
 if(isset($_GET['section']) && isset($_GET['request'])){
 	include_once "sessions.php";
 	// get the auth token if it exists
-	$token = $_GET['token'];
+	$token = null;
 	if(isset($_GET['token'])){
+	$token = $_GET['token'];
 		$authorizedUser = authorizeWithToken($token);
 	}
 	
