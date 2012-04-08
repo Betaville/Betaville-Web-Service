@@ -259,7 +259,7 @@ class DesignActions{
 			$sql = 'SELECT * FROM design JOIN proposal ON designid=destinationid WHERE type="proposal" AND ( design.user="'.$username.'" OR proposal.viewability ="all" OR proposal.user_group LIKE "%,'.$username.',%" ) 				AND isAlive=1 AND featured IS NOT NULL ORDER BY featured DESC, designid DESC LIMIT :start, :end';
 		}
 		else {
-			$sql = 'SELECT * FROM design JOIN proposal ON designid=destinationid WHERE type="proposal" AND proposal.viewability ="all" AND isAlive=1 AND featured IS NOT NULL ORDER BY featured DESC, designid DESC 			LIMIT :start, :end';
+			$sql = 'SELECT * FROM design JOIN proposal ON design.designid=proposal.destinationid WHERE type="proposal" AND proposal.viewability ="all" AND isAlive=1 AND featured IS NOT NULL ORDER BY featured DESC, designid DESC LIMIT :start, :end';
 		}
 		try{
 			$stmt = $this->_db->prepare($sql);
