@@ -1,0 +1,60 @@
+== Betaville Web Service ==
+
+This is a deployable PHP service that allows for API calls over HTTP/HTTPS to a Betaville Server.
+This project was started in the Summer of 2011 as a companion to some iOS work.  The iOS efforts
+floundered, but the web service lived on and saw improvement over the next year.  The service
+currently drives the web component for Betaville but work is underway on the desktop client's
+networking component so that it can work with either this service or the traditional Java server.
+
+=== Requirements ===
+
+* A web server (no use of .htaccess, so nginx should work fine)
+* MySQL 5 or newer
+* PHP 5.2 or newer
+
+==== Dependencies ====
+
+A fairly standard LAMP setup with PHP/MySQL integration should not have any problems with deploying
+this service.
+
+=== Deployment ===
+
+Clone this repository or download a zip and put it in a web-accessible directory on your server.
+
+==== Configuration ====
+
+Configuration is handled through the ''config.php'' file in the top level directory.
+
+{|
+! align="left"| Property Name
+! Default Value
+! Description
+|-
+|DB_HOST
+|localhost
+|The hostname of the database server
+|-
+|DB_USER
+|root
+|The username for accessing the database server
+|-
+|DB_PASS
+|root
+|The password for the specified username
+|-
+|DB_NAME
+|betaville
+|The name of the database containing the Betaville tables
+|-
+|BETAVILLE_FILE_STORE_URL
+|
+|A URL that can access the Betaville storage folder
+|-
+|SERVICE_URL
+|
+|The accessible URL of this web service
+|-
+|BETAVILLE_SESSION_TTL
+|7200
+|How long, in seconds, for a session to last
+|}
