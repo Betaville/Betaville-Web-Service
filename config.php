@@ -29,4 +29,7 @@ define('SERVICE_URL', 'http://localhost/service/service.php');
 
 // Set the default timezone
 date_default_timezone_set('America/New_York');
+
+// How long a session should last
+define('BETAVILLE_SESSION_TTL', '7200');
 ?>
