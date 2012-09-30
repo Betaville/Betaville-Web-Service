@@ -143,7 +143,8 @@ class CommentActions{
 	
 	private function commentFromSpecificRow($row) {
 		return array(COMMENT_ID=>$row[COMMENT_ID], COMMENT_DESIGN=>$row[COMMENT_DESIGN], DESIGN_NAME=>$row[DESIGN_NAME], DESIGN_FILE=>$row[DESIGN_FILE], COMMENT_USER=>$row[COMMENT_USER], COMMENT_TEXT=>$row[COMMENT_TEXT], COMMENT_DATE=>$row[COMMENT_DATE], COMMENT_REPLIESTO=>$row[COMMENT_REPLIESTO]);
-}
+	}
+	
 	private function commentFromRow($row, $commentUserAlias, $commentDateAlias){
 		return array(COMMENT_ID=>$row[COMMENT_ID], COMMENT_DESIGN=>$row[COMMENT_DESIGN], COMMENT_USER=>$row[$commentUserAlias],COMMENT_TEXT=>$row[COMMENT_TEXT],
 		COMMENT_DATE=>$row[$commentDateAlias],COMMENT_REPLIESTO=>$row[COMMENT_REPLIESTO]);
