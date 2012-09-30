@@ -661,7 +661,30 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		include_once "inc/class.city.inc.php";
 		$cityActions=new CityActions(null);
 		
-		if($request=='add'){}
+		// Add a city
+		if($request=='add'){
+			$cityname = $_GET['cityname'];
+			$statename = $_GET['statename'];
+			$countryname = $_GET['countryname'];
+			
+			if($authorizedUser!=null){
+				$userType = $userActions->getUserType($authorizedUser);
+				if($userType=="moderator" || $userType=="admin"){
+					if(isset($cityname) && isset($statename) && isset($countryname)){
+						header('Content-Type: application/json');
+						$success = $cityActions->addCity($cityname, $statename, $countryname);
+						echo json_encode(array('status'=>$success));
+					}
+					else{
+						header('Content-Type: application/json');
+						echo json_encode(array('status'=>'Missing parameters'));
+					}
+				}
+			}
+			else{
+				badTokenResponse('city-add');
+			}
+		}
 		//Return city id querying on the cityname		
 		else if($request=='findbyname'){
 			$cities = $cityActions->findCityByName($_GET['name']);

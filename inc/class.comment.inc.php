@@ -54,7 +54,6 @@ class CommentActions{
 		}
 	}
 
-
 	public function getOnlyUserNotification($user){
 		$sql = 'SELECT * FROM '.COMMENT_TABLE.' WHERE user="'.$user.'" ORDER BY commentid DESC LIMIT 5';
 		try{
