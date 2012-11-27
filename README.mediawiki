@@ -7,8 +7,6 @@ currently drives the web component for Betaville but work is underway on the des
 networking component so that it can work with either this service or the traditional Java server.
 
 === Requirements ===
-
-* A web server (no use of .htaccess, so nginx should work fine)
 * MySQL 5 or newer
 * PHP 5.2 or newer
 
