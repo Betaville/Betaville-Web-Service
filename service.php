@@ -726,7 +726,15 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 		}
 	}
 	else if($section=='wormhole'){
-		if($request=='add'){}
+		include_once "inc/class.wormhole.inc.php";
+		$wormholeActions=new WormholeActions(null);
+		if($request=='add'){
+			$name = $_GET['name'];
+			$cityID = $_GET['cityID'];
+			$coordinateID = $_GET['coordinateID'];
+			$reponse = $wormholeActions->addWormhole($cityID, $coordinateID, $name);
+			echo json_encode(array('wormholeAdded'=>$response));
+		}
 		else if($request=='delete'){}
 		else if($request=='editname'){}
 		else if($request=='editlocation'){}
