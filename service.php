@@ -660,6 +660,8 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 	else if($section=='city'){
 		include_once "inc/class.city.inc.php";
 		$cityActions=new CityActions(null);
+		include_once "inc/class.user.inc.php";
+		$userActions = new UserActions(null);
 		
 		// Add a city
 		if($request=='add'){
