@@ -227,11 +227,11 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			header('Content-Type: application/json');
 			echo json_encode(array('users'=>$response));
 		}
-		// else if($request=='finduserUserInfo'){
-		// 	$response = $userActions->searchForUserInfo($_GET['username']);
-		// 	header('Content-Type: application/json');
-		// 	echo json_encode(array('users'=>$response));
-		// }
+		else if($request=='finduserUserInfo'){
+			$response = $userActions->searchForUserInfo($_GET['username']);
+			header('Content-Type: application/json');
+			echo json_encode(array('users'=>$response));
+		}
 	}
 	else if($section=='coordinate'){
 		include_once "inc/class.coordinate.inc.php";
