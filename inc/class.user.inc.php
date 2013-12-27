@@ -278,13 +278,16 @@
 			
 			while($row = $stmt->fetch()){
 
+
 				$sqlDesign = 'SELECT COUNT(*) AS DesignCount FROM '.DESIGN_TABLE.' WHERE '.DESIGN_TABLE.'.'.DESIGN_USER.' LIKE "'.$row[USER_NAME].'" AND '.DESIGN_TABLE.'.'.DESIGN_IS_ALIVE.'=1 AND '.DESIGN_TYPE.'!= "empty"';
 				$stmtDesign = $this->_db->prepare($sqlDesign);
 				$stmtDesign->execute();				
 				// print_r($stmtDesign->fetch());
+				$fetchArr = $stmtDesign->fetch();
 
+				$count = count($fetchArr)>0 ? $fetchArr : 0;
 
-				$users[] = array(USER_NAME=>$row[USER_NAME],USER_TYPE=>$row[USER_TYPE], USER_DESIGN=>$stmtDesign->fetch()[0][DesignCount]);
+				$users[] = array(USER_NAME=>$row[USER_NAME],USER_TYPE=>$row[USER_TYPE], USER_DESIGN=>$count);
 			}
 						
 			return $users;
