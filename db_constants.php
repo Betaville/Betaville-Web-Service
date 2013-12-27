@@ -107,6 +107,8 @@
 	define('USER_TYPE_DATA_SEARCHER', 'data_searcher');
 	define('USER_TYPE_MODERATOR', 'moderator');
 	define('USER_TYPE_ADMIN', 'admin');
+	define('USER_DESIGN', 'designs');
+	
 	
 	define('SESSION_TABLE', 'session');
 	define('SESSION_ID', 'sessionID');
