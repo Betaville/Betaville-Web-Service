@@ -284,7 +284,7 @@
 				// print_r($stmtDesign->fetch());
 
 
-				$users[] = array(USER_NAME=>$row[USER_NAME],USER_TYPE=>$row[USER_TYPE], USER_DESIGN=>$stmtDesign->fetch()[DesignCount]);
+				$users[] = array(USER_NAME=>$row[USER_NAME],USER_TYPE=>$row[USER_TYPE], USER_DESIGN=>$stmtDesign->fetch()[0][DesignCount]);
 			}
 						
 			return $users;
