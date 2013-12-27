@@ -17,11 +17,11 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
  
-include_once('class.design.inc.php');
-$designActions = new DesignActions(null);
+
 
 	class UserActions{
 		private $_db;
+		private $selectFromWhat = "design LEFT JOIN modeldesign ON design.designID=modeldesign.designid LEFT JOIN audiodesign ON design.designID=audiodesign.designid LEFT JOIN videodesign ON design.designID=videodesign.designid LEFT JOIN sketchdesign ON design.designID=sketchdesign.designid";//GROUP BY design.designID
 		
 		public function __construct($db=null){
 			include_once "config.php";
@@ -277,7 +277,13 @@ $designActions = new DesignActions(null);
 
 			
 			while($row = $stmt->fetch()){
-				$users[] = array(USER_NAME=>$row[USER_NAME],USER_TYPE=>$row[USER_TYPE], count($designActions->findDesignByUser($row[USER_NAME], $start, $end, $excludeEmpty));
+
+				$sqlDesign = 'SELECT COUNT(*) AS DesignCount FROM '.$this->selectFromWhat.' WHERE '.DESIGN_TABLE.'.'.DESIGN_USER.' LIKE '.$row[USER_NAME].' AND '.DESIGN_TABLE.'.'.DESIGN_IS_ALIVE.'=1 AND '.DESIGN_TYPE.'!= "empty" ORDER BY design.designID DESC LIMIT 0, 50';			
+				$stmtDesign = $this->_db->prepare($sqlDesign);
+				$stmtDesign->execute();				
+				print_r($stmtDesign->fetch());
+
+				$users[] = array(USER_NAME=>$row[USER_NAME],USER_TYPE=>$row[USER_TYPE], USER_DESIGNS=>4);
 			}
 						
 			return $users;
