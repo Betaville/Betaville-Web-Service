@@ -225,7 +225,7 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			echo json_encode(array('users'=>$response));
 		}
 		else if($request=='finduserUserInfo'){
-			$response = $userActions->searchForUser($_GET['username']);
+			$response = $userActions->searchForUserInfo($_GET['username']);
 			header('Content-Type: application/json');
 			echo json_encode(array('users'=>$response));
 		}
