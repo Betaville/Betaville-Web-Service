@@ -285,7 +285,7 @@
 				// print_r($stmtDesign->fetch());
 				$fetchArr = $stmtDesign->fetch();
 
-				$count = count($fetchArr)>0 ? $fetchArr : 0;
+				$count = count($fetchArr)>0 ? $fetchArr[DesignCount] : 0;
 
 				$users[] = array(USER_NAME=>$row[USER_NAME],USER_TYPE=>$row[USER_TYPE], USER_DESIGN=>$count);
 			}
