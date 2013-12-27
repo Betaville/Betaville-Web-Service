@@ -21,7 +21,7 @@
 
 	class UserActions{
 		private $_db;
-		private $selectFromWhat = "design LEFT JOIN modeldesign ON design.designID=modeldesign.designid LEFT JOIN audiodesign ON design.designID=audiodesign.designid LEFT JOIN videodesign ON design.designID=videodesign.designid LEFT JOIN sketchdesign ON design.designID=sketchdesign.designid";//GROUP BY design.designID
+		// private $selectFromWhat = "design LEFT JOIN modeldesign ON design.designID=modeldesign.designid LEFT JOIN audiodesign ON design.designID=audiodesign.designid LEFT JOIN videodesign ON design.designID=videodesign.designid LEFT JOIN sketchdesign ON design.designID=sketchdesign.designid";//GROUP BY design.designID
 		
 		public function __construct($db=null){
 			include_once "config.php";
@@ -278,7 +278,7 @@
 			
 			while($row = $stmt->fetch()){
 
-				$sqlDesign = 'SELECT COUNT(*) AS DesignCount FROM '.$this->selectFromWhat.' WHERE '.DESIGN_TABLE.'.'.DESIGN_USER.' LIKE '.$row[USER_NAME].' AND '.DESIGN_TABLE.'.'.DESIGN_IS_ALIVE.'=1 AND '.DESIGN_TYPE.'!= "empty" ORDER BY design.designID DESC LIMIT 0, 50';
+				$sqlDesign = 'SELECT COUNT(*) AS DesignCount FROM '.DESIGN_TABLE.' WHERE '.DESIGN_TABLE.'.'.DESIGN_USER.' LIKE '.$row[USER_NAME].' AND '.DESIGN_TABLE.'.'.DESIGN_IS_ALIVE.'=1 AND '.DESIGN_TYPE.'!= "empty"';
 				$stmtDesign = $this->_db->prepare($sqlDesign);
 				$stmtDesign->execute();				
 				print_r($stmtDesign->fetch());
