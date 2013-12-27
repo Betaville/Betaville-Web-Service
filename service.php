@@ -17,6 +17,9 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/*header("content-type: application/json; charset=utf-8");*/
+header("access-control-allow-origin: *");
+
 session_start();
 if(isset($_GET['gz'])){
 	if($_GET['gz']==1){
