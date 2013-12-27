@@ -264,25 +264,25 @@
 		}
 	}
 
-	public function searchForUserInfo($user){
-		$userString = "%".$user."%";
-		$sql = "SELECT userName from user WHERE  userName LIKE :user";
-		try{
-			$stmt = $this->_db->prepare($sql);
-			$stmt->bindParam(":user", $userString, PDO::PARAM_STR);
-			$stmt->execute();
+	// public function searchForUserInfo($user){
+	// 	$userString = "%".$user."%";
+	// 	$sql = "SELECT userName from user WHERE  userName LIKE :user";
+	// 	try{
+	// 		$stmt = $this->_db->prepare($sql);
+	// 		$stmt->bindParam(":user", $userString, PDO::PARAM_STR);
+	// 		$stmt->execute();
 			
-			$users = array();
+	// 		$users = array();
 			
-			while($row = $stmt->fetch()){
-				$users[] = $row['userName'];
-			}
+	// 		while($row = $stmt->fetch()){
+	// 			$users[] = $row['userName'];
+	// 		}
 			
-			return $users;
-		}catch(PDOException $e){
-			return false;
-		}
-	}
+	// 		return $users;
+	// 	}catch(PDOException $e){
+	// 		return false;
+	// 	}
+	// }
 
 
 public function getPublicInfo($user){
