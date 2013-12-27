@@ -17,7 +17,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
  
-
+include_once('class.design.inc.php');
+$designActions = new DesignActions(null);
 
 	class UserActions{
 		private $_db;
@@ -266,19 +267,21 @@
 
 	public function searchForUserInfo($user){
 		$userString = "%".$user."%";
-		$sql = "SELECT userName from user WHERE  userName LIKE :user";
+		$sql = "SELECT * from user WHERE userName LIKE :user";
 		try{
 			$stmt = $this->_db->prepare($sql);
 			$stmt->bindParam(":user", $userString, PDO::PARAM_STR);
 			$stmt->execute();
 			
 			$users = array();
+
 			
 			while($row = $stmt->fetch()){
-				$users[] = $row['userName'];
+				$users[] = array(USER_NAME=>$row[USER_NAME],USER_TYPE=>$row[USER_TYPE], count($designActions->findDesignByUser($row[USER_NAME], $start, $end, $excludeEmpty));
 			}
-			
+						
 			return $users;
+
 		}catch(PDOException $e){
 			return false;
 		}
