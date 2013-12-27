@@ -573,6 +573,26 @@ private function authenticate($username, $password){
 		}
 	}
 	
+	public function activateUserByName($username){
+		$codeSQL = "UPDATE user SET activated=1 where username=:user";
+		try{
+			$stmt = $this->_db->prepare($codeSQL);
+			$stmt->bindParam(":user", $username, PDO::PARAM_STR);
+			$stmt->execute();
+			$row=$stmt->fetch();
+			if ($row == 1 ){
+				$stmt->closeCursor();
+				return true;
+			}  
+			else{
+				$stmt->closeCursor();
+				return true;
+			}
+		}catch(PDOException $e){
+			return false;
+		}
+	}
+
 	/**
  	* Get either a Gravatar URL or complete image tag for a specified email address.
  	* 

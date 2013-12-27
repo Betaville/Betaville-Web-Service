@@ -87,6 +87,11 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			header('Content-Type: application/json');
 			echo json_encode(array('activationSuccess'=>$response));
 		}
+		else if($request=='activateuserByName'){
+			$response = $userActions->activateUserByName($_GET['user']);
+			header('Content-Type: application/json');
+			echo json_encode(array('activationSuccess'=>$response));
+		}
 		else if($request=='changeCode') {
 			$webURL=$_GET['websiteUrl'];
 			$response = $userActions->changeCode($_GET['email'],$webURL);
