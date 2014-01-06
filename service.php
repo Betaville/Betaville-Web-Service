@@ -111,6 +111,7 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			header('Content-Type: application/json');
 			echo json_encode(array('PassChanged'=>$response));
 		}
+		//dd
 		// else if($request=='changePasswordNew'){			
 		// 	$username = $_GET['username'];
 		// 	$password= $_GET['password'];
