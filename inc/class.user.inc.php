@@ -36,12 +36,10 @@
 				$this->_db = new PDO($dsn, DB_USER, DB_PASS);
 			}
 		}
-	
-	
-	
+		
 	public function passwordChange($code,$password) {
 				
-				$sql = "UPDATE user SET strongpass=:strongpass, strongsalt=:strongsalt, confirmcode=:newCode WHERE confirmcode=:codeVeri";
+					$sql = "UPDATE user SET strongpass=:strongpass, strongsalt=:strongsalt, confirmcode=:newCode WHERE confirmcode=:codeVeri";
 				$set="";
 					try{
 					$stmt = $this->_db->prepare($sql);
