@@ -61,12 +61,9 @@
 		}
 	}
 
-	public function passwordChangeNew($username, $password) {				
-		$confirmCode = md5(uniqid(rand()));		
-		$sql = "UPDATE user SET strongpass=:strongpass, strongsalt=:strongsalt WHERE userName=:user";
-
-		$set="";
-			try{
+	public function passwordChangeNew($username, $password) {						
+		$sql = "UPDATE user SET strongpass=:strongpass, strongsalt=:strongsalt WHERE userName=:username";		
+		try{
 			$stmt = $this->_db->prepare($sql);
 			$salt = $this->createSalt();
 			$generatedHash=$salt.$password;
@@ -76,10 +73,10 @@
 			$stmt->bindParam(":username", $username, PDO::PARAM_STR);
 			$stmt->bindParam(":strongpass", $generatedHash, PDO::PARAM_STR);
 			$stmt->bindParam(":strongsalt", $salt, PDO::PARAM_STR);						
-
 			$stmt->execute();
 			return true;
-		}catch(PDOException $e){
+		} 
+		catch(PDOException $e){
 			return false;
 		}
 	}
