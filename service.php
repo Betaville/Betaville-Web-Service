@@ -111,6 +111,12 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			header('Content-Type: application/json');
 			echo json_encode(array('PassChanged'=>$response));
 		}
+		else if($request=='changePasswordNew'){			
+			$password=$_GET['password'];
+			$response = $userActions->passwordChangeNew($password);
+			header('Content-Type: application/json');
+			echo json_encode(array('PassChanged'=>$response));
+		}
 		else if($request=='activated'){
 			$response = $userActions->isUserActivated($_GET['username']);
 			header('Content-Type: application/json');
