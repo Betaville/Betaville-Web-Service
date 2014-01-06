@@ -115,7 +115,7 @@ if(isset($_GET['section']) && isset($_GET['request'])){
 			$password=$_GET['password'];
 			$response = $userActions->passwordChangeNew($password);
 			header('Content-Type: application/json');
-			echo json_encode(array('PassChanged'=>$response));
+			echo json_encode(array('PassChangedNew'=>$response));
 		}
 		else if($request=='activated'){
 			$response = $userActions->isUserActivated($_GET['username']);
