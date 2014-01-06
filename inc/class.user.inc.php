@@ -61,9 +61,9 @@
 		}
 	}
 
-	public function passwordChangeNew($password) {				
+	public function passwordChangeNew($username, $password) {				
 		$confirmCode = md5(uniqid(rand()));
-		$sql = "UPDATE user SET strongpass=:strongpass, strongsalt=:strongsalt, confirmcode=:code";
+		$sql = "UPDATE :username SET strongpass=:strongpass, strongsalt=:strongsalt, confirmcode=:code";
 		$set="";
 			try{
 			$stmt = $this->_db->prepare($sql);
@@ -72,7 +72,7 @@
 			for($i=0; $i<1000; $i++){
 				$generatedHash = SHA1($generatedHash);
 			}
-			//Set confirm code back to "" if it matches and generate the new password
+			$stmt->bindParam(":username", $username, PDO::PARAM_STR);
 			$stmt->bindParam(":strongpass", $generatedHash, PDO::PARAM_STR);
 			$stmt->bindParam(":strongsalt", $salt, PDO::PARAM_STR);			
 			$stmt->bindParam(":code", $confirmCode, PDO::PARAM_STR);
